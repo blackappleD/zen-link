@@ -125,8 +125,8 @@
                 </executions>
                 <configuration>
                     <username>admin</username>
-                    <password>Harbor12345</password>
-                    <repository>192.168.252.10:9443/repository/${project.build.finalName}</repository>
+                    <password>China76!</password>
+                    <repository>harbor.zhshen0301.xyz:8443/repository/${project.build.finalName}</repository>
                     <!--suppress UnresolvedMavenProperty -->
                     <tag>${build-id}</tag>
                     <buildArgs>
