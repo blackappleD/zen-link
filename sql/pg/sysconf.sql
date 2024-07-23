@@ -114,7 +114,6 @@ COMMENT ON TABLE "sys_dept" IS '部门表';
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
-insert into sys_dept values(100,  0,   '0',          '旗天科技',   0, '领导', '15888888888', 'test@qt300061.com', '0', '0', 'admin', now(), '', null);
 insert into sys_dept values(101,  100, '0,100',      '百行数科', 1, '领导', '15888888888', 'test@qt300061.com', '0', '0', 'admin', now(), '', null);
 insert into sys_dept values(103,  101, '0,100,101',  '科技部门',   1, '领导', '15888888888', 'test@qt300061.com', '0', '0', 'admin', now(), '', null);
 insert into sys_dept values(104,  101, '0,100,101',  '市场部门',   2, '领导', '15888888888', 'test@qt300061.com', '0', '0', 'admin', now(), '', null);

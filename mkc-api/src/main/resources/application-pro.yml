@@ -64,9 +64,9 @@ spring:
             simple:
                 prefetch: 50
     mail:
-        host:
-        username:
-        password:
+        host: smtp.feishu.cn
+        username: zjbhsk@zjbhsk.com
+        password: IUC4M53XJth5GHFH
         port: 465
         properties:
             mail:
@@ -78,13 +78,13 @@ spring:
                         enable: true
                         required: true
 
-#    ding:
-#        syserr:
-#            token:
-#            secret:
-#        business:
-#            token:
-#            secret:
+    ding:
+        syserr:
+            token: 6a93cb682ac609b78c504938f87e39dee3fff0a0e448d9b82972c4e4f6fbb0ef
+            secret: SEC39cf5cfe0d5d43b8dd75293e42f579070cf4164f8b75e0383f59aee6b340b2aa
+        business:
+            token: 6a93cb682ac609b78c504938f87e39dee3fff0a0e448d9b82972c4e4f6fbb0ef
+            secret: SEC39cf5cfe0d5d43b8dd75293e42f579070cf4164f8b75e0383f59aee6b340b2aa
 # 日志配置
 logging:
     file:

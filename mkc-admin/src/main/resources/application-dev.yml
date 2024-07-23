@@ -70,19 +70,19 @@ spring:
         # 后台配置数据源
         master:
           driver-class-name: org.postgresql.Driver
-          url: jdbc:postgresql://db-server:5432/baihang2?currentSchema=sysconf&useUnicode=true&characterEncoding=utf-8
+          url: jdbc:postgresql://192.168.252.10:5432/dev?currentSchema=sysconf&useUnicode=true&characterEncoding=utf-8
           username: test
           password: 123456
         # 业务数据源
         business:
           driver-class-name: org.postgresql.Driver
-          url: jdbc:postgresql://db-server:5432/baihang2?currentSchema=business&useUnicode=true&characterEncoding=utf-8
+          url: jdbc:postgresql://192.168.252.10:5432/dev?currentSchema=business&useUnicode=true&characterEncoding=utf-8
           username: test
           password: 123456
         # 业务数据源
         quartz:
           driver-class-name: org.postgresql.Driver
-          url: jdbc:postgresql://db-server:5432/baihang2?currentSchema=quartz&useUnicode=true&characterEncoding=utf-8
+          url: jdbc:postgresql://192.168.252.10:5432/dev?currentSchema=quartz&useUnicode=true&characterEncoding=utf-8
           username: test
           password: 123456
           
@@ -91,17 +91,15 @@ spring:
     port: 5672
     username: mkc
     password: 123456
-    #username: root
-    #password: 123456
     virtualHost: /dev
     listener:
       simple:
         prefetch: 20
   mail:
-    host: 邮箱服务器
-    username: 邮箱
-    password: 密码
-    port:
+    host: smtp.feishu.cn
+    username: zjbhsk@zjbhsk.com
+    password: IUC4M53XJth5GHFH
+    port: 465
     properties:
       mail:
         smtp:
@@ -115,9 +113,8 @@ spring:
   # redis配置
   redis:
     database: 1
-    host: redis-server
+    host: 192.168.252.10
     port: 6379
-    # password: tds@Redis9370
     password:
     timeout: 6000ms           # 连接超时时长（毫秒）
     lettuce:
@@ -146,7 +143,7 @@ monitor:
     subject: 【DEV环境】
   notify:
     subject: 【DEV预警】
-    email: tets1@1.com,test1@1.com,test2@2.com
+    email: zhengyuanfang@zjbhsk.com,leitq@qt300061.com
 
 
 

@@ -1,4 +1,3 @@
-GRANT USAGE ON SCHEMA public TO  mkc;
 GRANT USAGE ON SCHEMA business TO  mkc;
 GRANT USAGE ON SCHEMA quartz TO  mkc;
 GRANT USAGE ON SCHEMA sysconf TO  mkc;

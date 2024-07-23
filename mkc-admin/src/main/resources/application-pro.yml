@@ -89,10 +89,9 @@ spring:
             simple:
                 prefetch: 50
     mail:
-        host:
-        username:
-        password:
-        port: 465
+        host: smtp.feishu.cn
+        username: zjbhsk@zjbhsk.com
+        password: IUC4M53XJth5GHFH
         properties:
             mail:
                 smtp:

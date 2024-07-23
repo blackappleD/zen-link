@@ -13,10 +13,11 @@ spring:
     listener:
       simple:
         prefetch: 10
-  mail:
-    host: smtp.qt300061.com
-    username: market_sys@qt300061.com
-    password: Q^3H2!46dJ8
+    mail:
+      host: smtp.feishu.cn
+      username: zjbhsk@zjbhsk.com
+      password: IUC4M53XJth5GHFH
+      port: 465
   ding:
     syserr:
       token: 868cd6d5c9454d26b8d26afb05db0d94b65f7896baeef89c93e260c1a8c96474

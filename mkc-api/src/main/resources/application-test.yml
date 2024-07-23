@@ -24,19 +24,19 @@ spring:
                 # 后台配置数据源
                 master:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://pgm-uf66leh56xvq4a27.pg.rds.aliyuncs.com:5432/baihang?currentSchema=public&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://192.168.252.10:5432/test?currentSchema=public&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
                 # 业务数据源
                 business:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://pgm-uf66leh56xvq4a27.pg.rds.aliyuncs.com:5432/market?currentSchema=business&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://192.168.252.10:5432/test?currentSchema=business&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
                 # 业务数据源
                 quartz:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://pgm-uf66leh56xvq4a27.pg.rds.aliyuncs.com:5432/baihang?currentSchema=quartz&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://192.168.252.10:5432/test?currentSchema=quartz&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
 
@@ -64,9 +64,9 @@ spring:
             simple:
                 prefetch: 20
     mail:
-        host: smtp.qt300061.com
-        username: market_sys@qt300061.com
-        password: Q^3H2!46dJ8
+        host: smtp.feishu.cn
+        username: zjbhsk@zjbhsk.com
+        password: IUC4M53XJth5GHFH
         port: 465
         properties:
             mail:

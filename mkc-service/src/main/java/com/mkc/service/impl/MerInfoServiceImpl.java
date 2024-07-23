@@ -113,7 +113,7 @@ public class MerInfoServiceImpl implements IMerInfoService {
         //将余额放入缓存中
         redisCache.deleteObject(merBalanceKey);
         redisCache.increment(merBalanceKey,getMerBalance(merInfo).doubleValue());
-
+		log.info("==== reloadMer merCode success : {}",merCode);
         return merInfo;
 
 	}
