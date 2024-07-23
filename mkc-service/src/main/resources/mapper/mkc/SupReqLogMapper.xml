@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkc.mapper.SupReqLogMapper">
+    
+    <resultMap type="com.mkc.domain.SupReqLog" id="SupReqLogResult">
+        <result property="id"    column="id"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="supCode"    column="sup_code"    />
+        <result property="merCode"    column="mer_code"    />
+        <result property="supName"    column="sup_name"    />
+        <result property="reqJson"    column="req_json"    />
+        <result property="respJson"    column="resp_json"    />
+        <result property="supProduct"    column="sup_product"    />
+        <result property="cgCode"    column="cg_code"    />
+        <result property="procductCode"    column="procduct_code"    />
+        <result property="inPrice"    column="in_price"    />
+        <result property="status"    column="status"    />
+        <result property="free"    column="free"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="reqTime"    column="req_time"    />
+        <result property="respTime"    column="resp_time"    />
+        <result property="supSeq"    column="sup_seq"    />
+        <result property="totalTime"    column="total_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSupReqLogVo">
+        select id, order_no, sup_code, mer_code, sup_name, req_json, resp_json,
+               sup_product,sup_seq, cg_code, procduct_code, in_price, status,free,
+               create_time, req_time, resp_time, total_time, remark from t_sup_req_log
+    </sql>
+
+    <select id="selectSupReqLogList" parameterType="com.mkc.bean.SupReqLogBean" resultMap="SupReqLogResult" timeout="60">
+        <include refid="selectSupReqLogVo"/>
+        <where>  
+            <if test="supSeq != null  and supSeq != ''"> and sup_seq = #{supSeq}</if>
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="supCode != null  and supCode != ''"> and sup_code = #{supCode}</if>
+            <if test="merCode != null  and merCode != ''"> and mer_code = #{merCode}</if>
+            <if test="supName != null  and supName != ''"> and sup_name like concat('%', #{supName}, '%')</if>
+            <if test="reqJson != null  and reqJson != ''"> and req_json = #{reqJson}</if>
+            <if test="respJson != null  and respJson != ''"> and resp_json = #{respJson}</if>
+            <if test="supProduct != null  and supProduct != ''"> and sup_product = #{supProduct}</if>
+            <if test="cgCode != null  and cgCode != ''"> and cg_code = #{cgCode}</if>
+            <if test="procductCode != null  and procductCode != ''"> and procduct_code = #{procductCode}</if>
+            <if test="inPrice != null "> and in_price = #{inPrice}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="reqTime != null "> and req_time = #{reqTime}</if>
+            <if test="respTime != null "> and resp_time = #{respTime}</if>
+            <if test="totalTime != null "> and total_time = #{totalTime}</if>
+            <if test="startTime != null "> and req_time >= #{startTime}</if>
+            <if test="endTime != null "> and req_time <![CDATA[ <= ]]> #{endTime}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectSupReqLogById" parameterType="Long" resultMap="SupReqLogResult">
+        <include refid="selectSupReqLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSupReqLog" parameterType="com.mkc.domain.SupReqLog" useGeneratedKeys="true" keyProperty="id">
+        insert into t_sup_req_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null and orderNo != ''">order_no,</if>
+            <if test="supCode != null and supCode != ''">sup_code,</if>
+            <if test="merCode != null and merCode != ''">mer_code,</if>
+            <if test="supName != null and supName != ''">sup_name,</if>
+            <if test="reqJson != null and reqJson != ''">req_json,</if>
+            <if test="respJson != null">resp_json,</if>
+            <if test="supProduct != null and supProduct != ''">sup_product,</if>
+            <if test="cgCode != null and cgCode != ''">cg_code,</if>
+            <if test="procductCode != null and procductCode != ''">procduct_code,</if>
+            <if test="inPrice != null">in_price,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="reqTime != null">req_time,</if>
+            <if test="respTime != null">resp_time,</if>
+            <if test="totalTime != null">total_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
+            <if test="supCode != null and supCode != ''">#{supCode},</if>
+            <if test="merCode != null and merCode != ''">#{merCode},</if>
+            <if test="supName != null and supName != ''">#{supName},</if>
+            <if test="reqJson != null and reqJson != ''">#{reqJson},</if>
+            <if test="respJson != null">#{respJson},</if>
+            <if test="supProduct != null and supProduct != ''">#{supProduct},</if>
+            <if test="cgCode != null and cgCode != ''">#{cgCode},</if>
+            <if test="procductCode != null and procductCode != ''">#{procductCode},</if>
+            <if test="inPrice != null">#{inPrice},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="reqTime != null">#{reqTime},</if>
+            <if test="respTime != null">#{respTime},</if>
+            <if test="totalTime != null">#{totalTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSupReqLog" parameterType="com.mkc.domain.SupReqLog">
+        update t_sup_req_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNo != null and orderNo != ''">order_no = #{orderNo},</if>
+            <if test="supCode != null and supCode != ''">sup_code = #{supCode},</if>
+            <if test="merCode != null and merCode != ''">mer_code = #{merCode},</if>
+            <if test="supName != null and supName != ''">sup_name = #{supName},</if>
+            <if test="reqJson != null and reqJson != ''">req_json = #{reqJson},</if>
+            <if test="respJson != null">resp_json = #{respJson},</if>
+            <if test="supProduct != null and supProduct != ''">sup_product = #{supProduct},</if>
+            <if test="cgCode != null and cgCode != ''">cg_code = #{cgCode},</if>
+            <if test="procductCode != null and procductCode != ''">procduct_code = #{procductCode},</if>
+            <if test="inPrice != null">in_price = #{inPrice},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="reqTime != null">req_time = #{reqTime},</if>
+            <if test="respTime != null">resp_time = #{respTime},</if>
+            <if test="totalTime != null">total_time = #{totalTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSupReqLogById" parameterType="Long">
+        delete from t_sup_req_log where id = #{id}
+    </delete>
+
+    <delete id="deleteSupReqLogByIds" parameterType="Integer">
+        delete from t_sup_req_log where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+	<select id="selectSupReqLogReport" resultType="com.mkc.domain.SupReport" timeout="600">
+        select
+			sup_code,mer_code,product_code,cg_code,in_price,
+			sum(in_price) total_price,
+			avg(total_time) avg_time,sum(status_ok_fit) status_ok_fit,sum(status_ok_unfit) status_ok_unfit,
+			sum(status_no) status_no,sum(status_err) status_err,
+			sum(times1) times1,sum(times3) times3,sum(times10) times10,sum(times_ge10) times_ge10
+		from (
+			select 
+				order_no,sup_code,mer_code,procduct_code product_code,cg_code,in_price,total_time,
+				case when status='1' then 1 else 0 end status_ok_fit,
+				case when status='3' then 1 else 0 end status_ok_unfit,
+				case when status='2' then 1 else 0 end status_no,
+				case when status='4' then 1 else 0 end status_err,
+				<![CDATA[
+				case when total_time<1000 then 1 else 0 end times1,
+				case when total_time>=1000 and total_time<3000 then 1 else 0 end times3,
+				case when total_time>=3000 and total_time<10000 then 1 else 0 end times10,
+				case when total_time>=10000 then 1 else 0 end times_ge10
+				]]>
+			from t_sup_req_log y
+			<![CDATA[
+			where req_time >= #{startDate} and req_time < #{endDate}
+			]]>
+			<if test="supCode != null and supCode != ''"> and sup_code = #{supCode}</if>
+		) l
+		group by sup_code,mer_code,product_code,cg_code,in_price
+    </select>
+</mapper>

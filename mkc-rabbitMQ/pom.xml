@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mkc</artifactId>
+        <groupId>com.mkc</groupId>
+        <version>0.0.1</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mkc-rabbitMQ</artifactId>
+
+    <description>rabbitMQ模块</description>
+
+    <dependencies>
+        <!--RabbitMQ-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        
+        <!--Email-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!--rabbitmq参数类型用json格式-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- 通用工具-->
+        <dependency>
+            <groupId>com.mkc</groupId>
+            <artifactId>mkc-common</artifactId>
+            <exclusions>
+				<exclusion>
+					<groupId>com.baomidou</groupId>
+	            	<artifactId>mybatis-plus-boot-starter</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.github.pagehelper</groupId>
+            		<artifactId>pagehelper-spring-boot-starter</artifactId>
+				</exclusion>
+			</exclusions>
+        </dependency>
+
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

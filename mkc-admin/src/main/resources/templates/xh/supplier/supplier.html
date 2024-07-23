@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('供应商信息管理列表')" />
+    <th:block th:include="include :: select2-css" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>供商编码：</label>
+                                <input type="text" name="code"/>
+                            </li>
+                            <li>
+                                <label>供商名称：</label>
+                                <input type="text" name="name"/>
+                            </li>
+                            <li>
+                                <label>账号：</label>
+                                <input type="text" name="acc"/>
+                            </li>
+
+                            <li>
+                                <label>状态：</label>
+                                <select name="status" class="form-control noselect2" th:with="type=${@dict.getType('xh_off_on_state')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+
+<!--                            <li>-->
+<!--                                <label>一致或者成功状态：</label>-->
+<!--                                <input type="text" name="okCode"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>不一致状态：</label>-->
+<!--                                <input type="text" name="noCode"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>查无状态码：</label>-->
+<!--                                <input type="text" name="notCode"/>-->
+<!--                            </li>-->
+                   <!--         <li>
+                                <label>接口地址：</label>
+                                <input type="text" name="url"/>
+                            </li>
+                            <li>
+                                <label>秘钥 加签相关pwd：</label>
+                                <input type="text" name="signPwd"/>
+                            </li>
+                            <li>
+                                <label>加签相关key：</label>
+                                <input type="text" name="signkey"/>
+                            </li>
+
+                            <li>
+                                <label>创建者：</label>
+                                <input type="text" name="createBy"/>
+                            </li>
+                            <li>
+                                <label>更新者：</label>
+                                <input type="text" name="updateBy"/>
+                            </li>
+                            <li>
+                                <label>创建时间：</label>
+                                <input type="text" class="time-input" placeholder="请选择创建时间" name="createTime"/>
+                            </li>
+                            <li>
+                                <label>更新时间 默认为当前时间：</label>
+                                <input type="text" class="time-input" placeholder="请选择更新时间 默认为当前时间" name="updateTime"/>
+                            </li>-->
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="xh:supplier:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="xh:supplier:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+      <!--          <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="xh:supplier:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>-->
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:supplier:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+     <th:block th:include="include :: select2-js" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('xh:supplier:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('xh:supplier:remove')}]];
+        var statusDatas = [[${@dict.getType('xh_off_on_state')}]];
+        var prefix = ctx + "xh/supplier";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "供应商信息管理",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'code',
+                    title: '供商编码'
+                },
+                {
+                    field: 'name',
+                    title: '供应商名称'
+                },
+                {
+                    field: 'processor',
+                    title: '查询处理器'
+                },
+                {
+                    field: 'acc',
+                    title: '账号'
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return statusTools(row);
+                    }
+                },
+                {
+                    field: 'url',
+                    title: '接口地址'
+                },
+
+                {
+                    field: 'remark',
+                    title: '备注'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                       // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+
+        /* 状态显示 */
+        function statusTools(row) {
+            if (row.status == '00') {
+                return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\',\'' + row.merCode + '\')"></i> ';
+            } else {
+                return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\',\'' + row.merCode + '\')"></i> ';
+            }
+        };
+
+        /* 商户管理-停用 */
+        function disable(supId, supCode) {
+            $.modal.confirm("确认要停用该商户吗？", function () {
+                $.operate.post(prefix + "/edit", {"id": supId, "supCode": supCode, "status": '01'});
+            })
+        }
+
+        /* 商户管理启用 */
+        function enable(supId, supCode) {
+            $.modal.confirm("确认要启用该商户吗？", function () {
+                $.operate.post(prefix + "/edit", {"id": supId, "supCode": supCode, "status": '00'});
+            })
+        }
+
+
+    </script>
+</body>
+</html>

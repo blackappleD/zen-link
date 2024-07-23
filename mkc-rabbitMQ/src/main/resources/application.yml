@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: mkc-rabbitmq
+  redis:
+    host: redis-server
+    database: 3
+  rabbitmq:
+    host: 192.168.30.21
+    port: 5672
+    username: root
+    password: 123456
+    virtualHost: /
+    listener:
+      simple:
+        prefetch: 10
+  mail:
+    host: smtp.qt300061.com
+    username: market_sys@qt300061.com
+    password: Q^3H2!46dJ8
+  ding:
+    syserr:
+      token: 868cd6d5c9454d26b8d26afb05db0d94b65f7896baeef89c93e260c1a8c96474
+      secret: SEC2872f4c5fa6014457ba97bf0298f6f8e1f7864c6b8fe8fe3653576192c38e1b4
+    business:
+      token: 3f0c1abbea67823227ff12cfc42a415424893f20400f4ead2d7f931dd95c51f8
+      secret: SECb77d00838280d706aac3cecab325835e1151a68d8940a8feab4818c635e2c140
+monitor:
+  notify:
+    subject: 【本地测试】

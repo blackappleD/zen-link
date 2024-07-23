@@ -1,0 +1,14 @@
+GRANT USAGE ON SCHEMA public TO  mkc;
+GRANT USAGE ON SCHEMA business TO  mkc;
+GRANT USAGE ON SCHEMA quartz TO  mkc;
+GRANT USAGE ON SCHEMA sysconf TO  mkc;
+
+
+grant all privileges on all tables    in schema business to mkc;
+grant all privileges on all sequences    in schema business to mkc;
+
+grant all privileges on all tables    in schema quartz to mkc;
+grant all privileges on all sequences    in schema quartz to mkc;
+
+grant all privileges on all tables    in schema sysconf to mkc;
+grant all privileges on all sequences    in schema sysconf to mkc;

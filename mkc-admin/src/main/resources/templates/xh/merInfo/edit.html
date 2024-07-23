@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改商户信息管理')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: select2-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-merInfo-edit" th:object="${merInfo}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <input name="merCode" th:field="*{merCode}" type="hidden">
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">商户编码：</label>
+                <div class="col-sm-8">
+                    <input  th:field="*{merCode}" disabled="true" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">商户名称：</label>
+                <div class="col-sm-8">
+                    <input name="merName" th:field="*{merName}" disabled="true" class="form-control" type="text" required>
+                </div>
+            </div>
+<!--            <div class="form-group">    -->
+<!--                <label class="col-sm-3 control-label is-required">秘钥KEY：</label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <input name="sellPerson" th:field="*{signKey}" class="form-control" type="text" disabled="true">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label class="col-sm-3 control-label is-required">秘钥PWD：</label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <input name="sellPerson" th:field="*{signPwd}" class="form-control" type="text" disabled="true" >-->
+<!--                </div>-->
+<!--            </div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">销售负责人：</label>
+                <div class="col-sm-8">
+                    <select id="sellPerson" name="sellPerson" class="form-control select2-multiple" th:with="users=${@sysUserServiceImpl.selectUsersByPostCode('sell')}" required multiple>
+						<option th:each="user:${users}" th:value="${user.userId}" th:text="${user.userName}"></option>
+					</select>
+                </div>
+            </div>
+
+<!--            <div class="form-group">    -->
+<!--                <label class="col-sm-3 control-label is-required">账单类型：</label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <select name="billType" class="form-control m-b" th:with="type=${@dict.getType('xh_mer_bill_type')}" required>-->
+<!--                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{billType}"></option>-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">结算方式：</label>
+                <div class="col-sm-8">
+                    <select name="settleType" disabled="true" class="form-control m-b" th:with="type=${@dict.getType('xh_mer_settle')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{settleType}"></option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">账户余额：</label>
+                <div class="col-sm-8">
+                    <input name="balance" th:field="*{balance}" disabled="true" class="form-control"  type="number" step="0.0001"  max="900000000" required>
+                </div>
+            </div>
+
+            <div class="form-group" th:if="${merInfo.settleType == 'h'} ">
+                <label class="col-sm-3 control-label is-required">后付费授信额度 ：</label>
+                <div class="col-sm-8">
+                    <input name="lineOfCredit" th:field="*{lineOfCredit}" class="form-control" type="number" step="0.0001" min="0" max="5000000"  required>
+                </div>
+            </div>
+
+            <div class="form-group" >
+                <label class="col-sm-3 control-label is-required">账户预警金额：</label>
+                <div class="col-sm-8">
+                    <input name="warnAmount" class="form-control" type="number"   th:field="*{warnAmount}"    step="0.0001" min="-1" max="5000000" required>
+                </div>
+            </div>
+
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">状态：</label>
+                <div class="col-sm-8">
+<!--                    <select name="status" class="form-control m-b" th:with="type=${@dict.getType('xh_off_on_state')}" required>-->
+<!--                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{status}"></option>-->
+<!--                    </select>-->
+
+                    <div class="radio-box" th:each="dict : ${@dict.getType('xh_off_on_state')}">
+                        <input type="radio" th:id="${'status_' + dict.dictCode}" name="status" th:value="${dict.dictValue}" th:field="*{status}"   required>
+                        <label th:for="${'status_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">发票类型：</label>
+                <div class="col-sm-8">
+                    <select name="invoiceType" class="form-control m-b" th:with="type=${@dict.getType('xh_mer_invoice_type')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{invoiceType}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">协议状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('xh_mer_protocol_state')}">
+                        <input type="radio" th:id="${'protocolStatus_' + dict.dictCode}" name="protocolStatus" th:value="${dict.dictValue}" th:field="*{protocolStatus}" required>
+                        <label th:for="${'protocolStatus_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">协议开始时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="starTime" id="mer-startTime" th:value="${#dates.format(merInfo.starTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">协议结束时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="endTime" id="mer-endTime" th:value="${#dates.format(merInfo.endTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">客户类型：</label>
+                <div class="col-sm-8">
+                    <select name="merType" class="form-control m-b" th:with="type=${@dict.getType('xh_mer_type')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{merType}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">商户联系人邮箱：</label>
+                <div class="col-sm-8">
+                    <input name="email" th:field="*{email}" class="form-control" type="email" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">ip白名单：</label>
+                <div class="col-sm-9">
+                    <textarea type="text" name="ips" th:field="*{ips}" class="form-control" placeholder="请输入ip白名单" required></textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-9">
+                    <textarea type="text" name="remark" th:field="*{remark}" class="form-control" placeholder="请输入备注"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: select2-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "xh/merInfo";
+        $("#form-merInfo-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.modal.confirm("确认要修改商户信息吗？", function () {
+                    $.operate.save(prefix + "/edit", $('#form-merInfo-edit').serialize());
+                });
+            }
+        }
+
+/*        $("input[name='starTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='endTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });*/
+
+        $("#mer-startTime").datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            todayBtn:  true,
+            autoclose: true,
+            endDate : $('#mer-endTime').val(),
+        }).on('changeDate', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var startTime = event.date;
+            $('#mer-endTime').datetimepicker('setStartDate', startTime);
+        }).change();
+
+        $("#mer-endTime").datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: "month",
+            todayBtn:  true,
+            autoclose: true,
+            startDate : $('#mer-startTime').val(),
+        }).on('changeDate', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var endTime = event.date;
+            $("#mer-startTime").datetimepicker('setEndDate', endTime);
+        }).change();
+
+		var merInfo = [[${merInfo}]];
+		$('#sellPerson').val(merInfo.sellPerson?.split(','));
+    </script>
+</body>
+</html>

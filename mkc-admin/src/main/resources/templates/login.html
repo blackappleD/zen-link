@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.90, user-scalable=no">
+    <title>登录【百行】数据聚合营销平台</title>
+    <meta name="description" content="数据聚合营销平台后台管理">
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../static/css/style.min.css" th:href="@{/css/style.min.css}" rel="stylesheet"/>
+    <link href="../static/css/login.min.css" th:href="@{/css/login.min.css}" rel="stylesheet"/>
+    <link href="../static/mkc/css/ry-ui.css" th:href="@{/mkc/css/ry-ui.css?v=4.7.6}" rel="stylesheet"/>
+    <link href="../static/ajax/libs/captcha/css/verify.min.css" th:href="@{/ajax/libs/captcha/css/verify.min.css}" rel="stylesheet"/>
+    <!-- 360浏览器急速模式 -->
+    <meta name="renderer" content="webkit">
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{favicon.ico}"/>
+    <style type="text/css">
+		label.error { position:inherit;  }
+		ul.m-b {
+			color: #890c4ecf;
+		}
+		ul.m-b li {
+			line-height: 30px;
+		}
+		.signinpanel .signin-info {
+			margin-top: -4%;
+		}
+		.signup-footer .pull-left {
+			color: #2939C2;
+		}
+		.signin-info h1 {
+		    width: 300px;
+		    padding: 10px 15px;
+		    background-color: white;
+		}
+		@media screen and (max-width: 768px) {
+			.signin-info img {
+				width: 100%;
+			}
+		}
+	</style>
+    <script>
+        if(window.top!==window.self){alert('未登录或登录超时。请重新登录');window.top.location=window.location};
+    </script>
+</head>
+<body class="signin">
+	<div id="verfyImg">
+	</div>
+    <div class="signinpanel">
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="signin-info">
+                    <div class="logopanel m-b">
+                        <h1><img alt="[ 【百行】数据聚合营销平台 ]" th:src="@{/img/sjyx.png}" style="width: 100%;"></h1>
+                    </div>
+                    <div class="m-b"></div>
+                    <h4>欢迎使用 <strong>【百行】数据聚合营销平台</strong> 后台管理</h4>
+                    <ul class="m-b">
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs">愿景</i> </li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs">使命</i> </li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs">价值观</i> </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <form id="signupForm" autocomplete="off" method="post" onsubmit="return false">
+                    <h4 class="no-margins">登录：</h4>
+                    <p class="m-t-md">精诚所至，金石为开。</p>
+                    <input type="text"     name="username" class="form-control uname" placeholder="用户名"/>
+                    <input type="password" name="password" class="form-control pword" placeholder="密码"/>
+                    <div class="checkbox-custom m-t" th:if="${isRemembered}">
+				        <input type="checkbox" id="rememberme" name="rememberme"> <label for="rememberme">记住我</label>
+				    </div>
+                    <button type="submit" class="btn btn-success btn-block" id="btnSubmit" data-loading="正在验证登录，请稍后...">登录</button>
+                    <strong th:if="${isAllowRegister}">还没有账号？ <a th:href="@{/register}" style="margin-top: 10px;display: inline-block;color: #d4f83e;">立即注册&raquo;</a></strong>
+                </form>
+            </div>
+        </div>
+        <div class="signup-footer">
+            <div class="pull-left">
+                Copyright ©2024- BHSK All Rights Reserved. <br>
+            </div>
+        </div>
+    </div>
+	<script th:inline="javascript">var ctx = [[@{/}]];var captchaType = [[${@config.getKey('aj.captcha.type')}]];</script>
+	<!--[if lte IE 8]><script>window.location.href=ctx+'html/ie.html';</script><![endif]-->
+	<!-- 全局js -->
+	<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+	<!-- 验证码 -->
+	<script src="../static/ajax/libs/captcha/crypto-js.min.js" th:src="@{/ajax/libs/captcha/crypto-js.min.js}"></script>
+	<script src="../static/ajax/libs/captcha/ase.min.js" th:src="@{/ajax/libs/captcha/ase.min.js}"></script>
+	<script src="../static/ajax/libs/captcha/verify.min.js" th:src="@{/ajax/libs/captcha/verify.min.js}"></script>
+	<!-- 验证插件 -->
+	<script src="../static/ajax/libs/validate/jquery.validate.min.js" th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+	<script src="../static/ajax/libs/layer/layer.min.js" th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+	<script src="../static/ajax/libs/blockUI/jquery.blockUI.js" th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+	<script src="../static/mkc/js/ry-ui.js" th:src="@{/mkc/js/ry-ui.js?v=4.7.6}"></script>
+	<script src="../static/mkc/login.js" th:src="@{/mkc/login.js}"></script>
+</body>
+</html>

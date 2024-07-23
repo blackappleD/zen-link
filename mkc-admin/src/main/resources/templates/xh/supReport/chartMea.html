@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('供应商图表')" />
+	<th:block th:include="include :: select2-css" />
+	<style type="text/css">
+		.select2-container--bootstrap .select2-results__option[aria-disabled=true] {
+    		display: none;
+    	}
+    	.select2-container .select2-search--inline {
+			margin: 0;
+		}
+		.select2-container--bootstrap .select2-selection--multiple {
+			min-height: 30px;
+		}
+		.select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
+			height: auto;
+		}
+    	.select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
+			height: 30px;
+			overflow: auto;
+		}
+		
+		.chart {
+			height: calc(100% - 90px);
+			transition: all 0.4s linear;
+		}
+		.row .chart-ah {
+			height: calc(100% - 20px);
+		}
+		.ibox-content {
+			height: calc(100% - 30px);
+		}
+		.echarts {
+			height: 100%;
+		}
+	</style>
+</head>
+<body class="gray-bg">
+	<div class="container-div animated backInLeft">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="chartSerachForm">
+					<input type="hidden" name="statClm" value="reqDate">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>供应商：</label>
+                                <select name="supCode" class="form-control select2" style="width: 480px;">
+									<option value="" selected>所有</option>
+                                    <option th:each="sup : ${sups}" th:text="${sup.name}" th:value="${sup.code}"></option>
+                                </select>
+                            </li>
+                            <li class="select-time">
+								<label>调用日期：</label>
+								<input type="text" id="startTime" name="startTime" th:value="${date}" placeholder="开始时间" readonly="readonly"
+									data-show-bottom="false" data-trigger-end-time="true" data-format="yyyy-MM" data-type="month">
+								<span>-</span>
+								<input type="text" id="endTime" name="endTime" th:value="${date}" placeholder="结束时间" readonly="readonly"
+									data-show-bottom="false" data-format="yyyy-MM" data-type="month">
+							</li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" id="tblSearch"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="col-sm-12 select-table chart">
+                <div class="ibox-title">
+                    <h5>统计图</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-line-chart"></div>
+                </div>
+            </div>
+		</div>
+    </div>
+    
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: select2-js" />
+    <th:block th:include="include :: echarts-js" />
+    <script type="text/javascript">
+	    $(function () {
+			var prefix = ctx + "xh/supReport";
+			
+			$('.ibox-tools a.collapse-link').click(function() {
+				$(this).parents('.select-table').toggleClass('chart-ah').prev().slideToggle();
+				$('i', this).toggleClass('fa-chevron-down');
+				
+				setTimeout(()=>{
+					$(window).resize();
+				}, 500);
+			});
+			
+			$('#tblSearch').click(loadChartData);
+			
+			
+	        var lineChart = echarts.init(document.getElementById("echarts-line-chart"));
+	        var lineoption = {
+	            title : {
+	                text: '供应商调用量趋势变化'
+	            },
+	            tooltip : {
+	                trigger: 'axis'
+	            },
+	            grid: {
+				    top: '75px',
+				    left: '5px',
+				    right: '10px',
+				    bottom: '5px',
+				    containLabel: true
+			    },
+	            legend: {},
+	            toolbox: {
+				    feature: {
+						dataZoom: {
+							yAxisIndex: 'none'
+						},
+						restore: {},
+						magicType: { type: ['line', 'bar', 'stack'] },
+						saveAsImage: {}
+					}
+				},
+	            xAxis : [{
+                    type : 'category',
+                    data : []
+                }],
+	            yAxis : [{
+					type: 'value',
+					name: '次数',
+					axisLabel: {
+					  formatter: '{value}'
+					}
+			    },
+			    {
+				    type: 'value',
+				    name: '价格(元)',
+				    axisLabel: {
+				      formatter: '{value} 元'
+				    }
+			    }],
+	            series : [{
+                    name:'调用次数',
+                    type:'bar',
+                    itemStyle: { color: '#73C0DE' },
+                    data:[]
+                },
+                {
+                    name:'当日总价',
+                    type:'line',
+                    yAxisIndex: 1,
+                    itemStyle: { color: '#FC8A5B' },
+                    data:[]
+                }]
+	        };
+	        $(window).resize(lineChart.resize);
+	        
+	        
+	        function loadChartData() {
+				var params = $.common.formToJSON('chartSerachForm');
+				if(!params.startTime || !params.endTime) {
+					$.modal.msgWarning('调用日期不能为空');
+					return;
+				}
+				
+				params.pageSize = 1000;
+				if(params.startTime) params.startTime += '-01';
+				if(params.endTime) {
+					let ds = params.endTime.split('-');
+					let d = new Date();
+					d.setFullYear(ds[0]);
+					d.setMonth(ds[1]);
+					d.setDate(0);
+					params.endTime = $.common.dateFormat(d, 'yyyy-MM-dd');
+				}
+				
+				let index = 0;
+				let indexMap = {};
+				
+				lineoption.xAxis[0].data = [];
+				lineoption.series[0].data = [];
+				lineoption.series[1].data = [];
+				
+				let sdStr = params.startTime;
+				let sd = new Date(params.startTime);
+				while(sdStr <= params.endTime) {
+					lineoption.xAxis[0].data.push(sdStr);
+					lineoption.series[0].data.push(0);
+					lineoption.series[1].data.push(0);
+					
+					indexMap[sdStr] = index++;
+					
+					sd.setDate(sd.getDate() + 1);
+					sdStr = $.common.dateFormat(sd, 'yyyy-MM-dd');
+				}
+				
+				$.operate.post(prefix + "/list", params, function(res) {
+					$.each(res.rows, (i, v) => {
+						let idx = indexMap[v.reqDate];
+						lineoption.series[0].data[idx] = v.statusOkFit + v.statusOkUnfit + v.statusNo + v.statusErr;
+						lineoption.series[1].data[idx] = v.totalPrice;
+					});
+					lineChart.setOption(lineoption);
+					
+					return false;
+				});
+			}
+			
+			loadChartData();
+	    });
+    </script>
+</body>
+</html>

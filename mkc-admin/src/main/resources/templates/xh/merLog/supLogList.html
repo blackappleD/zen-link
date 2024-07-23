@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('调用供应商日志列表')" />
+    <th:block th:include="include :: select2-css" />
+    <style>
+        .fixed-table-toolbar, .fixed-table-pagination {
+            display: none!important;
+        }
+        .table-striped {
+			height: 96%;
+			padding-top: 15px;
+		}
+    </style>
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+     <th:block th:include="include :: select2-js" />
+    <script th:inline="javascript">
+
+        var prefix = ctx + "xh/merLog";
+
+        $(function() {
+            var orderNo=[[${orderNo}]];
+            var statusDatas = [[${@dict.getType('xh_sup_req_state')}]];
+            var options = {
+                url: prefix + "/supLogList/"+orderNo,
+                modalName: "调用供应商日志",
+                columns: [
+
+                {
+                    field: 'orderNo',
+                    title: '流水号'
+                },
+
+                {
+                    field: 'merCode',
+                    title: '商户编码'
+                },
+                {
+                    field: 'supName',
+                    title: '供应商名称'
+                },
+
+                {
+                    field: 'procductCode',
+                    title: '产品'
+                },
+                {
+                    field: 'status',
+                    title: '查询状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+
+                {
+                    field: 'reqJson',
+                    title: '请求参数Json',
+                    formatter: function(value, row, index) {
+                		return $.table.tooltip(value, 20, 'open');
+                	}
+                },
+                {
+                    field: 'respJson',
+                    title: '响应参数Json',
+                    formatter: function(value, row, index) {
+                		return $.table.tooltip(value, 20, 'open');
+                	}
+                },
+                // {
+                //     field: 'supProduct',
+                //     title: '供应产品'
+                // },
+
+                {
+                    field: 'reqTime',
+                    title: '请求时间'
+                },
+                {
+                    field: 'totalTime',
+                    title: '总耗时(毫秒)'
+                }
+                ]
+            };
+            $.table.init(options);
+        });
+
+
+        function submitHandler() {
+            // if ($.validate.form()) {
+            //     $.operate.save(prefix + "/edit", $('#form-supLog-edit').serialize());
+            // }
+        }
+
+
+    </script>
+</body>
+</html>

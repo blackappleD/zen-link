@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('商户利润报表')" />
+    <th:block th:include="include :: select2-css" />
+    <style type="text/css">
+    	.select2-container--bootstrap .select2-results__option[aria-disabled=true] {
+    		display: none;
+    	}
+    	.select2-container .select2-search--inline {
+			margin: 0;
+		}
+		.select2-container--bootstrap .select2-selection--multiple {
+			min-height: 30px;
+		}
+		.select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
+			height: auto;
+		}
+    	.select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
+			height: 30px;
+			overflow: auto;
+		}
+		.fixed-table-pagination {
+			display: none !important;
+		}
+    </style>
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+					<input type="hidden" name="reportType" value="1">
+                    <div class="select-list">
+                        <ul>
+							<li>
+                                <label>产品分类：</label>
+                                <select id="cgCode" name="cgCode" th:with="type=${@dict.getType('xh_product_category')}" class="form-control select2">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>产品：</label>
+                                <select name="productCode" class="form-control select2">
+                                    <option value="">所有</option>
+                                    <option th:each="product : ${products}" th:text="${product.productName}" th:value="${product.productCode}" th:class="|cg- cg-${product.cgCode}|"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>供应商：</label>
+                                <select name="supCode" class="form-control select2" multiple>
+                                    <option th:each="sup : ${sups}" th:text="${sup.name}" th:value="${sup.code}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>商户：</label>
+                                <select name="merCode" class="form-control select2" multiple>
+                                    <option th:each="merInfo : ${merInfos}" th:text="${merInfo.merName}" th:value="${merInfo.merCode}"></option>
+                                </select>
+                            </li>
+                            <li class="select-time">
+								<label>调用日期：</label>
+								<input type="text" id="startTime" name="startTime" th:value="${date}" placeholder="开始时间" data-show-bottom="false" data-trigger-end-time="true" readonly="readonly">
+								<span>-</span>
+								<input type="text" id="endTime" name="endTime" th:value="${date}" placeholder="结束时间" data-show-bottom="false" readonly="readonly">
+							</li>
+                            <li>
+                                <label>统计维度：</label>
+                                <select id="statClm" name="statClm" th:with="type=${@dict.getType('xh_mer_profit_dim')}" style="width: 480px;" class="form-control select2" multiple allowClear>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" id="tblSearch"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:merProfit:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: select2-js" />
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        $(function() {
+			var cgCodeDict = [[${@dict.getType('xh_product_category')}]];
+			
+	        var prefix = ctx + "xh/merReport";
+	        var statClmChged = false;
+	        var statClms = [];
+	        
+        	// 产品分类联动
+            $('#cgCode').change(function(event) {
+            	$('.cg-').attr('disabled', true);
+            	$('.cg-' + event.target.value).attr('disabled', false);
+            }).change();
+            
+            $('#statClm').on('change.select2', function (e) {
+            	statClmChged = true;
+            	localStorage.pfStatClm = $(e.target).val();
+           	}).val(localStorage.pfStatClm?.split(',')).change();
+           	
+           	$('#tblSearch').click(function() {
+	        	if(statClmChged) filterColumns();
+	        	
+	        	$.table.search();
+	        	
+	        	statClmChged = false;
+	        });
+           	
+	        function filterColumns() {
+	        	var selCols = $('#statClm').val();
+	        	var len = selCols.length;
+	        	
+	        	statClms.forEach(c => {
+	        		if(len == 0 || selCols.includes(c.field)) {
+	        			$.table.showColumn(c.field);
+	        		} else {
+	        			$.table.hideColumn(c.field);
+	        		}
+	        	});
+	        }
+            function tablePostBody(data) {
+				var len = data.length;
+				if(len > 0) {
+					var cloumns = [
+						{name: 'reqTimes', count: 0},
+						{name: 'feeTimes', count: 0},
+						{name: 'sellPrice', count: 0},
+						{name: 'totalPrice', count: 0},
+						{name: 'inPrice', count: 0},
+						{name: 'diffPrice', count: 0},
+						{name: 'diffPricePercent', count: 0}
+					];
+					var clen = cloumns.length;
+					for(var i = 0;i < len;i++) {
+						for(var j = 0;j < clen;j++) {
+							var row = data[i];
+							if(j == 0) cloumns[j].count += row.statusOkFit + row.statusOkUnfit + row.statusNo + row.statusErr;
+							else if(j == 2) cloumns[j].count = '-';
+							else if(j == 5) cloumns[j].count += row.totalPrice - row.inPrice;
+							else if(j == 6) cloumns[j].count = Number(cloumns[3].count===0 ? 0 : cloumns[5].count/cloumns[3].count*100).toFixed(2) + '%';
+							else cloumns[j].count += row[cloumns[j].name];
+						}
+					}
+					cloumns[5].count = Number(cloumns[5].count).toFixed(4);
+					cloumns[4].count = Number(cloumns[4].count).toFixed(4);
+					cloumns[3].count = Number(cloumns[3].count).toFixed(4);
+					
+					var $tbody = $('#bootstrap-table tbody');
+					var colspan = $('tr:last td', $tbody).length - clen;
+					var $tr = $(`<tr style="color: blue;"><td colspan="${colspan}">合计</td></tr>`);
+					for(var i = 0;i < clen;i++) {
+						$tr.append(`<td>${cloumns[i].count}</td>`);
+					}
+					$tbody.append($tr);
+				}
+			}
+				
+            
+            var options = {
+                url: prefix + "/list",
+                exportUrl: prefix + "/merProfitExport",
+                modalName: "商户利润报表",
+                onPostBody: tablePostBody,
+                pageSize: 1000,
+                sortName: 'reqDate',
+                sortOrder: 'desc',
+                onQuerying: function(params) {
+					var selCols = $('#statClm').val();
+					if(selCols.length == 0 || selCols.includes('reqDate')) params.orderByColumn = 'reqDate';
+					else params.orderByColumn = '';
+				},
+                columns: [{
+                    field: 'id',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'reqDate',
+                    title: '日期',
+                    ft: true
+                },
+                {
+                    field: 'merName',
+                    title: '商户',
+                    ft: true
+                },
+                {
+                    field: 'supName',
+                    title: '供应商',
+                    ft: true,
+                    formatter: function(value, row, index) {
+                        return value || '缺省';
+                    }
+                },
+                {
+                    field: 'cgCode',
+                    title: '产品分类',
+                    ft: true,
+                    formatter: function(value, row, index) {
+						return $.table.selectDictLabel(cgCodeDict, value);
+					}
+                },
+                {
+                    field: 'productName',
+                    title: '产品',
+                    ft: true
+                },
+                {
+                    field: 'reqTimes',
+                    title: '总次数',
+                    formatter: function(value, row, index) {
+                        return row.statusOkFit + row.statusOkUnfit + row.statusNo + row.statusErr;
+                    }
+                },
+                {
+                    field: 'feeTimes',
+                    title: '收费次数'
+                },
+                {
+                    field: 'sellPrice',
+                    title: '单价'
+                },
+                {
+                    field: 'totalPrice',
+                    title: '总收入'
+                },
+                {
+                    field: 'inPrice',
+                    title: '总成本'
+                },
+                {
+                    field: 'diffPrice',
+                    title: '总利润',
+                    formatter: function(value, row, index) {
+                        return Number(row.totalPrice - row.inPrice).toFixed(4);
+                    }
+                },
+                {
+                    field: 'diffPricePercent',
+                    title: '利润率',
+                    formatter: function(value, row, index) {
+                        return  Number(row.totalPrice === 0 ? 0 : (row.totalPrice - row.inPrice) / row.totalPrice * 100).toFixed(2) + '%';
+                    }
+                }]
+            };
+            $.table.init(options);
+            
+           	// 得到维度列，并根据选择显示与否
+            statClms = options.columns.filter(c => c.ft);
+            filterColumns();
+        });
+    </script>
+</body>
+</html>

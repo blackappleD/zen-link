@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('数据加密码压缩')" />
+    <style type="text/css">
+    	.t-letf {
+    		margin: 2%;
+		    float: left;
+		    width: 40%;
+		    height: 90%;
+		   	outline: none;
+		   	resize: none;
+    	}
+    	.b-middle {
+			margin-top: 12%;
+		    width: 12%;
+		    display: inline-flex;
+		    flex-wrap: wrap;
+		    flex-direction: column;
+		    align-content: center;
+		}
+    	.t-right {
+    		margin: 2%;
+		    float: right;
+		    width: 40%;
+		    height: 90%;
+			outline: none;
+			resize: none;
+    	}
+    	.b-middle a.btn {
+		    margin: 10px 0;
+		}
+		.b-middle a.btn:nth-child(3) {
+			margin-top: 50px;
+		}
+		@media screen and (max-width: 768px) {
+			.container-div {
+				padding: 0;
+			}
+			.fa, .empt {
+				display: none;
+			}
+			.b-middle {
+				margin-top: 20%;
+			}
+		}
+    </style>
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <textarea id="srcData" class="t-letf" placeholder="明文字符或解压字符，双击复制" title="明文字符或解压字符，双击复制"></textarea>
+        <div class="b-middle btn-group-sm">
+			<a id="btnEnc" class="btn btn-success" shiro:hasPermission="xh:dataUtil:enc">
+                <i class="fa fa-unlock-alt"></i> <span class="empt">加密&nbsp;&nbsp;</span>&gt;&gt;
+            </a>
+			<a id="btnDes" class="btn btn-success" shiro:hasPermission="xh:dataUtil:dec">
+                &lt;&lt;<span class="empt">&nbsp;&nbsp;</span><i class="fa fa-unlock-alt"></i> <span class="empt">解密</span>
+            </a>
+            <a id="btnZp" class="btn btn-primary" shiro:hasPermission="xh:dataUtil:zip">
+                <i class="fa fa-file-zip-o"></i> <span class="empt">压缩&nbsp;&nbsp;</span>&gt;&gt;
+            </a>
+			<a id="btnUnzp" class="btn btn-primary" shiro:hasPermission="xh:dataUtil:unzip">
+                &lt;&lt;<span class="empt">&nbsp;&nbsp;</span><i class="fa fa-file-zip-o"></i> <span class="empt">解压</span>
+            </a>
+		</div>
+        <textarea id="destData" class="t-right" placeholder="加密字符或压缩字符，双击复制" title="加密字符或压缩字符，双击复制"></textarea>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        $(function() {
+	        var prefix = ctx + "xh/dataUtil";
+	        
+			function copy(txtId) {
+	            var element = document.getElementById(txtId);
+				// var cpTxt = await navigator.clipboard.readText();
+				var txt = element.value;
+				if(txt) {
+					element.select();
+		            // element.setSelectionRange(0, txt.length);
+		            document.execCommand('copy');
+		            
+		            layer.msg('复制成功，Ctrl+V 可粘贴到任何输入框', {time: 2000, icon: 1});
+				}
+	        }
+        
+        	$('#btnEnc').click(function() {
+				var sdata = $('#srcData').val();
+                sdata = encodeURIComponent(sdata);
+				$.post(prefix + '/enc', {data: sdata}, function(res) {
+					if(res.code === 0 ) {
+						$('#destData').val(res.data);
+					} else {
+						layer.msg(res.msg, {time: 2000, icon: 5});
+					}
+				});
+			});
+			$('#btnDes').click(function() {
+				var sdata = $('#destData').val();
+				$.post(prefix + '/dec', {data: sdata}, function(res) {
+					if(res.code === 0 ) {
+						$('#srcData').val(res.data);
+					} else {
+						layer.msg(res.msg, {time: 2000, icon: 5});
+					}
+				});
+			});
+			$('#btnZp').click(function() {
+				var sdata = $('#srcData').val();
+				$.post(prefix + '/zip', {data: sdata}, function(res) {
+					if(res.code === 0 ) {
+						$('#destData').val(res.data);
+					} else {
+						layer.msg(res.msg, {time: 2000, icon: 5});
+					}
+				});
+			});
+			$('#btnUnzp').click(function() {
+				var sdata = $('#destData').val();
+				$.post(prefix + '/unzip', {data: sdata}, function(res) {
+					if(res.code === 0 ) {
+						$('#srcData').val(res.data);
+					} else {
+						layer.msg(res.msg, {time: 2000, icon: 5});
+					}
+				});
+			});
+			
+			$('#srcData').dblclick(function() {
+				copy('srcData');
+			});
+			
+			$('#destData').dblclick(function() {
+				copy('destData');
+			});
+        });
+    </script>
+</body>
+</html>

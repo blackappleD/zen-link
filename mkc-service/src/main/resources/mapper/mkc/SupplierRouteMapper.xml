@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkc.mapper.SupplierRouteMapper">
+    
+    <resultMap type="com.mkc.domain.SupplierRoute" id="SupplierRouteResult">
+        <result property="id"    column="id"    />
+        <result property="cgCode"    column="cg_code"    />
+        <result property="supCode"    column="sup_code"    />
+        <result property="merCode"    column="mer_code"    />
+        <result property="supName"    column="sup_name"    />
+        <result property="productCode"    column="product_code"    />
+        <result property="sort"    column="sort"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSupplierRouteVo">
+        select id, cg_code, sup_code, mer_code, sup_name, product_code, sort, create_by, update_by, create_time, update_time, remark from t_supplier_route
+    </sql>
+
+    <select id="selectSupplierRouteList" parameterType="com.mkc.domain.SupplierRoute" resultMap="SupplierRouteResult">
+        <include refid="selectSupplierRouteVo"/>
+        <where>  
+            <if test="cgCode != null  and cgCode != ''"> and cg_code = #{cgCode}</if>
+            <if test="supCode != null  and supCode != ''"> and sup_code = #{supCode}</if>
+            <if test="merCode != null  and merCode != ''"> and mer_code = #{merCode}</if>
+            <if test="supName != null  and supName != ''"> and sup_name like concat('%', #{supName}, '%')</if>
+            <if test="productCode != null  and productCode != ''"> and product_code = #{productCode}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+        </where>
+        order by mer_code,product_code, sort
+    </select>
+
+
+
+
+
+    <select id="selectSupplierRouteById" parameterType="Long" resultMap="SupplierRouteResult">
+        <include refid="selectSupplierRouteVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSupplierRoute" parameterType="com.mkc.domain.SupplierRoute" useGeneratedKeys="true" keyProperty="id">
+        insert into t_supplier_route
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cgCode != null and cgCode != ''">cg_code,</if>
+            <if test="supCode != null">sup_code,</if>
+            <if test="merCode != null">mer_code,</if>
+            <if test="supName != null">sup_name,</if>
+            <if test="productCode != null">product_code,</if>
+            <if test="sort != null">sort,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cgCode != null and cgCode != ''">#{cgCode},</if>
+            <if test="supCode != null">#{supCode},</if>
+            <if test="merCode != null">#{merCode},</if>
+            <if test="supName != null">#{supName},</if>
+            <if test="productCode != null">#{productCode},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSupplierRoute" parameterType="com.mkc.domain.SupplierRoute">
+        update t_supplier_route
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cgCode != null and cgCode != ''">cg_code = #{cgCode},</if>
+            <if test="supCode != null">sup_code = #{supCode},</if>
+            <if test="merCode != null">mer_code = #{merCode},</if>
+            <if test="supName != null">sup_name = #{supName},</if>
+            <if test="productCode != null">product_code = #{productCode},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSupplierRouteById" parameterType="Long">
+        delete from t_supplier_route where id = #{id}
+    </delete>
+
+    <delete id="deleteSupplierRouteByIds" parameterType="Integer">
+        delete from t_supplier_route where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

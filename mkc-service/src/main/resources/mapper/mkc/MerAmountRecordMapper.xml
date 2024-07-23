@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkc.mapper.MerAmountRecordMapper">
+    
+    <resultMap type="com.mkc.domain.MerAmountRecord" id="MerAmountRecordResult">
+        <result property="id"    column="id"    />
+        <result property="merCode"    column="mer_code"    />
+        <result property="merName"    column="mer_name"    />
+        <result property="type"    column="type"    />
+        <result property="amount"    column="amount"    />
+        <result property="beforeAmount"    column="before_amount"    />
+        <result property="afterAmount"    column="after_amount"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="orderTime"    column="order_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMerAmountRecordVo">
+        select id, mer_code, mer_name, type, amount, order_no, order_time,
+               create_by, update_by, create_time, update_time, remark,before_amount,after_amount from t_mer_amount_record
+    </sql>
+
+    <select id="selectMerAmountRecordList" parameterType="com.mkc.domain.MerAmountRecord" resultMap="MerAmountRecordResult">
+        <include refid="selectMerAmountRecordVo"/>
+        <where>  
+            <if test="merCode != null  and merCode != ''"> and mer_code = #{merCode}</if>
+            <if test="merName != null  and merName != ''"> and mer_name like concat('%', #{merName}, '%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="orderTime != null "> and order_time = #{orderTime}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectMerAmountRecordById" parameterType="Long" resultMap="MerAmountRecordResult">
+        <include refid="selectMerAmountRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMerAmountRecord" parameterType="com.mkc.domain.MerAmountRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into t_mer_amount_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="merCode != null and merCode != ''">mer_code,</if>
+            <if test="merName != null and merName != ''">mer_name,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="amount != null">amount,</if>
+            <if test="orderNo != null and orderNo != ''">order_no,</if>
+            <if test="orderTime != null">order_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="merCode != null and merCode != ''">#{merCode},</if>
+            <if test="merName != null and merName != ''">#{merName},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
+            <if test="orderTime != null">#{orderTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMerAmountRecord" parameterType="com.mkc.domain.MerAmountRecord">
+        update t_mer_amount_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="merCode != null and merCode != ''">mer_code = #{merCode},</if>
+            <if test="merName != null and merName != ''">mer_name = #{merName},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="orderNo != null and orderNo != ''">order_no = #{orderNo},</if>
+            <if test="orderTime != null">order_time = #{orderTime},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMerAmountRecordById" parameterType="Long">
+        delete from t_mer_amount_record where id = #{id}
+    </delete>
+
+    <delete id="deleteMerAmountRecordByIds" parameterType="Integer">
+        delete from t_mer_amount_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

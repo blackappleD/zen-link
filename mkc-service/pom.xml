@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mkc</artifactId>
+        <groupId>com.mkc</groupId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mkc-service</artifactId>
+
+    <description>
+        小河核验核心服务模块
+    </description>
+
+    <dependencies>
+
+        <!-- 通用工具-->
+        <dependency>
+            <groupId>com.mkc</groupId>
+            <artifactId>mkc-common</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>shiro-redis</artifactId>
+                    <groupId>org.crazycake</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.mkc</groupId>
+            <artifactId>mkc-rabbitMQ</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.volcengine</groupId>
+            <artifactId>volc-sdk-java</artifactId>
+            <version>1.0.98</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.70</version>
+        </dependency>
+
+
+        <!-- 蚂蚁链 学历 客户端SDK -->
+        <dependency>
+            <groupId>com.antgroup.antchain.openapi</groupId>
+            <artifactId>openapi-das</artifactId>
+            <version>1.1.53</version>
+        </dependency>
+
+
+        <!-- 蚂蚁链 人企图谱 客户端SDK-->
+        <dependency>
+            <groupId>cn.com.antcloud.api</groupId>
+            <artifactId>antcloud-api-sdk</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.com.antcloud.api</groupId>
+            <artifactId>antcloud-api-riskplus</artifactId>
+            <version>1.12.6</version>
+        </dependency>
+
+
+
+
+    </dependencies>
+
+</project>

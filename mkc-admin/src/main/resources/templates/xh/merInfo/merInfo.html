@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('商户信息管理列表')"/>
+    <th:block th:include="include :: select2-css"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <!--                 <li>
+                                             <label>商户编码：</label>
+                                             <input type="text" name="merCode"/>
+                                         </li>
+                                         <li>
+                                             <label>商户名称：</label>
+                                             <input type="text" name="merName"/>
+                                         </li>-->
+
+                        <li>
+                            <label>商户：</label>
+                            <select id="merCode" name="merCode" class="form-control select2-multiple">
+                                <option value="">所有</option>
+                                <option th:each="merInfo : ${merInfos}" th:text="${merInfo.merName}"
+                                        th:value="${merInfo.merCode}"></option>
+                            </select>
+                        </li>
+
+                        <li>
+                            <label>销售：</label>
+                            <input type="text" name="sellPerson"/>
+                        </li>
+                        <!--               <li>
+                                           <label>发票类型：</label>
+                                           <select name="invoiceType" class="form-control noselect2" th:with="type=${@dict.getType('xh_mer_invoice_type')}">
+                                               <option value="">所有</option>
+                                               <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                           </select>
+                                       </li>
+                                       <li>
+                                           <label>账单类型：</label>
+                                           <select name="billType" class="form-control noselect2" th:with="type=${@dict.getType('xh_mer_bill_type')}">
+                                               <option value="">所有</option>
+                                               <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                           </select>
+                                       </li>-->
+                        <li>
+                            <label>客户类型：</label>
+                            <select name="merType" class="form-control noselect2"  th:with="type=${@dict.getType('xh_mer_type')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <!--               <li>
+                                           <label>商户邮箱：</label>
+                                           <input type="text" name="email"/>
+                                       </li>
+                        <li>
+                            <label>结算方式：</label>
+                            <select name="settleType" class="form-control noselect2" th:with="type=${@dict.getType('xh_mer_settle')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>-->
+                        <li>
+                            <label>状态：</label>
+                            <select name="status" class="form-control noselect2" th:with="type=${@dict.getType('xh_off_on_state')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <li>
+                            <label>协议状态：</label>
+                            <select name="protocolStatus" class="form-control noselect2" th:with="type=${@dict.getType('xh_mer_protocol_state')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="xh:merInfo:add">
+                <i class="fa fa-plus"></i> 添加
+            </a>
+            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="xh:merInfo:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <!--      <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="xh:merInfo:remove">
+                      <i class="fa fa-remove"></i> 删除
+                  </a>-->
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:merInfo:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: select2-js"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('xh:merInfo:edit')}]];
+    var topupFlag = [[${@permission.hasPermi('xh:merInfo:topup')}]];
+    var removeFlag = [[${@permission.hasPermi('xh:merInfo:remove')}]];
+    var sendFlag = [[${@permission.hasPermi('xh:merInfo:sendMail')}]];
+    var showKeyFlag = [[${@permission.hasPermi('xh:merInfo:key')}]];
+    var invoiceTypeDatas = [[${@dict.getType('xh_mer_invoice_type')}]];
+    var billTypeDatas = [[${@dict.getType('xh_mer_bill_type')}]];
+    var merTypeDatas = [[${@dict.getType('xh_mer_type')}]];
+    var settleTypeDatas = [[${@dict.getType('xh_mer_settle')}]];
+    var statusDatas = [[${@dict.getType('xh_off_on_state')}]];
+    var protocolStatusDatas = [[${@dict.getType('xh_mer_protocol_state')}]];
+    var sellUsers = [[${@sysUserServiceImpl.selectUsersByPostCode('sell')}]];
+
+    var prefix = ctx + "xh/merInfo";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "商户信息管理",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'merCode',
+                    align: 'center',
+                    title: '商户编码'
+                },
+                {
+                    field: 'merName',
+                    title: '商户名称'
+                },
+                {
+                    visible: editFlag == 'hidden' ? false : true,
+                    title: '商户状态',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return statusTools(row);
+                    }
+                },
+                {
+                    field: 'sellPerson',
+                    title: '销售',
+                    formatter: function (value, row, index) {
+                        return selectSellUserName(sellUsers, value);
+                    }
+                },
+                // {
+                //     field: 'invoiceType',
+                //     align: 'center',
+                //     title: '发票类型',
+                //     formatter: function (value, row, index) {
+                //         return $.table.selectDictLabel(invoiceTypeDatas, value);
+                //     }
+                // },
+                // {
+                //     field: 'billType',
+                //     align: 'center',
+                //     title: '账单类型',
+                //     formatter: function (value, row, index) {
+                //         return $.table.selectDictLabel(billTypeDatas, value);
+                //     }
+                // },
+
+                /*         {
+                             field: 'email',
+                             title: '商户邮箱'
+                         },*/
+
+                {
+                    field: 'settleType',
+                    title: '结算方式',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(settleTypeDatas, value);
+                    }
+                },
+                // {
+                //     field: 'lineOfCredit',
+                //     title: '后付费授信额度'
+                // },
+                {
+                    field: 'balance',
+                    align: 'center',
+                    title: '账户余额'
+                },
+                {
+                    field: 'protocolStatus',
+                    align: 'center',
+                    title: '协议状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(protocolStatusDatas, value);
+                    }
+                },
+                {
+                    field: 'starTime',
+                    align: 'center',
+                    title: '协议开始时间'
+                },
+                {
+                    field: 'endTime',
+                    align: 'center',
+                    title: '协议结束时间'
+                },
+                {
+                    field: 'merType',
+                    align: 'center',
+                    title: '客户类型',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(merTypeDatas, value);
+                    }
+                },
+                {
+                    field: 'createTime',
+                    align: 'center',
+                    title: '创建时间'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" onclick="detail(\'' + row.id + '\')"><i class="fa fa-search"></i>详情</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs ' + topupFlag + '" href="javascript:void(0)" onclick="topup(\'' + row.id + '\')"><i class="fa fa-plus"></i>充值</a> ');
+                        actions.push('<a class="btn btn-success btn-xs  ' + sendFlag + '" href="javascript:void(0)" onclick="send(\'' + row.id + '\',\'' + row.merName + '\')"><i class="fa fa-upload"></i> 邮件</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs  ' + showKeyFlag + '" href="javascript:void(0)" onclick="showKey(\'' + row.id + '\')"><i class="fa fa-warning"></i> 秘钥</a> ');
+                        //actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+
+
+        $.table.init(options);
+    });
+
+    // 商户信息详情
+    function detail(id) {
+        table.set();
+        var routeUrl = prefix + "/detail/" + id;
+        // routeUrl=routeUrl("{id}", id);
+        $.modal.open("商户信息详情", routeUrl);
+    }
+
+    // 商户余额充值
+    function topup(id) {
+        table.set();
+        var routeUrl = prefix + "/topup/" + id;
+        // routeUrl=routeUrl("{id}", id);
+        $.modal.open("商户账户余额调整", routeUrl);
+    }
+    // 商户秘钥展示
+    function showKey(id) {
+        table.set();
+        var routeUrl = prefix + "/merKey/" + id;
+        // routeUrl=routeUrl("{id}", id);
+        $.modal.open("商户秘钥信息展示", routeUrl);
+    }
+
+    // 商户信息详情
+    function send(id,merName) {
+        $.modal.confirm("确认要邮件发送 商户 [ "+merName +" ] 秘钥的信息吗？", function () {
+            table.set();
+            var sendUrl = prefix + "/sendMerKeyMail/" + id;
+            $.ajax({
+                url:  sendUrl,
+                type: "get",
+                success: function (d) {
+                    if (d) {
+                        layer.msg("发送成功", {icon: 1, time: 2000})
+                    } else {
+                        layer.msg("发送失败", {icon: 2, time: 2000})
+                    }
+                }
+            })
+
+        });
+
+    }
+
+
+
+
+    function selectSellUserName(userDatas, value){
+        if ($.common.isEmpty(userDatas) || $.common.isEmpty(value)) {
+            return value;
+        }
+        var actions = [];
+        $.each(userDatas, function(index, user) {
+            if (user.userId == ('' + value)) {
+                actions.push(user.userName);
+                return false;
+            }
+        });
+        if (actions.length === 0) {
+            actions.push(value);
+        }
+        return actions.join('');
+    }
+
+
+    /* 状态显示 */
+    function statusTools(row) {
+        if (row.status == '00') {
+            return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\',\'' + row.merCode + '\')"></i> ';
+        } else {
+            return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\',\'' + row.merCode + '\')"></i> ';
+        }
+    };
+
+    /* 商户管理-停用 */
+    function disable(merId, merCode) {
+        $.modal.confirm("确认要停用该商户吗？", function () {
+            $.operate.post(prefix + "/edit", {"id": merId, "merCode": merCode, "status": '01'});
+        })
+    }
+
+    /* 商户管理启用 */
+    function enable(merId, merCode) {
+        $.modal.confirm("确认要启用该商户吗？", function () {
+            $.operate.post(prefix + "/edit", {"id": merId, "merCode": merCode, "status": '00'});
+        })
+    }
+</script>
+</body>
+</html>

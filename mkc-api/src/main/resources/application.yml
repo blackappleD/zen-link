@@ -1,0 +1,49 @@
+
+
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为80
+  port: 8083
+  servlet:
+    # 应用的访问路径
+    context-path: /
+
+ 
+
+
+
+# Spring配置
+spring:
+  application:
+    name: mkcApi
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles: 
+    active: ${env:dev}
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: false
+
+
+# MyBatis Plus配置
+mybatis-plus:
+  # 搜索指定包别名
+  typeAliasesPackage: com.mkc.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+
+# PageHelper分页插件
+pagehelper: 
+  helperDialect: postgresql
+  supportMethodsArguments: true
+  params: count=countSql 
+
+
+
+

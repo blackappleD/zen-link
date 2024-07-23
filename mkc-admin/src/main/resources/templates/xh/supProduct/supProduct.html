@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('供应商产品信息管理列表')" />
+    <th:block th:include="include :: select2-css" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+
+                            <li>
+                                <label>供应商：</label>
+                                <select id="supCode" name="supCode" class="form-control select2-multiple" >
+                                    <option value="">所有</option>
+                                    <option th:each="supplier : ${suppliers}" th:text="${supplier.name}" th:value="${supplier.code}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>供商产品：</label>
+                                <input type="text" name="supProductName"/>
+                            </li>
+
+                            <li>
+                                <label>关联产品：</label>
+                                <select id="productCode" name="productCode" class="form-control select2-multiple" >
+                                    <option value="">所有</option>
+                                    <option th:each="product : ${products}" th:text="${product.productName}" th:value="${product.productCode}"></option>
+                                </select>
+                            </li>
+
+
+                            <li>
+                                <label>状态：</label>
+                                <select name="status"  class="form-control noselect2" th:with="type=${@dict.getType('xh_off_on_state')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="addSupProduct()" shiro:hasPermission="xh:supProduct:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="xh:supProduct:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="xh:supProduct:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:supProduct:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: select2-js" />
+
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('xh:supProduct:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('xh:supProduct:remove')}]];
+        var statusDatas = [[${@dict.getType('xh_off_on_state')}]];
+        var prefix = ctx + "xh/supProduct";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "供应商产品信息管理",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'supProductName',
+                    title: '供商产品'
+                },
+                {
+                    field: 'supName',
+                    title: '供应商'
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+                {
+                    field: 'productName',
+                    title: '关联产品'
+                },
+                {
+                    field: 'inPrice',
+                    title: '成本价'
+                },
+                {
+                    field: 'timeOut',
+                    title: '超时时间'
+                },
+
+                {
+                    field: 'createTime',
+                    title: '创建时间'
+                },
+                {
+                    field: 'remark',
+                    title: '备注'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+
+        function addSupProduct() {
+            table.set();
+            $.modal.openOptions({
+                title: "添加" + table.options.modalName,
+                url: $.operate.addUrl(),
+                btn: ['保存', '保存继续', '关闭'],
+                btn2: function(index, layero) {
+                    this.callBack(index, layero, function(res) {
+                        if (res.code == web_status.SUCCESS) {
+                            $.modal.msgSuccess(res.msg + '，请继续添加！');
+
+                            var win = layero.find('iframe')[0].contentWindow;
+                            win.$('#sellPrice').val('');
+                            win.$('#supProductCode').val('').change();
+                            win.$('#productCode').val('').change();
+                        } else {
+                            $.modal.alertError(res.msg);
+                        }
+                        return false;
+                    });
+                    return false;
+                }
+            });
+        }
+
+
+        $(function() {
+            $('#supCode').select2({
+              //  placeholder: "请选择商户",
+              //  allowClear: true
+            });
+            $('#productCode').select2({
+              //  placeholder: "请选择产品",
+              //  allowClear: true
+            });
+        });
+
+    </script>
+</body>
+</html>

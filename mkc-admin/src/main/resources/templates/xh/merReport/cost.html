@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('商户结算报表')" />
+    <th:block th:include="include :: select2-css" />
+    <style type="text/css">
+    	.select2-container--bootstrap .select2-results__option[aria-disabled=true] {
+    		display: none;
+    	}
+    	.select2-container .select2-search--inline {
+			margin: 0;
+		}
+		.select2-container--bootstrap .select2-selection--multiple {
+			min-height: 30px;
+		}
+		.select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
+			height: auto;
+		}
+    	.select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
+			height: 30px;
+			overflow: auto;
+		}
+		.fixed-table-pagination {
+			display: none !important;
+		}
+    </style>
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+							<li>
+                                <label>产品分类：</label>
+                                <select id="cgCode" name="cgCode" th:with="type=${@dict.getType('xh_product_category')}" class="form-control select2">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>产品：</label>
+                                <select name="productCode" class="form-control select2">
+                                    <option value="">所有</option>
+                                    <option th:each="product : ${products}" th:text="${product.productName}" th:value="${product.productCode}" th:class="|cg- cg-${product.cgCode}|"></option>
+                                </select>
+                            </li>
+                            <li class="select-time">
+								<label>调用日期：</label>
+								<input type="text" id="startTime" name="startTime" th:value="${date}" placeholder="开始时间" data-show-bottom="false" data-trigger-end-time="true" readonly="readonly">
+								<span>-</span>
+								<input type="text" id="endTime" name="endTime" th:value="${date}" placeholder="结束时间" data-show-bottom="false" readonly="readonly">
+							</li>
+                            <li>
+                                <label>商户：</label>
+                                <select name="merCode" class="form-control select2" multiple style="width: 480px;">
+                                    <option th:each="merInfo : ${merInfos}" th:text="${merInfo.merName}" th:value="${merInfo.merCode}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>统计维度：</label>
+                                <select id="statClm" name="statClm" th:with="type=${@dict.getType('xh_mer_cost_dim')}" style="width: 480px;" class="form-control select2" multiple allowClear>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" id="tblSearch"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:merSettleReport:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: select2-js" />
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        $(function() {
+			var cgCodeDict = [[${@dict.getType('xh_product_category')}]];
+			var merCostDict = [[${@dict.getType('xh_mer_cost_dim')}]];
+			
+	        var prefix = ctx + "xh/merReport";
+	        var statClmChged = false;
+	        var statClms = [];
+	        
+        	// 产品分类联动
+            $('#cgCode').change(function(event) {
+            	$('.cg-').attr('disabled', true);
+            	$('.cg-' + event.target.value).attr('disabled', false);
+            }).change();
+            
+            $('#statClm').on('change.select2', function (e) {
+            	statClmChged = true;
+            	localStorage.ctStatClm = $(e.target).val();
+           	}).val(localStorage.ctStatClm?.split(',')).change();
+           	
+           	$('#tblSearch').click(function() {
+	        	if(statClmChged) filterColumns();
+	        	
+	        	$.table.search();
+	        	
+	        	statClmChged = false;
+	        });
+            
+            function filterColumns() {
+	        	var selCols = $('#statClm').val();
+	        	var len = selCols.length;
+	        	if(len == 0) {
+					$('#statClm').val(merCostDict.map(dt => dt.dictValue)).change();
+				}
+	        	
+	        	statClms.forEach(c => {
+	        		if(len == 0 || selCols.includes(c.field)) {
+	        			$.table.showColumn(c.field);
+	        		} else {
+	        			$.table.hideColumn(c.field);
+	        		}
+	        	});
+	        }
+            function tablePostBody(data) {
+				var len = data.length;
+				if(len > 0) {
+					var $tbody = $("#bootstrap-table tbody");
+					var colspan = $("tr:last td", $tbody).length - 3;
+					var totalTimes = 0,feeTimes = 0,totalPrice = 0;
+					for(var i = 0;i < len;i++) {
+						var row = data[i];
+						totalTimes += row.statusOkFit + row.statusOkUnfit + row.statusNo + row.statusErr;
+						feeTimes += row.feeTimes;
+						totalPrice += row.totalPrice;
+					}
+					$tbody.append(`<tr style="color: blue;"><td colspan="${colspan}">合计</td><td>${totalTimes}</td><td>${feeTimes}</td><td>${Number(totalPrice).toFixed(4)}</td></tr>`);
+				}
+			}
+            
+            
+            var options = {
+                url: prefix + "/list",
+                exportUrl: prefix + "/merSettleExport",
+                modalName: "商户结算报表",
+                onPostBody: tablePostBody,
+                pageSize: 1000,
+                sortName: 'reqDate',
+                sortOrder: 'desc',
+                onQuerying: function(params) {
+					var selCols = $('#statClm').val();
+					if(selCols.length == 0 || selCols.includes('reqDate')) params.orderByColumn = 'reqDate';
+					else params.orderByColumn = '';
+				},
+                columns: [{
+                    field: 'id',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'reqDate',
+                    title: '日期',
+                    ft: true
+                },
+                {
+                    field: 'merName',
+                    title: '商户',
+                    ft: true
+                },
+                {
+                    field: 'cgCode',
+                    title: '产品分类',
+                    ft: true,
+                    formatter: function(value, row, index) {
+						return $.table.selectDictLabel(cgCodeDict, value);
+					}
+                },
+                {
+                    field: 'productName',
+                    title: '产品',
+                    ft: true
+                },
+                {
+                    field: 'sellPrice',
+                    title: '单价(元)',
+                    ft: true
+                },
+                {
+                    field: 'totalTimes',
+                    title: '总次数',
+                    formatter: function(value, row, index) {
+						return row.statusOkFit + row.statusOkUnfit + row.statusNo + row.statusErr;
+					}
+                },
+                {
+                    field: 'feeTimes',
+                    title: '计费次数'
+                },
+                {
+                    field: 'totalPrice',
+                    title: '小计(元)'
+                }]
+            };
+           	// 得到维度列，并根据选择显示与否
+            statClms = options.columns.filter(c => c.ft);
+            filterColumns();
+            
+            $.table.init(options);
+        });
+
+
+
+
+    </script>
+</body>
+</html>

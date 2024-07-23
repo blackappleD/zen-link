@@ -1,0 +1,23 @@
+/.idea/
+/.settings/
+/.project
+/.dbeaver/
+/target/
+
+# Java build files
+target/
+build/
+bin/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.iml
+
+# Compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear

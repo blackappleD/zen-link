@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('商户日志统计列表-销售岗')" />
+    <th:block th:include="include :: select2-css" />
+    <style type="text/css">
+    	.select2-container--bootstrap .select2-results__option[aria-disabled=true] {
+    		display: none;
+    	}
+    	.select2-container .select2-search--inline {
+			margin: 0;
+		}
+		.select2-container--bootstrap .select2-selection--multiple {
+			min-height: 30px;
+		}
+		.select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
+			height: auto;
+		}
+    	.select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
+			height: 30px;
+			overflow: auto;
+		}
+    </style>
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+							<li>
+                                <label>产品分类：</label>
+                                <select id="cgCode" name="cgCode" th:with="type=${@dict.getType('xh_product_category')}" class="form-control select2">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>产品：</label>
+                                <select name="productCode" class="form-control select2">
+                                    <option value="">所有</option>
+                                    <option th:each="product : ${products}" th:text="${product.productName}" th:value="${product.productCode}" th:class="|cg- cg-${product.cgCode}|"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>供应商：</label>
+                                <select name="supCode" class="form-control select2" multiple>
+                                    <option th:each="sup : ${sups}" th:text="${sup.name}" th:value="${sup.code}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>商户：</label>
+                                <select id="scMerCode" name="merCode" class="form-control select2" multiple>
+                                    <option th:each="merInfo : ${merInfos}" th:text="${merInfo.merName}" th:value="${merInfo.merCode}"></option>
+                                </select>
+                            </li>
+                            <li class="select-time">
+								<label>调用日期：</label>
+								<input type="text" id="startTime" name="startTime" th:value="${date}" placeholder="开始时间" data-show-bottom="false" data-trigger-end-time="true" readonly="readonly">
+								<span>-</span>
+								<input type="text" id="endTime" name="endTime" th:value="${date}" placeholder="结束时间" data-show-bottom="false" readonly="readonly">
+							</li>
+                            <li>
+                                <label>统计维度：</label>
+                                <select id="statClm" name="statClm" th:with="type=${@dict.getType('xh_mer_report_dim')}" style="width: 480px;" class="form-control select2" multiple>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" id="tblSearch"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:merReport:exportSell">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: select2-js" />
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        $(function() {
+			var cgCodeDict = [[${@dict.getType('xh_product_category')}]];
+			
+	        var prefix = ctx + "xh/merReport";
+	        var statClmChged = false;
+	        var statClms = [];
+	        
+        	// 产品分类联动
+            $('#cgCode').change(function(event) {
+            	$('.cg-').attr('disabled', true);
+            	$('.cg-' + event.target.value).attr('disabled', false);
+            }).change();
+            
+            $('#statClm').on('change.select2', function (e) {
+            	statClmChged = true;
+            	localStorage.statClmSell = $(e.target).val();
+           	}).val(localStorage.statClmSell?.split(',')).change();
+           	
+	        $('#tblSearch').click(function() {
+	        	if(statClmChged) filterColumns();
+	        	
+	        	$.table.search();
+	        	
+	        	statClmChged = false;
+	        });
+	        
+	        function filterColumns() {
+	        	var selCols = $('#statClm').val();
+	        	var len = selCols.length;
+	        	
+	        	statClms.forEach(c => {
+	        		if(len == 0 || selCols.includes(c.field)) {
+	        			$.table.showColumn(c.field);
+	        		} else {
+	        			$.table.hideColumn(c.field);
+	        		}
+	        	});
+	        }
+            
+            
+            var options = {
+                url: prefix + "/listSell",
+                exportUrl: prefix + "/exportSell",
+                modalName: "商户日志统计-销售岗",
+                striped: true,
+                sortName: 'reqDate',
+                sortOrder: 'desc',
+                onQuerying: function(params) {
+					var selCols = $('#statClm').val();
+					if(selCols.length == 0 || selCols.includes('reqDate')) params.orderByColumn = 'reqDate';
+					else params.orderByColumn = '';
+				},
+                columns: [{
+                    field: 'id',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'reqDate',
+                    title: '日期',
+                    ft: true
+                },
+                {
+                    field: 'merName',
+                    title: '商户',
+                    ft: true
+                },
+                {
+                    field: 'supName',
+                    title: '供应商',
+                    ft: true,
+                    formatter: function(value, row, index) {
+                        return value || '缺省';
+                    }
+                },
+                {
+                    field: 'cgCode',
+                    title: '产品分类',
+                    ft: true,
+                    formatter: function(value, row, index) {
+						return $.table.selectDictLabel(cgCodeDict, value);
+					}
+                },
+                {
+                    field: 'productName',
+                    title: '产品',
+                    ft: true
+                },
+                {
+                    field: 'sellPrice',
+                    title: '单价',
+                    ft: true
+                },
+                {
+                    field: 'totalPrice',
+                    title: '总价'
+                },
+                {
+                    field: 'reqTimes',
+                    title: '总次数',
+                    formatter: function(value, row, index) {
+                        return row.statusOkFit + row.statusOkUnfit + row.statusNo + row.statusErr;
+                    }
+                },
+                {
+                    field: 'statusOk',
+                    title: '查得次数',
+                    formatter: function(value, row, index) {
+                        return row.statusOkFit + row.statusOkUnfit;
+                    }
+                },
+                {
+                    field: 'statusNo',
+                    title: '查无次数'
+                },
+                {
+                    field: 'statusErr',
+                    title: '异常次数'
+                },
+                {
+                    field: 'avgTime',
+                    title: '平均响应时间(ms)',
+                    formatter: function(value, row, index) {
+                        return Number(value).toFixed(1);
+                    }
+                },
+                {
+                    field: 'times1',
+                    title: '<1秒次'
+                },
+                {
+                    field: 'times3',
+                    title: '<3秒次'
+                },
+                {
+                    field: 'times10',
+                    title: '<10秒次'
+                },
+                {
+                    field: 'timesGe10',
+                    title: '≧10秒次'
+                }]
+            };
+            $.table.init(options);
+            
+           	// 得到维度列，并根据选择显示与否
+            statClms = options.columns.filter(c => c.ft);
+            filterColumns();
+        });
+    </script>
+</body>
+</html>
