@@ -84,7 +84,7 @@ spring:
     mail:
         host: smtp.feishu.cn
         username: zjbhsk@zjbhsk.com
-        password: IUC4M53XJth5GHFH
+        password: bbAlTahBsg80ULfh
         port: 465
         properties:
             mail:
@@ -122,7 +122,7 @@ monitor:
         subject: 【测试环境】
     notify:
         subject: 【测试环境预警】
-        email: tets1@1.com,test1@1.com,test2@2.com
+        email: zhengyuanfang@zjbhsk.com
 
 logging:
     file:

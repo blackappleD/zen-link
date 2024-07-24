@@ -91,7 +91,7 @@ spring:
     mail:
         host: smtp.feishu.cn
         username: zjbhsk@zjbhsk.com
-        password: IUC4M53XJth5GHFH
+        password: bbAlTahBsg80ULfh
         properties:
             mail:
                 smtp:
@@ -127,7 +127,7 @@ monitor:
         subject: 【百行系统】
     notify:
         subject: 【百行生产预警】
-        email: tets1@1.com,test1@1.com,test2@2.com
+        email: zhengyuanfang@zjbhsk.com
 
 logging:
     file:
