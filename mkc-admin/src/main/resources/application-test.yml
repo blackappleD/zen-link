@@ -12,9 +12,7 @@ mkc:
     profile: /opt/mkc/admin
     # 获取ip地址开关
     addressEnabled: true
-server:
-    # 服务器的HTTP端口，默认为80
-    port: 8084
+
 
 # 数据源配置
 # spring配置
