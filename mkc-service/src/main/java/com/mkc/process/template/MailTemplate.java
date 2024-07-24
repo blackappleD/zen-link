@@ -13,7 +13,7 @@ public interface MailTemplate {
             "<p>merCode：%s</p>\n" +
             "<p>秘钥KEY：%s</p>\n" +
             "<p>秘钥PWD：%s</p>\n" +
-            "<p>生产地址：http://47.98.110.19:18080</p>\n" +
+            "<p>生产地址：http://api.zjbhsk.com</p>\n" +
             "<p></p>\n" +
             "<p></p>\n" +
             "<p>祝商祺！</p>\n" +
