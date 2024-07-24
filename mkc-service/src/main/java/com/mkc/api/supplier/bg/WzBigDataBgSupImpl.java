@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 /**
- * 云汇景 供应商 核验类 产品服务
+ * 温州大数据 供应商 报告类 产品服务
  *
  * @author tqlei
  * @date 2023/10/07 16:17
  */
-@Service("BG_bigdata")
+@Service("BG_WZBIGDATA")
 @Slf4j
 public class WzBigDataBgSupImpl implements IBgSupService {
 
@@ -99,7 +99,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
             } else {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  车5项信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
                         , bean.getOrderNo(),url, result);
                 return supResult;
