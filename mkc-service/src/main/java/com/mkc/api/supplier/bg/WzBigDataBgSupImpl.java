@@ -40,7 +40,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
         JSONObject params = new JSONObject();
         String url=null;
         try {
-            url = bean.getUrl();
+            url = bean.getUrl() + "/api/car/info5";
             String appsecret = bean.getSignKey();
             String appkey = bean.getAcc();
             Integer timeOut = bean.getTimeOut();
