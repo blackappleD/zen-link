@@ -73,10 +73,13 @@
             <artifactId>antcloud-api-riskplus</artifactId>
             <version>1.12.6</version>
         </dependency>
-
-
-
-
+        <dependency>
+            <groupId>com.gzy</groupId>
+            <artifactId>sign-open-sdk</artifactId>
+            <version>1.1.4.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/sign-open-sdk-1.1.4.3.jar</systemPath>
+        </dependency>
     </dependencies>
 
 </project>

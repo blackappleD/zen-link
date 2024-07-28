@@ -12,6 +12,8 @@ import com.mkc.api.service.IBgService;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.vo.BaseVo;
 import com.mkc.api.vo.bg.CarInfoReqVo;
+import com.mkc.api.vo.bg.HouseInfoReqVo;
+import com.mkc.api.vo.bg.HouseResultInfoReqVo;
 import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeState;
@@ -66,6 +68,20 @@ public class BgServiceImpl implements IBgService {
 
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->
                 bgSupService.queryCarInfo(params, supQueryBean));
+    }
+
+    @Override
+    public Result queryHouseInfo(HouseInfoReqVo params, MerReqLogVo merLog) {
+
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->
+                bgSupService.queryHouseInfo(params, supQueryBean));
+    }
+
+    @Override
+    public Result queryHouseResultInfo(HouseResultInfoReqVo params, MerReqLogVo merLog) {
+
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->
+                bgSupService.queryHouseResultInfo(params, supQueryBean));
     }
 
 

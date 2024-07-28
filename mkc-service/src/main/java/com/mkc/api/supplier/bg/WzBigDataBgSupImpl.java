@@ -109,7 +109,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
 
         } catch (Throwable e) {
 
-            errMonitorMsg(log," 【云汇景供应商】 个人手机三要素核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+            errMonitorMsg(log," 【温州大数据供应商】 车五项 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(),url, result, e);
 
             if (supResult == null) {

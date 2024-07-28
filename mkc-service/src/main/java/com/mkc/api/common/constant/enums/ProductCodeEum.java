@@ -20,8 +20,11 @@ public enum ProductCodeEum {
     CK_MOB_THREE_10086("CK_003_10086", "个人手机三要素认证-移动","/ck/mobileThree"){},
     CK_MOB_THREE_10010("CK_003_10010", "个人手机三要素认证-联通","/bg/mobileThree"){},
 
-    BG_CAR_INFO("BG_CAR_001", "车五项信息查询","/ck/mobileThree"){},
+    BG_CAR_INFO("BG_CAR_001", "车五项信息查询","/bg/carInfo"){},
 
+    BG_HOUSE_INFO("BG_HOUSE_001", "不动产信息查询","/bg/houseInfo"){},
+
+    BG_HOUSE_RESULT_INFO("BG_HOUSE_002", "不动产结果信息查询","/bg/houseResultInfo"){},
     ;
 
 

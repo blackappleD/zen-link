@@ -5,6 +5,8 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.vo.BaseVo;
 import com.mkc.api.vo.bg.CarInfoReqVo;
+import com.mkc.api.vo.bg.HouseInfoReqVo;
+import com.mkc.api.vo.bg.HouseResultInfoReqVo;
 import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.SuplierQueryBean;
 
@@ -28,5 +30,19 @@ public interface IBgService {
      * @return
      */
     public Result queryCarInfo(CarInfoReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 不动产信息查询
+     * @param params
+     * @return
+     */
+    public Result queryHouseInfo(HouseInfoReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 不动产结果信息查询
+     * @param params
+     * @return
+     */
+    public Result queryHouseResultInfo(HouseResultInfoReqVo params, MerReqLogVo merLog);
 
 }
