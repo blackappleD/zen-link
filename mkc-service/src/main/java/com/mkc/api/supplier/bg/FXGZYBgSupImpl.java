@@ -105,7 +105,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();
-        String url=null;
+        String url = null;
         List<MaterialReqVo> materialReqVoList = new ArrayList<>();
         String tempDir = System.getProperty("user.dir");
         try {
@@ -180,7 +180,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             String code = resultObject.getString("code");
             //返回结果是成功
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
                 JSONObject data = resultObject.getJSONObject("data");
