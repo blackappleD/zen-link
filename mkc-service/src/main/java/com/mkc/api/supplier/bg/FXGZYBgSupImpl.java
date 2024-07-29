@@ -11,7 +11,6 @@ import com.mkc.api.vo.bg.MaterialReqVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeState;
 import com.mkc.common.enums.ReqState;
-import com.mkc.common.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service("BG_FXGZY")
 @Slf4j
@@ -38,7 +36,11 @@ public class FXGZYBgSupImpl implements IBgSupService {
         JSONObject params = new JSONObject();
         String url=null;
         try {
-            url = bean.getUrl() + "/open/verification/house/getCheckResult";
+            String[] baseUrlArr = null;
+            if (StringUtils.isNotBlank(bean.getUrl())) {
+                baseUrlArr = bean.getUrl().split(",");
+            }
+            url = baseUrlArr[0] + "/open/verification/house/getCheckResult";
             List<String> personCardNumList = vo.getPersonCardNumList();
 
             JSONObject data = new JSONObject();
@@ -46,7 +48,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             data.put("personCardNumList", personCardNumList);
             params.put("data", data);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
-            result = FxSdkTool.houseCheckResult(params, bean.getSignPwd(), bean.getSignKey());
+            result = FxSdkTool.houseCheckResult(params, baseUrlArr[0], bean.getAcc(), bean.getSignPwd(), bean.getSignKey());
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
             if (StringUtils.isBlank(result)) {
@@ -82,7 +84,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             return supResult;
         } catch (Throwable e) {
 
-            errMonitorMsg(log," 【法信公证云供应商】 车五项 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+            errMonitorMsg(log," 【法信公证云供应商】 不动产信息 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(),url, result, e);
 
             if (supResult == null) {
@@ -107,6 +109,10 @@ public class FXGZYBgSupImpl implements IBgSupService {
         List<MaterialReqVo> materialReqVoList = new ArrayList<>();
         String tempDir = System.getProperty("user.dir");
         try {
+            String[] baseUrlArr = null;
+            if (StringUtils.isNotBlank(bean.getUrl())) {
+                baseUrlArr = bean.getUrl().split(",");
+            }
             //执行上传文件操作
             List<MultipartFile> files = vo.getFiles();
             List<String> types = vo.getTypes();
@@ -119,7 +125,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 JSONObject reqStrJsonObject = new JSONObject();
                 reqStrJsonObject.put("originalFilename",file.getOriginalFilename());
                 supResult = new SupResult(JSONUtil.toJsonStr(reqStrJsonObject), LocalDateTime.now());
-                result = FxSdkTool.uploadFile(tempFile, bean.getSignPwd(), bean.getSignKey());
+                result = FxSdkTool.uploadFile(tempFile, bean.getSignPwd(), bean.getSignKey(), baseUrlArr[1], bean.getAcc());
                 if (StringUtils.isBlank(result)) {
                     supResult.setRemark("供应商没有响应结果");
                     supResult.setState(ReqState.ERROR);
@@ -154,14 +160,14 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 }
 
             }
-            url = bean.getUrl() + "/open/verification/house/houseCheck";
+            url = baseUrlArr[0] + "/open/verification/house/houseCheck";
 
             JSONObject reqData = new JSONObject();
             reqData.put("persons", vo.getPersons());
             reqData.put("materials", materialReqVoList);
             params.put("data", reqData);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
-            result = FxSdkTool.houseCheck(params, bean.getSignPwd(), bean.getSignKey());
+            result = FxSdkTool.houseCheck(params, baseUrlArr[0], bean.getAcc(), bean.getSignPwd(), bean.getSignKey());
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
             if (StringUtils.isBlank(result)) {

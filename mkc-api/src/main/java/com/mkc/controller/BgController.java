@@ -48,7 +48,6 @@ public class BgController extends BaseController {
                             @RequestParam("types") List<String> types, @RequestParam("persons") String persons,
                             @RequestParam("merCode") String merCode, @RequestParam("key") String key,
                             @RequestParam("merSeq") String merSeq, @RequestParam("sign") String sign) {
-        System.out.println("houseInfo-------------------------------start");
         HouseInfoReqVo houseInfoReqVo = new HouseInfoReqVo();
         houseInfoReqVo.setFiles(files);
         houseInfoReqVo.setTypes(types);
@@ -59,9 +58,6 @@ public class BgController extends BaseController {
         houseInfoReqVo.setSign(sign);
         List<PersonInfoReqVo> personInfoReqVos = JSONUtil.toList(persons, PersonInfoReqVo.class);
         houseInfoReqVo.setPersons(personInfoReqVos);
-
-        System.out.println(persons);
-        System.out.println("houseInfo-------------------------------end");
         String reqJson = null;
         try {
             reqJson = JSONUtil.toJsonStr(houseInfoReqVo);
@@ -203,9 +199,6 @@ public class BgController extends BaseController {
 
         ckCommonParams(params);
 
-
-        //String plateNo = params.getPlateNo();
-        //String plateType = params.getPlateType();
         List<String> types = params.getTypes();
         List<PersonInfoReqVo> persons = params.getPersons();
         if (types == null || types.size() == 0) {
@@ -234,13 +227,7 @@ public class BgController extends BaseController {
                 throw new ApiServiceException(ApiReturnCode.ERR_001);
             }
         }
-//        if (StringUtils.isBlank(plateNo)) {
-//            log.error("缺少参数 plateNo {} , merCode： {}", plateNo,merCode);
-//            throw new ApiServiceException(ApiReturnCode.ERR_001);
-//        }
 
-
-//        String plaintext = merCode + plateNo ;
         String plaintext = merCode + params.getPersonsStr() ;
         return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
 
