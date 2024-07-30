@@ -14,12 +14,15 @@ import com.mkc.common.enums.ReqState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service("BG_FXGZY")
 @Slf4j
@@ -119,8 +122,13 @@ public class FXGZYBgSupImpl implements IBgSupService {
             int i = 0;
             for (MultipartFile file : files) {
                 MaterialReqVo reqVo = new MaterialReqVo();
-                String originalFilename = file.getOriginalFilename();
-                File tempFile = new File(tempDir + File.separator + originalFilename);
+                String originalFileName = file.getOriginalFilename();
+                int dotIndex = originalFileName.lastIndexOf('.');
+                String fileExtension = "";
+                if (dotIndex > 0 && dotIndex < originalFileName.length() - 1) {
+                    fileExtension = originalFileName.substring(dotIndex + 1);
+                }
+                File tempFile = new File(tempDir + File.separator + UUID.randomUUID()+"."+fileExtension);
                 file.transferTo(tempFile);
                 JSONObject reqStrJsonObject = new JSONObject();
                 reqStrJsonObject.put("originalFilename",file.getOriginalFilename());

@@ -67,10 +67,10 @@ public class BgController extends BaseController {
         houseInfoReqVo.setMerSeq(merSeq);
         houseInfoReqVo.setPersonsStr(persons);
         houseInfoReqVo.setSign(sign);
-        List<PersonInfoReqVo> personInfoReqVos = JSONUtil.toList(persons, PersonInfoReqVo.class);
-        houseInfoReqVo.setPersons(personInfoReqVos);
         String reqJson = null;
         try {
+            List<PersonInfoReqVo> personInfoReqVos = JSONUtil.toList(persons, PersonInfoReqVo.class);
+            houseInfoReqVo.setPersons(personInfoReqVos);
             reqJson = JSONUtil.toJsonStr(houseInfoReqVo);
             //检查商户参数完整性
             CkMerBean ckMerBean = ckHouseInfoParams(houseInfoReqVo);
