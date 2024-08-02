@@ -78,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="merResultData != null and merResultData != ''">mer_result_data = #{merResultData},</if>
             update_time = now()
         </set>
-        where req_order_no = #{reqOrderNo} and userFlag = '0'
+        where req_order_no = #{reqOrderNo} and user_flag = '0'
     </update>
 
 
