@@ -11,8 +11,11 @@ import com.mkc.api.vo.bg.MaterialReqVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeState;
 import com.mkc.common.enums.ReqState;
+import com.mkc.domain.FxReqRecord;
+import com.mkc.mapper.FxReqRecordMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +34,9 @@ public class FXGZYBgSupImpl implements IBgSupService {
 
     private final static  String SUCCESS="E00000";
     private final static String NO="405";
+
+    @Autowired
+    private FxReqRecordMapper fxReqRecordMapper;
 
     @Override
     public SupResult queryHouseResultInfo(HouseResultInfoReqVo vo, SuplierQueryBean bean) {
@@ -44,8 +51,8 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 baseUrlArr = bean.getUrl().split(",");
             }
             url = baseUrlArr[0] + "/open/verification/house/getCheckResult";
+            int reqOrderNoCount = fxReqRecordMapper.selectCountByReqOrderNo(vo.getReqOrderNo());
             List<String> personCardNumList = vo.getPersonCardNumList();
-
             JSONObject data = new JSONObject();
             data.put("reqOrderNo", vo.getReqOrderNo());
             data.put("personCardNumList", personCardNumList);
@@ -62,13 +69,21 @@ public class FXGZYBgSupImpl implements IBgSupService {
             JSONObject resultObject = JSON.parseObject(result);
             String code = resultObject.getString("code");
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
-
                 JSONObject resultJson = resultObject;
                 if (resultJson != null) {
-                    supResult.setData(resultJson.getJSONObject("data"));
+                    JSONObject returnData = resultJson.getJSONObject("data");
+                    supResult.setData(returnData);
+                    if (returnData != null && "APPROVED".equals(returnData.getString("approvalStatus"))) {
+                        FxReqRecord fxReqRecord = new FxReqRecord();
+                        fxReqRecord.setReqOrderNo(vo.getReqOrderNo());
+                        fxReqRecord.setMerResultData(JSONUtil.toJsonStr(resultJson.getJSONObject("data")));
+                        fxReqRecord.setMerRequestData(JSONUtil.toJsonStr(personCardNumList));
+                        fxReqRecord.setUserFlag("1");
+                        fxReqRecordMapper.updateFxReqRecordByRequestOrderNo(fxReqRecord);
+                    }
                     return supResult;
                 }
             } else if (NO.equals(code)) {
@@ -194,6 +209,13 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 JSONObject data = resultObject.getJSONObject("data");
                 if (data != null) {
                     supResult.setData(data);
+                    FxReqRecord fxReqRecord = new FxReqRecord();
+                    fxReqRecord.setMerCode(vo.getMerCode());
+                    fxReqRecord.setReqOrderNo(data.getString("reqOrderNo"));
+                    fxReqRecord.setPersons(vo.getPersonsStr());
+                    fxReqRecord.setCreateTime(new Date());
+                    fxReqRecord.setUpdateTime(new Date());
+                    fxReqRecordMapper.insertFxReqRecord(fxReqRecord);
                     return supResult;
                 }
             } else {

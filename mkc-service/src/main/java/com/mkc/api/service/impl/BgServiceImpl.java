@@ -63,6 +63,7 @@ public class BgServiceImpl implements IBgService {
     private IMailProcess mailProcess;
 
 
+
     @Override
     public Result queryCarInfo(CarInfoReqVo params, MerReqLogVo merLog) {
 

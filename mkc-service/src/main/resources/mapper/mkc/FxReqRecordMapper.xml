@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkc.mapper.FxReqRecordMapper">
+    
+    <resultMap type="com.mkc.domain.FxReqRecord" id="FxReqRecordResult">
+        <result property="id"    column="id"    />
+        <result property="merCode"    column="mer_code"    />
+        <result property="reqOrderNo"    column="req_order_no"    />
+        <result property="queryCount"    column="query_count"    />
+        <result property="merRequestData"    column="mer_request_data"    />
+        <result property="merResultData"    column="mer_result_data"    />
+        <result property="userFlag"    column="user_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectFxReqRecordVo">
+        select id, req_order_no, query_count,mer_request_data,mer_result_data, user_flag, create_By, update_By, create_time, update_time, remark from t_fx_req_record
+    </sql>
+
+    <select id="selectFxReqRecordByReqOrderNoAndUserFlag" parameterType="com.mkc.domain.FxReqRecord" resultType="com.mkc.domain.FxReqRecord">
+        <include refid="selectFxReqRecordVo"></include>
+        <where>
+            <if test="reqOrderNo != null and reqOrderNo != ''">
+                AND req_order_no = #{reqOrderNo}
+            </if>
+            <if test="userFlag != null and userFlag != ''">
+                AND mer_request_data = #{merResultData}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCountByReqOrderNo" parameterType="string" resultType="int">
+        select count(*) from t_fx_req_record
+        where req_order_no = #{reqOrderNo}
+    </select>
+
+    <insert id="insertFxReqRecord" parameterType="com.mkc.domain.FxReqRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into t_fx_req_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reqOrderNo != null">req_order_no,</if>
+            <if test="merCode != null">mer_code,</if>
+            <if test="persons != null">persons,</if>
+            <if test="queryCount != null">query_count,</if>
+            <if test="userFlag != null">user_flag,</if>
+            <if test="merRequestData != null">mer_request_data,</if>
+            <if test="createBy != null and createBy != ''">create_By,</if>
+            <if test="updateBy != null and updateBy != ''">update_By,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reqOrderNo != null">#{reqOrderNo},</if>
+            <if test="merCode != null">#{merCode},</if>
+            <if test="persons != null">#{persons},</if>
+            <if test="queryCount != null">#{queryCount},</if>
+            <if test="userFlag != null">#{userFlag},</if>
+            <if test="merRequestData != null">#{merRequestData},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFxReqRecordByRequestOrderNo" parameterType="com.mkc.domain.FxReqRecord">
+        update t_fx_req_record
+        <set>
+            <if test="userFlag != null and userFlag != ''">user_flag = #{userFlag},</if>
+            <if test="merRequestData != null and merRequestData != ''">mer_request_data = #{merRequestData},</if>
+            <if test="merResultData != null and merResultData != ''">mer_result_data = #{merResultData},</if>
+            update_time = now()
+        </set>
+        where req_order_no = #{reqOrderNo} and userFlag = '0'
+    </update>
+
+
+</mapper>
