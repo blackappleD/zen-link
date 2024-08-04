@@ -19,6 +19,17 @@ public interface ICkSupService extends ISupService{
         return SupResult.err();
     }
 
+    /**
+     * 人车核验
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult ckPersonCar(PersonCarReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
 
 
 }

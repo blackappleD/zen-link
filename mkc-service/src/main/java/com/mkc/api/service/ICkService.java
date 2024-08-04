@@ -29,4 +29,11 @@ public interface ICkService {
      */
     public Result ckMobThree(MobThreeReqVo params, MerReqLogVo merLog);
 
+    /**
+     * 人车核验
+     * @param params
+     * @return
+     */
+    public Result ckPersonCar(PersonCarReqVo params, MerReqLogVo merLog);
+
 }

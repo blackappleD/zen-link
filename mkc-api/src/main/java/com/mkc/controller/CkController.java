@@ -37,6 +37,63 @@ public class CkController extends BaseController {
     @Autowired
     private ICkService ckService;
 
+    @PostMapping("/personCarVerify")
+    public Result personCarVerify(HttpServletRequest request, @RequestBody PersonCarReqVo params) {
+
+        String reqJson = null;
+
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckPersonCarInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.CK_PERSON_CAR.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = ckService.ckPersonCar(params, merLog);
+
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【人车核验】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+
+    }
+
+    private CkMerBean ckPersonCarInfoParams(PersonCarReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String name = params.getName();
+        String plateNo = params.getPlateNo();
+
+        if (StringUtils.isBlank(plateNo)) {
+            log.error("缺少参数 plateNo {} , merCode： {}", plateNo, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 plateNo {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        String plaintext = merCode + name + plateNo;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
+
+
 
     /**
      * 个人手机三要素认证

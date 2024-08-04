@@ -69,6 +69,13 @@ public class CkServiceImpl implements ICkService {
                 ckSupService.ckMobThree(params, supQueryBean));
     }
 
+    @Override
+    public Result ckPersonCar(PersonCarReqVo params, MerReqLogVo merLog) {
+
+        return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+                ckSupService.ckPersonCar(params, supQueryBean));
+    }
+
 
     private Result ckCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
 
