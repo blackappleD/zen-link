@@ -76,6 +76,13 @@ public class CkServiceImpl implements ICkService {
                 ckSupService.ckPersonCar(params, supQueryBean));
     }
 
+    @Override
+    public Result ckWorkUnit(WorkUnitReqVo params, MerReqLogVo merLog) {
+
+        return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+                ckSupService.ckWorkUnit(params, supQueryBean));
+    }
+
 
     private Result ckCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
 

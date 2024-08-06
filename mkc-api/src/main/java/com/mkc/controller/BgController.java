@@ -9,10 +9,7 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.service.IBgService;
-import com.mkc.api.vo.bg.CarInfoReqVo;
-import com.mkc.api.vo.bg.HouseInfoReqVo;
-import com.mkc.api.vo.bg.HouseResultInfoReqVo;
-import com.mkc.api.vo.bg.PersonInfoReqVo;
+import com.mkc.api.vo.bg.*;
 import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.CkMerBean;
 import com.mkc.common.constant.RedisKey;
@@ -49,6 +46,36 @@ public class BgController extends BaseController {
 
     @Autowired
     private IBgService bgService;
+
+    /**
+     * 经济能力2W
+     */
+    @PostMapping("/financeInfo")
+    public Result financeInfo(HttpServletRequest request, @RequestBody FinanceInfoReqVo params) {
+        String reqJson =null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckfinanceInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_FINANCE_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryFinanceInfo(params, merLog);
+
+            return result;
+
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【经济能力2W】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
 
     /**
      *
@@ -179,6 +206,40 @@ public class BgController extends BaseController {
 
     }
 
+    private CkMerBean ckfinanceInfoParams(FinanceInfoReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String idCard = params.getIdCard();
+        String name = params.getName();
+        String mobile = params.getMobile();
+
+        if (StringUtils.isBlank(idCard)) {
+            log.error("缺少参数 idCard {} , merCode： {}", idCard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 name {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(mobile)) {
+            log.error("缺少参数 mobile {} , merCode： {}", mobile, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+
+        String plaintext = merCode + idCard + name + mobile;
+
+        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+
+    }
 
     private CkMerBean ckCarInfoParams(CarInfoReqVo params) {
 

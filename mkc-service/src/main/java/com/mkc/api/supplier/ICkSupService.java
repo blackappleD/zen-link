@@ -30,6 +30,16 @@ public interface ICkSupService extends ISupService{
         return SupResult.err();
     }
 
+    /**
+     * 工作单位核验
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult ckWorkUnit(WorkUnitReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
 
 
 }

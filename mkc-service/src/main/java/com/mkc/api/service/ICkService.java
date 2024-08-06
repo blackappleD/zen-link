@@ -36,4 +36,11 @@ public interface ICkService {
      */
     public Result ckPersonCar(PersonCarReqVo params, MerReqLogVo merLog);
 
+    /**
+     * 工作单位核验
+     * @param params
+     * @return
+     */
+    public Result ckWorkUnit(WorkUnitReqVo params, MerReqLogVo merLog);
+
 }

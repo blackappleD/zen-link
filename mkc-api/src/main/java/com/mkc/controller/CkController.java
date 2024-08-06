@@ -37,6 +37,65 @@ public class CkController extends BaseController {
     @Autowired
     private ICkService ckService;
 
+    @PostMapping("/workUnitVerify")
+    public Result workUnitVerify(HttpServletRequest request, @RequestBody WorkUnitReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckWorkUnitInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.CK_WORK_UNIT.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = ckService.ckWorkUnit(params, merLog);
+
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【工作单位】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckWorkUnitInfoParams(WorkUnitReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String name = params.getName();
+        String cid = params.getCid();
+        String workplace = params.getWorkplace();
+
+        if (StringUtils.isBlank(cid)) {
+            log.error("缺少参数 cid {} , merCode： {}", cid, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 name {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(workplace)) {
+            log.error("缺少参数 workplace {} , merCode： {}", workplace, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        String plaintext = merCode + name + cid + workplace;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
     @PostMapping("/personCarVerify")
     public Result personCarVerify(HttpServletRequest request, @RequestBody PersonCarReqVo params) {
 
