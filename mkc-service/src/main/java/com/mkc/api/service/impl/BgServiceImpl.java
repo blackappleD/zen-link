@@ -11,10 +11,7 @@ import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.IBgService;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.vo.BaseVo;
-import com.mkc.api.vo.bg.CarInfoReqVo;
-import com.mkc.api.vo.bg.FinanceInfoReqVo;
-import com.mkc.api.vo.bg.HouseInfoReqVo;
-import com.mkc.api.vo.bg.HouseResultInfoReqVo;
+import com.mkc.api.vo.bg.*;
 import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeState;
@@ -90,6 +87,11 @@ public class BgServiceImpl implements IBgService {
     public Result queryFinanceInfo(FinanceInfoReqVo params, MerReqLogVo merLog) {
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->
                 bgSupService.queryFinanceInfo(params, supQueryBean));
+    }
+
+    @Override
+    public Result querySureScoreInfo(SureScoreInfoReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.querySureScoreInfo(params, supQueryBean));
     }
 
 

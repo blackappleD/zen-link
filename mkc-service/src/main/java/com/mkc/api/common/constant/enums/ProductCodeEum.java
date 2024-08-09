@@ -29,6 +29,8 @@ public enum ProductCodeEum {
     BG_HOUSE_RESULT_INFO("BG_HOUSE_002", "不动产结果信息查询","/bg/houseResultInfo"){},
 
     BG_FINANCE_INFO("BG_FINANCE_001", "- 经济能力2W查询","/bg/financeInfo"){},
+
+    BG_SURE_SCORE_INFO("BG_SURE_SCORE_001", "确信分","/bg/sureScoreInfo"){},
     ;
 
 

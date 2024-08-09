@@ -4,10 +4,7 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.vo.BaseVo;
-import com.mkc.api.vo.bg.CarInfoReqVo;
-import com.mkc.api.vo.bg.FinanceInfoReqVo;
-import com.mkc.api.vo.bg.HouseInfoReqVo;
-import com.mkc.api.vo.bg.HouseResultInfoReqVo;
+import com.mkc.api.vo.bg.*;
 import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.SuplierQueryBean;
 
@@ -52,4 +49,11 @@ public interface IBgService {
      * @return
      */
     public Result queryFinanceInfo(FinanceInfoReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 确信分信息查询
+     * @param params
+     * @return
+     */
+    public Result querySureScoreInfo(SureScoreInfoReqVo params, MerReqLogVo merLog);
 }

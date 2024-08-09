@@ -1,10 +1,7 @@
 package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
-import com.mkc.api.vo.bg.CarInfoReqVo;
-import com.mkc.api.vo.bg.FinanceInfoReqVo;
-import com.mkc.api.vo.bg.HouseInfoReqVo;
-import com.mkc.api.vo.bg.HouseResultInfoReqVo;
+import com.mkc.api.vo.bg.*;
 import com.mkc.bean.SuplierQueryBean;
 
 public interface IBgSupService extends ISupService{
@@ -50,6 +47,17 @@ public interface IBgSupService extends ISupService{
      * @return
      */
     default public SupResult queryFinanceInfo(FinanceInfoReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+    /**
+     * 确信分信息查询
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult querySureScoreInfo(SureScoreInfoReqVo vo, SuplierQueryBean bean)
     {
         return SupResult.err();
     }
