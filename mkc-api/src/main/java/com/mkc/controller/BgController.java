@@ -51,6 +51,7 @@ public class BgController extends BaseController {
             merLog.setReqJson(reqJson);
 
             Result result = bgService.queryFinanceInfo(params, merLog);
+
             return result;
 
         } catch (ApiServiceException e) {
