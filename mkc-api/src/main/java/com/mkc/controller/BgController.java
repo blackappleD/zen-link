@@ -1,10 +1,8 @@
 package com.mkc.controller;
 
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
 import com.mkc.api.common.constant.ApiReturnCode;
-import com.mkc.api.common.constant.ContantCode;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
@@ -12,25 +10,13 @@ import com.mkc.api.service.IBgService;
 import com.mkc.api.vo.bg.*;
 import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.CkMerBean;
-import com.mkc.common.constant.RedisKey;
-import com.mkc.common.enums.OnOffState;
-import com.mkc.domain.MerInfo;
-import com.mkc.domain.ProductSell;
-import com.mkc.tool.IPUtils;
-import com.mkc.tool.IdUtils;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 报告信息查询相关类入口
@@ -65,7 +51,6 @@ public class BgController extends BaseController {
             merLog.setReqJson(reqJson);
 
             Result result = bgService.queryFinanceInfo(params, merLog);
-
             return result;
 
         } catch (ApiServiceException e) {
