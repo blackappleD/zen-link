@@ -49,7 +49,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             params.put("idCard", idCard);
             params.put("name", name);
             params.put("mobile", mobile);
-            params.put("reqid", vo.getMerSeq());
+            params.put("reqid", String.valueOf(System.currentTimeMillis()));
             StringBuilder verify = new StringBuilder();
             verify.append(params.getString("account")).append(params.getString("idCard"))
                     .append(params.getString("name")).append(params.getString("mobile"))

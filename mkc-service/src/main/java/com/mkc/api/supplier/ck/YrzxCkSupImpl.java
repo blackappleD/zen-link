@@ -120,9 +120,9 @@ public class YrzxCkSupImpl implements ICkSupService {
             params.put("name", name);
             params.put("plateNo", plateNo);
             params.put("account", appkey);
-            params.put("reqid", vo.getMerSeq());
+            params.put("reqid", String.valueOf(System.currentTimeMillis()));
             StringBuilder verify = new StringBuilder();
-            verify.append(params.getString("account")).append(params.getString("name")).append(params.getString("plateNo")).append(params.getString("reqid")).append(bean.getSignKey());
+            verify.append(params.getString("account")).append(params.getString("name")).append(params.getString("plateNo")).append(params.getString("reqid")).append(appsecret);
             params.put("verify", Md5Utils.md5(verify.toString()).toUpperCase());
             String reqUrl = getUrl(params, url);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
