@@ -30,6 +30,13 @@ public interface IBgService {
     public Result queryCarInfo(CarInfoReqVo params, MerReqLogVo merLog);
 
     /**
+     * 行驶证信息查询
+     * @param params
+     * @return
+     */
+    public Result queryVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog);
+
+    /**
      * 不动产信息查询
      * @param params
      * @return

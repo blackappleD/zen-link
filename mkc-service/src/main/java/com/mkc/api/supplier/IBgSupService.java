@@ -62,6 +62,17 @@ public interface IBgSupService extends ISupService{
         return SupResult.err();
     }
 
+    /**
+     * 行驶证信息查询
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryVehicleLicenseInfo(VehicleLicenseReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
 
 
 }

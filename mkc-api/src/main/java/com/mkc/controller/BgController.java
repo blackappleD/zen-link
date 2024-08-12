@@ -199,6 +199,39 @@ public class BgController extends BaseController {
         }
     }
 
+    /**
+     * 行驶证信息查询
+     *
+     * @return
+     */
+    @PostMapping("/vehicleLicenseInfo")
+    public Result vehicleLicenseInfo(HttpServletRequest request, @RequestBody VehicleLicenseReqVo params) {
+        String reqJson =null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckVehicleLicenseInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_VEHICLE_LICENSE_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+
+            Result result = bgService.queryVehicleLicenseInfo(params, merLog);
+
+            return result;
+        } catch (ApiServiceException e) {
+
+            return Result.fail(e.getCode(),e.getMessage());
+
+        } catch (Exception e) {
+            errMonitorMsg("【行驶证信息查询】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
     private CkMerBean ckHouseResultInfoParams(HouseResultInfoReqVo params) {
 
         String merCode = params.getMerCode();
@@ -314,6 +347,38 @@ public class BgController extends BaseController {
 
 
         String plaintext = merCode + plateNo ;
+
+        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+
+    }
+
+    private CkMerBean ckVehicleLicenseInfoParams(VehicleLicenseReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String plateNo = params.getPlateNo();
+        String plateType = params.getPlateType();
+        String name = params.getName();
+        if (StringUtils.isBlank(plateNo)) {
+            log.error("缺少参数 plateNo {} , merCode： {}", plateNo, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        if (StringUtils.isBlank(plateType)) {
+            log.error("缺少参数 plateType {} , merCode： {}", plateType, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 name {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+
+        String plaintext = merCode + name + plateNo + plateType ;
 
         return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
 

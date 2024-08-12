@@ -70,6 +70,12 @@ public class BgServiceImpl implements IBgService {
     }
 
     @Override
+    public Result queryVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->
+                bgSupService.queryVehicleLicenseInfo(params, supQueryBean));
+    }
+
+    @Override
     public Result queryHouseInfo(HouseInfoReqVo params, MerReqLogVo merLog) {
 
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->

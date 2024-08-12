@@ -24,6 +24,8 @@ public enum ProductCodeEum {
 
     BG_CAR_INFO("BG_CAR_001", "车五项信息查询","/bg/carInfo"){},
 
+    BG_VEHICLE_LICENSE_INFO("BG_VEHICLE_LICENSE_001", "行驶证信息查询","/bg/vehicleLicenseInfo"){},
+
     BG_HOUSE_INFO("BG_HOUSE_001", "不动产信息查询","/bg/houseInfo"){},
 
     BG_HOUSE_RESULT_INFO("BG_HOUSE_002", "不动产结果信息查询","/bg/houseResultInfo"){},
