@@ -408,7 +408,7 @@ public class BgController extends BaseController {
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
         if (params.getFiles().size() != types.size()) {
-            log.error("缺少参数 persons.size() {}, types.size() {}, merCode： {}", persons.size(), types.size(), merCode);
+            log.error("缺少参数 files().size() {}, types.size() {}, merCode： {}", persons.size(), types.size(), merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
         for (PersonInfoReqVo personInfoReqVo : persons) {
