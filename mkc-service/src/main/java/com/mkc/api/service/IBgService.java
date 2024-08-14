@@ -63,4 +63,11 @@ public interface IBgService {
      * @return
      */
     public Result querySureScoreInfo(SureScoreInfoReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 人车核验详版
+     * @param params
+     * @return
+     */
+    public Result queryPersonCarInfo(PersonCarDetailReqVo params, MerReqLogVo merLog);
 }

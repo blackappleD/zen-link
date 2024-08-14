@@ -100,6 +100,11 @@ public class BgServiceImpl implements IBgService {
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.querySureScoreInfo(params, supQueryBean));
     }
 
+    @Override
+    public Result queryPersonCarInfo(PersonCarDetailReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryPersonCarInfo(params, supQueryBean));
+    }
+
 
     private Result bgCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
 

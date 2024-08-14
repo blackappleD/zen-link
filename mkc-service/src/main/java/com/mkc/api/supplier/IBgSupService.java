@@ -19,6 +19,17 @@ public interface IBgSupService extends ISupService{
     }
 
     /**
+     * 人车核验详版
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryPersonCarInfo(PersonCarDetailReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+    /**
      * 不动产信息查询
      * @param vo
      * @param bean
@@ -61,6 +72,7 @@ public interface IBgSupService extends ISupService{
     {
         return SupResult.err();
     }
+
 
     /**
      * 行驶证信息查询

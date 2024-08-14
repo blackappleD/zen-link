@@ -33,6 +33,8 @@ public enum ProductCodeEum {
     BG_FINANCE_INFO("BG_FINANCE_001", "- 经济能力2W查询","/bg/financeInfo"){},
 
     BG_SURE_SCORE_INFO("BG_SURE_SCORE_001", "确信分","/bg/sureScoreInfo"){},
+
+    BG_PERSON_CAR_INFO("BG_PERSON_CAR_001", "人车核验详版","/bg/personCarInfo"){},
     ;
 
 
