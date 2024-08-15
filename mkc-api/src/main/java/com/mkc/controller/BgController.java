@@ -1,5 +1,6 @@
 package com.mkc.controller;
 
+import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
 import com.mkc.api.common.constant.ApiReturnCode;
@@ -333,6 +334,11 @@ public class BgController extends BaseController {
         if (StringUtils.isBlank(cid)) {
             log.error("缺少参数 idCard {} , merCode： {}", cid, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (!IdcardUtil.isValidCard(cid)) {
+            log.error("无效参数 idCard {} , merCode： {}", cid, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_009);
         }
 
         if (StringUtils.isBlank(name)) {

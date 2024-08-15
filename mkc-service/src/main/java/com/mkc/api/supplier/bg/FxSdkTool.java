@@ -11,10 +11,13 @@ import com.gzy.sign.api.response.FaXinHouseVerifyApiResponse;
 import com.gzy.sign.api.response.FaXinHouseVerifyResultApiResponse;
 import com.mkc.api.vo.bg.MaterialReqVo;
 import com.mkc.api.vo.bg.PersonInfoReqVo;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class FxSdkTool {
 
     private static FaXinDefaultApiClient getDefaultApiClient(String privateKey, String publicKey, String baseUrl, String fileUrl, String appId) {
