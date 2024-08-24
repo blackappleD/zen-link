@@ -73,7 +73,7 @@ spring:
                     password: 123456
 
     rabbitmq:
-        host: 192.168.252.10
+        host: 192.168.0.105
         port: 5672
         username: mkc
         password: 123456
@@ -100,7 +100,7 @@ spring:
     # redis配置
     redis:
         database: 0
-        host: 192.168.0.85
+        host: 192.168.0.105
         port: 6379
         password:
         timeout: 6000ms           # 连接超时时长（毫秒）
