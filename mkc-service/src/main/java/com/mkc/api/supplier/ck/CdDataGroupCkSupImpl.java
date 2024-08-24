@@ -2,14 +2,17 @@ package com.mkc.api.supplier.ck;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpRequest;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.vo.ck.PopulationThreeReqVo;
 import com.mkc.bean.SuplierQueryBean;
+import com.mkc.common.enums.FreeState;
 import com.mkc.common.enums.ReqState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,6 +24,18 @@ import java.time.LocalDateTime;
 @Service("CK_CDDATAGROUP")
 @Slf4j
 public class CdDataGroupCkSupImpl implements ICkSupService {
+
+    private final static String SUCCESS = "200";
+
+    private final static String NO_FEE = "0";
+
+    private final static String ERROR1 = "207";
+
+    private final static String ERROR2 = "208";
+
+    private final static String ERROR3 = "603";
+
+    private final static String ERROR4 = "604";
 
 
     @Override
@@ -38,19 +53,78 @@ public class CdDataGroupCkSupImpl implements ICkSupService {
             String name = vo.getName();
             String idcard = vo.getIdcard();
             String photo = vo.getPhoto();
-
+            String authorization = vo.getAuthorization();
 
             JSONObject entries = new JSONObject();
             entries.put("name", name);
             entries.put("idcard", idcard);
             entries.put("photo", photo);
-            entries.put("authorization", vo.getMerSeq());
+            entries.put("authorization", authorization);
             params.put("param", entries);
             String payload = params.toString();
-            String response = reqData(url, appkey, appsecret, payload, timeOut);
-
+            supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            result = reqData(url, appkey, appsecret, payload, timeOut);
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+            if (StringUtils.isBlank(result)) {
+                supResult.setRemark("供应商没有响应结果");
+                supResult.setState(ReqState.ERROR);
+                return supResult;
+            }
+            JSONObject resultObject = JSON.parseObject(result);
+            String code = resultObject.getString("code");
+            String status = resultObject.getString("status");
+            if (NO_FEE.equals(status)) {
+                supResult.setFree(FreeState.NO);
+            } else {
+                supResult.setFree(FreeState.YES);
+            }
+            if (SUCCESS.equals(code)) {
+                supResult.setRemark("查询成功");
+                supResult.setState(ReqState.SUCCESS);
+                JSONObject data = resultObject.getJSONObject("data");
+                if (data != null) {
+                    supResult.setData(data);
+                    return supResult;
+                }
+            } else if (ERROR1.equals(code)) {
+                supResult.setRemark(resultObject.getString("msg"));
+                supResult.setState(ReqState.ERROR);
+                supResult.setDefinedFailMsg(true);
+                errMonitorMsg(log," 【成都数据集团股份有限公司】 全国⼈⼝身份信息三要素核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(),url, result);
+                return supResult;
+            } else if (ERROR2.equals(code)) {
+                supResult.setRemark(resultObject.getString("msg"));
+                supResult.setState(ReqState.ERROR);
+                supResult.setDefinedFailMsg(true);
+                errMonitorMsg(log," 【成都数据集团股份有限公司】 全国⼈⼝身份信息三要素核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(),url, result);
+                return supResult;
+            }  else if (ERROR3.equals(code)) {
+                supResult.setRemark(resultObject.getString("msg"));
+                supResult.setState(ReqState.ERROR);
+                supResult.setDefinedFailMsg(true);
+                errMonitorMsg(log," 【成都数据集团股份有限公司】 全国⼈⼝身份信息三要素核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(),url, result);
+                return supResult;
+            }  else if (ERROR4.equals(code)) {
+                supResult.setRemark(resultObject.getString("msg"));
+                supResult.setState(ReqState.ERROR);
+                supResult.setDefinedFailMsg(true);
+                errMonitorMsg(log," 【成都数据集团股份有限公司】 全国⼈⼝身份信息三要素核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(),url, result);
+                return supResult;
+            } else {
+                supResult.setRemark("查询失败");
+                supResult.setState(ReqState.ERROR);
+                errMonitorMsg(log,"  全国⼈⼝身份信息三要素核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(),url, result);
+                return supResult;
+            }
+            return supResult;
         } catch (Throwable e) {
-            errMonitorMsg(log," 【成都数据集团股份有限公司】 工作单位核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+            errMonitorMsg(log," 【成都数据集团股份有限公司】 全国⼈⼝身份信息三要素核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(),url, result, e);
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
@@ -62,7 +136,7 @@ public class CdDataGroupCkSupImpl implements ICkSupService {
             return supResult;
         }
 
-        return null;
+
     }
 
     /**

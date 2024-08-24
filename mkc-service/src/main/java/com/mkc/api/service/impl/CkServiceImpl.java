@@ -70,6 +70,13 @@ public class CkServiceImpl implements ICkService {
     }
 
     @Override
+    public Result ckPopulationThree(PopulationThreeReqVo params, MerReqLogVo merLog) {
+
+        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
+                ckSupService.ckPopulationThree(params, supQueryBean));
+    }
+
+    @Override
     public Result ckPersonCar(PersonCarReqVo params, MerReqLogVo merLog) {
 
         return ckCommon(merLog, params, (ckSupService, supQueryBean) ->

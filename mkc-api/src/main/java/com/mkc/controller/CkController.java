@@ -54,8 +54,12 @@ public class CkController extends BaseController {
             CkMerBean ckMerBean = ckPopulationThreeParams(params);
             ckMerBean.setProductCode(ProductCodeEum.CK_POPULATION_THREE.getCode());
 
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
 
-            return null;
+            Result result = ckService.ckPopulationThree(params, merLog);
+            return result;
         } catch (ApiServiceException e) {
             return Result.fail(e.getCode(),e.getMessage());
         } catch (Exception e) {
@@ -100,9 +104,9 @@ public class CkController extends BaseController {
         ckCommonParams(params);
 
         String name = params.getName();
-        String authorization = params.getAuthorization();
         String photo = params.getPhoto();
         String idcard = params.getIdcard();
+        String authorization = params.getAuthorization();
 
         if (StringUtils.isBlank(idcard)) {
             log.error("缺少参数 cid {} , merCode： {}", idcard, merCode);
@@ -114,12 +118,18 @@ public class CkController extends BaseController {
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
 
-        if (StringUtils.isBlank(authorization)) {
-            log.error("缺少参数 workplace {} , merCode： {}", authorization, merCode);
+        if (StringUtils.isBlank(photo)) {
+            log.error("缺少参数 name {} , merCode： {}", photo, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
 
-        String plaintext = merCode + name + photo + authorization +idcard;
+        if (StringUtils.isBlank(authorization)) {
+            log.error("缺少参数 name {} , merCode： {}", authorization, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+
+        String plaintext = merCode + name +idcard + photo + authorization ;
 
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }

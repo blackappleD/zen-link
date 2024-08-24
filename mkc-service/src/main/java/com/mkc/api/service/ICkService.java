@@ -43,4 +43,11 @@ public interface ICkService {
      */
     public Result ckWorkUnit(WorkUnitReqVo params, MerReqLogVo merLog);
 
+    /**
+     * 全国⼈⼝身份信息三要素核验
+     * @param params
+     * @return
+     */
+    public Result ckPopulationThree(PopulationThreeReqVo params, MerReqLogVo merLog);
+
 }
