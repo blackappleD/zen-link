@@ -35,6 +35,69 @@ public class BgController extends BaseController {
     private IBgService bgService;
 
     /**
+     * 经济能力评级---社保
+     */
+    @PostMapping("/economicRate")
+    public Result economicRate(HttpServletRequest request, @RequestBody EconomicRateReqVo params) {
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckEconomicRateParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_ECONOMIC_RATE_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryEconomicRateInfo(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【经济能力评级】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+
+
+    /**
+     * 企业四要素
+     * @param request
+     * @param params
+     * @return
+     */
+    @PostMapping("/enterpriseFourElementInfo")
+    public Result enterpriseFourElementInfo(HttpServletRequest request, @RequestBody EnterpriseFourElementsReqVo params) {
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckEnterpriseFourElementsParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_ENTERPRISE_FOUR_ELEMENT_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryFourElementsInfo(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【企业四要素】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+
+
+    }
+
+
+
+
+    /**
      * 人车核验详版
      */
     @PostMapping("/personCarInfo")
@@ -279,6 +342,84 @@ public class BgController extends BaseController {
         String plaintext = merCode + reqOrderNo ;
 
         return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+
+    }
+
+    private CkMerBean ckEconomicRateParams(EconomicRateReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String idCard = params.getIdCard();
+        String name = params.getName();
+        String mobile = params.getMobile();
+        if (StringUtils.isBlank(idCard)) {
+            log.error("缺少参数 cid {} , merCode： {}", idCard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 name {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(mobile)) {
+            log.error("缺少参数 mobile {} , merCode： {}", mobile, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        String plaintext = merCode + idCard + name + mobile;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
+
+    private CkMerBean ckEnterpriseFourElementsParams(EnterpriseFourElementsReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String orgName = params.getOrgName();
+        String orgCertNo = params.getOrgCertNo();
+        String personName = params.getPersonName();
+        String personId = params.getPersonId();
+
+        if (StringUtils.isBlank(orgName)) {
+            log.error("缺少参数 orgName {} , merCode： {}", orgName, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(orgCertNo)) {
+            log.error("缺少参数 orgCertNo {} , merCode： {}", orgCertNo, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(personName)) {
+            log.error("缺少参数 personName {} , merCode： {}", personName, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(personId)) {
+            log.error("缺少参数 personId {} , merCode： {}", personId, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        if (!IdcardUtil.isValidCard(personId)) {
+            log.error("缺少不正确 personId {} , merCode： {}", personId, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_009);
+        }
+
+
+        String plaintext = merCode + orgName + orgCertNo + personName + personId;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 
     }
 
