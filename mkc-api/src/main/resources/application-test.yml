@@ -23,26 +23,26 @@ spring:
                 # 后台配置数据源
                 master:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://192.168.0.85:5432/test?currentSchema=sysconf&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://192.168.0.105:5432/test?currentSchema=sysconf&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
                 # 业务数据源
                 business:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://192.168.0.85:5432/test?currentSchema=business&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://192.168.0.105:5432/test?currentSchema=business&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
                 # 业务数据源
                 quartz:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://192.168.0.85:5432/test?currentSchema=quartz&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://192.168.0.105:5432/test?currentSchema=quartz&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
 
     # redis配置
     redis:
         database: 0
-        host: 192.168.0.85
+        host: 192.168.0.105
         port: 6379
         password:
         timeout: 2000ms           # 连接超时时长（毫秒）
@@ -54,7 +54,7 @@ spring:
                 min-idle: 5       # 连接池中的最小空闲连接
 
     rabbitmq:
-        host: 192.168.252.10
+        host: 192.168.0.105
         port: 5672
         username: mkc
         password: 123456
