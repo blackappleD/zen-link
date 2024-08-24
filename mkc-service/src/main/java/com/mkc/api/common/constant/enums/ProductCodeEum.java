@@ -21,10 +21,13 @@ public enum ProductCodeEum {
     CK_MOB_THREE_10010("CK_003_10010", "个人手机三要素认证-联通","/bg/mobileThree"){},
     CK_PERSON_CAR("CK_PERSONCAR_001", "人车核验","/ck/personCarVerify"){},
     CK_WORK_UNIT("CK_WORKUNIT_001", "工作单位核验","/ck/workUnitVerify"){},
+    CK_POPULATION_THREE("CK_POPULATION_THREE_001", "全国⼈⼝身份信息三要素核验","/ck/populationThree"){},
 
     BG_CAR_INFO("BG_CAR_001", "车五项信息查询","/bg/carInfo"){},
 
     BG_VEHICLE_LICENSE_INFO("BG_VEHICLE_LICENSE_001", "行驶证信息查询","/bg/vehicleLicenseInfo"){},
+
+    BG_ECONOMIC_RATE_INFO("BG_ECONOMIC_RATE_001", "经济能力评级","/bg/economicRate"){},
 
     BG_HOUSE_INFO("BG_HOUSE_001", "不动产信息查询","/bg/houseInfo"){},
 
@@ -35,6 +38,10 @@ public enum ProductCodeEum {
     BG_SURE_SCORE_INFO("BG_SURE_SCORE_001", "确信分","/bg/sureScoreInfo"){},
 
     BG_PERSON_CAR_INFO("BG_PERSON_CAR_001", "人车核验详版","/bg/personCarInfo"){},
+
+    BG_ENTERPRISE_FOUR_ELEMENT_INFO("BG_ENTERPRISE_FOUR_ELEMENT_001", "企业四要素","/bg/enterpriseFourElementInfo"){},
+
+
     ;
 
 

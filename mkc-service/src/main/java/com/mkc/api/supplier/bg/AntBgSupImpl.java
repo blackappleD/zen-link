@@ -1,0 +1,124 @@
+package com.mkc.api.supplier.bg;
+
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.mkc.api.common.constant.bean.SupResult;
+import com.mkc.api.common.utils.Md5Utils;
+import com.mkc.api.supplier.IBgSupService;
+import com.mkc.api.vo.bg.EnterpriseFourElementsReqVo;
+import com.mkc.bean.SuplierQueryBean;
+import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.ReqState;
+import com.mkc.common.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * @AUTHOR XIEWEI
+ * @Date 2024/8/19 17:07
+ */
+@Service("BG_ANT")
+@Slf4j
+public class AntBgSupImpl implements IBgSupService {
+
+    private final static  boolean SUCCESS = true;
+    private final static boolean NO = false;
+
+    public SupResult queryFourElementsInfo(EnterpriseFourElementsReqVo vo, SuplierQueryBean bean) {
+        String result = null;
+        SupResult supResult = null;
+        JSONObject params = new JSONObject();
+        String url = null;
+        try {
+            url = bean.getUrl() + "/ValidateFourElements";
+            String appsecret = bean.getSignKey();
+            String appkey = bean.getAcc();
+            Integer timeOut = bean.getTimeOut();
+            Map<String, String> parameters = new HashMap<>();
+            String ranStr = RandomUtil.randomString(32);
+            parameters.put("orgName", vo.getOrgName());
+            parameters.put("orgCertNo", vo.getOrgCertNo());
+            parameters.put("personName", vo.getPersonName());
+            parameters.put("personId", vo.getPersonId());
+            parameters.put("merCode", appkey);
+            parameters.put("ranStr", ranStr);
+            // 将参数按 key=value 格式排序
+            String stringA = sortAndFormatParameters(parameters);
+            String stringSignTemp=stringA+"&key=" + appsecret;
+            // Md5Utils.md5()
+            String signature= Md5Utils.md5(stringSignTemp).toUpperCase();
+            HttpRequest post = HttpUtil.createPost(url);
+            post.header("signature", signature);
+            post.body(JSONUtil.toJsonStr(parameters));
+            post.timeout(timeOut);
+            supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            result = post.execute().body();
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+
+            //判断是否有响应结果 无就是请求异常或超时
+            if (StringUtils.isBlank(result)) {
+                supResult.setRemark("供应商没有响应结果");
+                supResult.setState(ReqState.ERROR);
+                return supResult;
+            }
+            JSONObject resultObject = JSON.parseObject(result);
+            boolean success = resultObject.getBoolean("success");
+            if (success) {
+                supResult.setFree(FreeState.YES);
+                supResult.setRemark("查询成功");
+                supResult.setState(ReqState.SUCCESS);
+                JSONObject data = resultObject.getJSONObject("data");
+                if (data != null) {
+                    supResult.setData(data);
+                    return supResult;
+                }
+            } else {
+                supResult.setFree(FreeState.NO);
+                supResult.setRemark("查询失败");
+                supResult.setState(ReqState.ERROR);
+                errMonitorMsg(log,"  企业四要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(),url, result);
+            }
+            return supResult;
+        } catch (Throwable e) {
+            errMonitorMsg(log," 【蚂蚁区块链科技（上海）有限公司供应商】 企业四要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(),url, result, e);
+
+            if (supResult == null) {
+                supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            }
+            supResult.setState(ReqState.ERROR);
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+            supResult.setRemark("异常:"+e.getMessage());
+            return supResult;
+        }
+
+    }
+
+    private static String sortAndFormatParameters(Map<String, String> parameters) {
+        // 使用 TreeMap 自动按 key 排序
+        Map<String, String> sortedParams = new TreeMap<>(parameters);
+
+        // 构建排序后的字符串
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append("&");
+            }
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
+        }
+
+        return sb.toString();
+    }
+}

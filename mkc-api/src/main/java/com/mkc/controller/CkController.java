@@ -37,6 +37,33 @@ public class CkController extends BaseController {
     @Autowired
     private ICkService ckService;
 
+    /**
+     *全国⼈⼝身份信息三要素核验
+     * @param request
+     * @param params
+     * @return
+     */
+    @PostMapping("/populationThree")
+    public Result populationThree(HttpServletRequest request, @RequestBody PopulationThreeReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckPopulationThreeParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.CK_POPULATION_THREE.getCode());
+
+
+            return null;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【全国⼈⼝身份信息三要素核验】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
     @PostMapping("/workUnitVerify")
     public Result workUnitVerify(HttpServletRequest request, @RequestBody WorkUnitReqVo params) {
 
@@ -61,6 +88,40 @@ public class CkController extends BaseController {
             errMonitorMsg("【工作单位】API 发生异常  reqJson {} ", reqJson,e);
             return Result.fail();
         }
+    }
+
+    private CkMerBean ckPopulationThreeParams(PopulationThreeReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String name = params.getName();
+        String authorization = params.getAuthorization();
+        String photo = params.getPhoto();
+        String idcard = params.getIdcard();
+
+        if (StringUtils.isBlank(idcard)) {
+            log.error("缺少参数 cid {} , merCode： {}", idcard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 name {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(authorization)) {
+            log.error("缺少参数 workplace {} , merCode： {}", authorization, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        String plaintext = merCode + name + photo + authorization +idcard;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }
 
     private CkMerBean ckWorkUnitInfoParams(WorkUnitReqVo params) {

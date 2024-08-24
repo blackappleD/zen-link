@@ -70,4 +70,18 @@ public interface IBgService {
      * @return
      */
     public Result queryPersonCarInfo(PersonCarDetailReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 企业四要素核验
+     * @param params
+     * @return
+     */
+    public Result queryFourElementsInfo(EnterpriseFourElementsReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 经济能力评级
+     * @param params
+     * @return
+     */
+    public Result queryEconomicRateInfo(EconomicRateReqVo params, MerReqLogVo merLog);
 }

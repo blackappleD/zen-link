@@ -30,6 +30,17 @@ public interface IBgSupService extends ISupService{
     }
 
     /**
+     * 人车核验详版
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryFourElementsInfo(EnterpriseFourElementsReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+    /**
      * 不动产信息查询
      * @param vo
      * @param bean
@@ -84,6 +95,19 @@ public interface IBgSupService extends ISupService{
     {
         return SupResult.err();
     }
+
+    /**
+     * 经济能力评级查询
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryEconomicRateInfo(EconomicRateReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+
 
 
 

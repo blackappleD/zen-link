@@ -41,5 +41,13 @@ public interface ICkSupService extends ISupService{
         return SupResult.err();
     }
 
+    /**
+     *全国⼈⼝身份信息三要素核验
+     */
+    default public SupResult ckPopulationThree(PopulationThreeReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
 
 }

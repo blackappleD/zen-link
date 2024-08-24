@@ -105,6 +105,16 @@ public class BgServiceImpl implements IBgService {
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryPersonCarInfo(params, supQueryBean));
     }
 
+    @Override
+    public Result queryFourElementsInfo(EnterpriseFourElementsReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryFourElementsInfo(params, supQueryBean));
+    }
+
+    @Override
+    public Result queryEconomicRateInfo(EconomicRateReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryEconomicRateInfo(params, supQueryBean));
+    }
+
 
     private Result bgCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
 
