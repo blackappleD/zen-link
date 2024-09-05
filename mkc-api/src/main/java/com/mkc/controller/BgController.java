@@ -35,6 +35,34 @@ public class BgController extends BaseController {
     private IBgService bgService;
 
     /**
+     *行驶身份核验
+     */
+    @PostMapping("/drivingLicense")
+    public Result drivingLicense(HttpServletRequest request, @RequestBody DrivingLicenseReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckDrivingLicenseParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_DRIVING_LICENSE_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryDrivingLicenseInfo(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【行驶身份核验】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+
+    /**
      * 经济能力评级---社保
      */
     @PostMapping("/economicRate")
@@ -181,6 +209,34 @@ public class BgController extends BaseController {
             return Result.fail();
         }
     }
+    /**
+     * 经济能力评级V3
+     */
+    @PostMapping("/financeInfoV3")
+    public Result financeInfoV3(HttpServletRequest request, @RequestBody FinanceInfoV3ReqVo params) {
+        String reqJson =null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckfinanceInfoV3Params(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_FINANCE_INFO_V3.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryFinanceInfoV3(params, merLog);
+            return result;
+
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【经济能力评级V3】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
 
 
     /**
@@ -345,6 +401,38 @@ public class BgController extends BaseController {
 
     }
 
+    private CkMerBean ckDrivingLicenseParams(DrivingLicenseReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String licensePlateNo = params.getLicensePlateNo();
+        String name = params.getName();
+        String plateType = params.getPlateType();
+        if (StringUtils.isBlank(licensePlateNo)) {
+            log.error("缺少参数 licensePlateNo {} , merCode： {}", licensePlateNo, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 name {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(plateType)) {
+            log.error("缺少参数 plateType {} , merCode： {}", plateType, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        String plaintext = merCode + licensePlateNo + name + plateType;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
     private CkMerBean ckEconomicRateParams(EconomicRateReqVo params) {
 
         String merCode = params.getMerCode();
@@ -387,37 +475,37 @@ public class BgController extends BaseController {
 
         ckCommonParams(params);
 
-        String orgName = params.getOrgName();
-        String orgCertNo = params.getOrgCertNo();
-        String personName = params.getPersonName();
-        String personId = params.getPersonId();
+        String companyName = params.getCompanyName();
+        String creditCode = params.getCreditCode();
+        String legalPerson = params.getLegalPerson();
+        String certNo = params.getCertNo();
 
-        if (StringUtils.isBlank(orgName)) {
-            log.error("缺少参数 orgName {} , merCode： {}", orgName, merCode);
+        if (StringUtils.isBlank(companyName)) {
+            log.error("缺少参数 companyName {} , merCode： {}", companyName, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
 
-        if (StringUtils.isBlank(orgCertNo)) {
-            log.error("缺少参数 orgCertNo {} , merCode： {}", orgCertNo, merCode);
+        if (StringUtils.isBlank(creditCode)) {
+            log.error("缺少参数 creditCode {} , merCode： {}", creditCode, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
 
-        if (StringUtils.isBlank(personName)) {
-            log.error("缺少参数 personName {} , merCode： {}", personName, merCode);
+        if (StringUtils.isBlank(legalPerson)) {
+            log.error("缺少参数 creditCode {} , merCode： {}", legalPerson, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
 
-        if (StringUtils.isBlank(personId)) {
-            log.error("缺少参数 personId {} , merCode： {}", personId, merCode);
+        if (StringUtils.isBlank(certNo)) {
+            log.error("缺少参数 certNo {} , merCode： {}", certNo, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
-        if (!IdcardUtil.isValidCard(personId)) {
-            log.error("缺少不正确 personId {} , merCode： {}", personId, merCode);
+        if (!IdcardUtil.isValidCard(certNo)) {
+            log.error("缺少不正确 personId {} , merCode： {}", certNo, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_009);
         }
 
 
-        String plaintext = merCode + orgName + orgCertNo + personName + personId;
+        String plaintext = merCode + companyName + creditCode + legalPerson + certNo;
 
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 
@@ -501,6 +589,41 @@ public class BgController extends BaseController {
         String plaintext = merCode + cid + mobile + name + job;
 
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+
+    }
+
+    private CkMerBean ckfinanceInfoV3Params(FinanceInfoV3ReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String idCard = params.getIdCard();
+        String name = params.getName();
+        String mobile = params.getMobile();
+
+        if (StringUtils.isBlank(idCard)) {
+            log.error("缺少参数 idCard {} , merCode： {}", idCard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 name {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(mobile)) {
+            log.error("缺少参数 mobile {} , merCode： {}", mobile, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+
+        String plaintext = merCode + idCard + name + mobile;
+
+        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
 
     }
 

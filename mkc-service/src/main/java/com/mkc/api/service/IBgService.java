@@ -58,6 +58,13 @@ public interface IBgService {
     public Result queryFinanceInfo(FinanceInfoReqVo params, MerReqLogVo merLog);
 
     /**
+     * 经济能力评级V3
+     * @param params
+     * @return
+     */
+    public Result queryFinanceInfoV3(FinanceInfoV3ReqVo params, MerReqLogVo merLog);
+
+    /**
      * 确信分信息查询
      * @param params
      * @return
@@ -84,4 +91,11 @@ public interface IBgService {
      * @return
      */
     public Result queryEconomicRateInfo(EconomicRateReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 行驶身份核验
+     * @param params
+     * @return
+     */
+    public Result queryDrivingLicenseInfo(DrivingLicenseReqVo params, MerReqLogVo merLog);
 }

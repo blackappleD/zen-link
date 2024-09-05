@@ -193,7 +193,7 @@ public class BaseController {
             log.error("缺少参数 merCode {} , merSeq {}",merCode,merSeq);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
-        if(merSeq.length()>32){
+        if(merSeq.length() >32){
             log.error("无效的参数 merCode {} , merSeq {}",merCode,merSeq);
             throw new ApiServiceException(ApiReturnCode.ERR_009.getCode(),"无效的商户请求流水号");
         }

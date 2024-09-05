@@ -14,12 +14,12 @@ public class EnterpriseFourElementsReqVo extends BaseVo implements Serializable 
 
     private static final long serialVersionUID = 1L;
 
-    private String orgName;
+    private String companyName;
 
-    private String orgCertNo;
+    private String creditCode;
 
-    private String personName;
+    private String legalPerson;
 
-    private String personId;
+    private String certNo;
 
 }

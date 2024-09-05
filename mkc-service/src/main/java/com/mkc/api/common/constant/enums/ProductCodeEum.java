@@ -33,7 +33,9 @@ public enum ProductCodeEum {
 
     BG_HOUSE_RESULT_INFO("BG_HOUSE_002", "不动产结果信息查询","/bg/houseResultInfo"){},
 
-    BG_FINANCE_INFO("BG_FINANCE_001", "- 经济能力2W查询","/bg/financeInfo"){},
+    BG_FINANCE_INFO("BG_FINANCE_001", "经济能力2W查询","/bg/financeInfo"){},
+
+    BG_FINANCE_INFO_V3("BG_FINANCE_002", "经济能力评级V3","/bg/financeInfoV3"){},
 
     BG_SURE_SCORE_INFO("BG_SURE_SCORE_001", "确信分","/bg/sureScoreInfo"){},
 
@@ -41,7 +43,11 @@ public enum ProductCodeEum {
 
     BG_ENTERPRISE_FOUR_ELEMENT_INFO("BG_ENTERPRISE_FOUR_ELEMENT_001", "企业四要素","/bg/enterpriseFourElementInfo"){},
 
+    BG_DRIVING_LICENSE_INFO("BG_DRIVING_LICENSE_001", "行驶身份核验","/bg/drivingLicense"){},
 
+    SF_DISHONEST_EXECUTIVE_INFO("SF_DISHONEST_EXECUTIVE_001", "失信被执行人","/sf/dishonestExecutive"){},
+
+    SF_RESTRICTED_CONSUMER_INFO("SF_RESTRICTED_CONSUMER_001", "限制高消费被执行人接口","/sf/restrictedConsumer"){},
     ;
 
 

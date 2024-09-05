@@ -4,7 +4,7 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.vo.bg.*;
 import com.mkc.bean.SuplierQueryBean;
 
-public interface IBgSupService extends ISupService{
+public interface IBgSupService extends ISupService {
 
 
     /**
@@ -63,12 +63,23 @@ public interface IBgSupService extends ISupService{
     }
 
     /**
-     * 不动产结果信息查询
+     * 经济能力评级查询
      * @param vo
      * @param bean
      * @return
      */
     default public SupResult queryFinanceInfo(FinanceInfoReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+    /**
+     * 经济能力评级V3查询
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryFinanceInfoV3(FinanceInfoV3ReqVo vo, SuplierQueryBean bean)
     {
         return SupResult.err();
     }
@@ -103,6 +114,17 @@ public interface IBgSupService extends ISupService{
      * @return
      */
     default public SupResult queryEconomicRateInfo(EconomicRateReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+    /**
+     * 行驶身份核验
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryDrivingLicenseInfo(DrivingLicenseReqVo vo, SuplierQueryBean bean)
     {
         return SupResult.err();
     }

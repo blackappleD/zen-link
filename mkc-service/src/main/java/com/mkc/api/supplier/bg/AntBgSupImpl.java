@@ -39,16 +39,16 @@ public class AntBgSupImpl implements IBgSupService {
         JSONObject params = new JSONObject();
         String url = null;
         try {
-            url = bean.getUrl() + "/ValidateFourElements";
+            url = bean.getUrl() + "/V2/ValidateFourElements";
             String appsecret = bean.getSignKey();
             String appkey = bean.getAcc();
             Integer timeOut = bean.getTimeOut();
             Map<String, String> parameters = new HashMap<>();
             String ranStr = RandomUtil.randomString(32);
-            parameters.put("orgName", vo.getOrgName());
-            parameters.put("orgCertNo", vo.getOrgCertNo());
-            parameters.put("personName", vo.getPersonName());
-            parameters.put("personId", vo.getPersonId());
+            parameters.put("companyName", vo.getCompanyName());
+            parameters.put("creditCode", vo.getCreditCode());
+            parameters.put("legalPerson", vo.getLegalPerson());
+            parameters.put("certNo", vo.getCertNo());
             parameters.put("merCode", appkey);
             parameters.put("ranStr", ranStr);
             // 将参数按 key=value 格式排序
