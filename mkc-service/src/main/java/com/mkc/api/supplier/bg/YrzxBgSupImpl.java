@@ -168,7 +168,7 @@ public class YrzxBgSupImpl implements IBgSupService {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
-                supResult.setData(resultObject.getJSONObject("msg"));
+                supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             } else {
                 supResult.setFree(FreeState.NO);

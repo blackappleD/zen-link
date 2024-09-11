@@ -91,7 +91,7 @@ public class AntBgSupImpl implements IBgSupService {
             }
             return supResult;
         } catch (Throwable e) {
-            errMonitorMsg(log," 【蚂蚁区块链科技（上海）有限公司供应商】 企业四要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+            errMonitorMsg(log," 【广州本希奥科技有限公司供应商】 企业四要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(),url, result, e);
 
             if (supResult == null) {

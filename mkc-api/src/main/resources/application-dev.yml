@@ -61,13 +61,13 @@ spring:
                     starttls:
                         enable: true
                         required: true
-#    ding:
-#        syserr:
-#            token: 6a93cb682ac609b78c504938f87e39dee3fff0a0e448d9b82972c4e4f6fbb0ef
-#            secret: SEC39cf5cfe0d5d43b8dd75293e42f579070cf4164f8b75e0383f59aee6b340b2aa
-#        business:
-#            token: 6a93cb682ac609b78c504938f87e39dee3fff0a0e448d9b82972c4e4f6fbb0ef
-#            secret: SEC39cf5cfe0d5d43b8dd75293e42f579070cf4164f8b75e0383f59aee6b340b2aa
+    ding:
+        syserr:
+            token: c8e8d8b5fcf25895f9572ca00d771c9efa21bbf340f76f575be5868b41070a88
+            secret: SEC1e5a6bddd0642774ae7896c19884142e0249a49e178bbba0c95e9150bd340fad
+        business:
+            token: c8e8d8b5fcf25895f9572ca00d771c9efa21bbf340f76f575be5868b41070a88
+            secret: SEC1e5a6bddd0642774ae7896c19884142e0249a49e178bbba0c95e9150bd340fad
 
 
 
