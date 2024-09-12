@@ -21,7 +21,7 @@ public class MkcApiApplication
     {
         // System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(MkcApiApplication.class, args);
-        System.out.println("(♥◠‿◠)ﾉﾞ  数据聚合营销云 API------------------- 启动成功   ლ(´ڡ`ლ)ﾞ  \n");
+        System.out.println("(♥◠‿◠)ﾉﾞ  数据聚合营销云 API启动成功   ლ(´ڡ`ლ)ﾞ  \n");
 
 
     }

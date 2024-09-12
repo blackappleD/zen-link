@@ -26,12 +26,17 @@ import java.util.TreeMap;
  * @AUTHOR XIEWEI
  * @Date 2024/8/19 17:07
  */
-@Service("BG_ANT")
+@Service("BG_BXA")
 @Slf4j
 public class AntBgSupImpl implements IBgSupService {
 
     private final static  boolean SUCCESS = true;
     private final static boolean NO = false;
+
+    /**
+     * 企业不存在
+     */
+    private static final String ERROR_CODE1 = "40001";
 
     public SupResult queryFourElementsInfo(EnterpriseFourElementsReqVo vo, SuplierQueryBean bean) {
         String result = null;
@@ -83,11 +88,19 @@ public class AntBgSupImpl implements IBgSupService {
                     return supResult;
                 }
             } else {
-                supResult.setFree(FreeState.NO);
-                supResult.setRemark("查询失败");
-                supResult.setState(ReqState.ERROR);
-                errMonitorMsg(log,"  企业四要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                        , bean.getOrderNo(),url, result);
+                if (ERROR_CODE1.equals(resultObject.getString("errorCode"))) {
+                    supResult.setFree(FreeState.NO);
+                    supResult.setDefinedFailMsg(true);
+                    supResult.setState(ReqState.ERROR);
+                    supResult.setRemark(resultObject.getString("message"));
+                    return supResult;
+                } else {
+                    supResult.setFree(FreeState.NO);
+                    supResult.setRemark("查询失败");
+                    supResult.setState(ReqState.ERROR);
+                    errMonitorMsg(log,"  企业四要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                            , bean.getOrderNo(),url, result);
+                }
             }
             return supResult;
         } catch (Throwable e) {

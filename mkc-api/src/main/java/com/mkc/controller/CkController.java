@@ -37,6 +37,8 @@ public class CkController extends BaseController {
     @Autowired
     private ICkService ckService;
 
+
+
     /**
      *全国⼈⼝身份信息三要素核验
      * @param request

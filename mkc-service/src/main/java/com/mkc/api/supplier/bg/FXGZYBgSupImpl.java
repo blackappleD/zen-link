@@ -51,7 +51,6 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 baseUrlArr = bean.getUrl().split(",");
             }
             url = baseUrlArr[0] + "/open/verification/house/getCheckResult";
-            int reqOrderNoCount = fxReqRecordMapper.selectCountByReqOrderNo(vo.getReqOrderNo());
             List<String> personCardNumList = vo.getPersonCardNumList();
             JSONObject data = new JSONObject();
             data.put("reqOrderNo", vo.getReqOrderNo());
