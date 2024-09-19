@@ -41,14 +41,14 @@ public class AntBgSupImpl implements IBgSupService {
     public SupResult queryFourElementsInfo(EnterpriseFourElementsReqVo vo, SuplierQueryBean bean) {
         String result = null;
         SupResult supResult = null;
-        JSONObject params = new JSONObject();
+        Map<String, String> parameters = new HashMap<>();
         String url = null;
         try {
             url = bean.getUrl() + "/V2/ValidateFourElements";
             String appsecret = bean.getSignKey();
             String appkey = bean.getAcc();
             Integer timeOut = bean.getTimeOut();
-            Map<String, String> parameters = new HashMap<>();
+
             String ranStr = RandomUtil.randomString(32);
             parameters.put("companyName", vo.getCompanyName());
             parameters.put("creditCode", vo.getCreditCode());
@@ -63,9 +63,10 @@ public class AntBgSupImpl implements IBgSupService {
             String signature= Md5Utils.md5(stringSignTemp).toUpperCase();
             HttpRequest post = HttpUtil.createPost(url);
             post.header("signature", signature);
-            post.body(JSONUtil.toJsonStr(parameters));
+            String postBody = JSONUtil.toJsonStr(parameters);
+            post.body(postBody);
             post.timeout(timeOut);
-            supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            supResult = new SupResult(postBody, LocalDateTime.now());
             result = post.execute().body();
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
@@ -108,7 +109,7 @@ public class AntBgSupImpl implements IBgSupService {
                     , bean.getOrderNo(),url, result, e);
 
             if (supResult == null) {
-                supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+                supResult = new SupResult(JSONUtil.toJsonStr(parameters), LocalDateTime.now());
             }
             supResult.setState(ReqState.ERROR);
             supResult.setRespTime(LocalDateTime.now());

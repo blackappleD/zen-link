@@ -2,10 +2,17 @@ package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.vo.ck.*;
-import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.SuplierQueryBean;
 
 public interface ICkSupService extends ISupService{
+
+    /**
+     * 银行卡四要素
+     */
+    default public SupResult ckBankFour(FourBankReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
 
 
     /**
