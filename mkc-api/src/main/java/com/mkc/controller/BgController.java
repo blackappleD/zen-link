@@ -53,7 +53,7 @@ public class BgController extends BaseController {
             merLog.setReqJson(reqJson);
 
             Result result = bgService.queryHighSchoolEducationInfo(params, merLog);
-            return null;
+            return result;
         } catch (ApiServiceException e) {
             return Result.fail(e.getCode(),e.getMessage());
         } catch (Exception e) {
@@ -75,11 +75,11 @@ public class BgController extends BaseController {
         String zsbh = params.getZsbh();
 
         if (StringUtils.isBlank(zsbh)) {
-            log.error("缺少参数 reqOrderNo {} , merCode： {}", zsbh, merCode);
+            log.error("缺少参数 zsbh {} , merCode： {}", zsbh, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
         if (StringUtils.isBlank(xm)) {
-            log.error("缺少参数 reqOrderNo {} , merCode： {}", xm, merCode);
+            log.error("缺少参数 xm {} , merCode： {}", xm, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
         String plaintext = merCode + xm + zsbh;
@@ -127,11 +127,11 @@ public class BgController extends BaseController {
         String xm = params.getXm();
         String zjhm = params.getZjhm();
         if (StringUtils.isBlank(zjhm)) {
-            log.error("缺少参数 reqOrderNo {} , merCode： {}", zjhm, merCode);
+            log.error("缺少参数 zjhm {} , merCode： {}", zjhm, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
         if (StringUtils.isBlank(xm)) {
-            log.error("缺少参数 reqOrderNo {} , merCode： {}", xm, merCode);
+            log.error("缺少参数 xm {} , merCode： {}", xm, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
 
