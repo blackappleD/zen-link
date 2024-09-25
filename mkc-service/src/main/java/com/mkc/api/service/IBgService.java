@@ -98,4 +98,18 @@ public interface IBgService {
      * @return
      */
     public Result queryDrivingLicenseInfo(DrivingLicenseReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 学历信息查询
+     * @param params
+     * @return
+     */
+    public Result queryEducationInfo(EducationInfoReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 高校学历核查接口
+     * @param params
+     * @return
+     */
+    Result queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog);
 }

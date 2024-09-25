@@ -6,6 +6,17 @@ import com.mkc.bean.SuplierQueryBean;
 
 public interface IBgSupService extends ISupService {
 
+    /**
+     * 全国高等学历信息查询
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryEducationInfo(EducationInfoReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
 
     /**
      * 车辆信息5三要素-简版

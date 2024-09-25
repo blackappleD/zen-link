@@ -23,19 +23,19 @@ spring:
                 # 后台配置数据源
                 master:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://122.228.34.134:5443/dev?currentSchema=sysconf&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://127.0.0.1:5432/dev?currentSchema=sysconf&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
                 # 业务数据源
                 business:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://122.228.34.134:5443/dev?currentSchema=business&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://127.0.0.1:5432/dev?currentSchema=business&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
                 # 业务数据源
                 quartz:
                     driver-class-name: org.postgresql.Driver
-                    url: jdbc:postgresql://122.228.34.134:5443/dev?currentSchema=quartz&useUnicode=true&characterEncoding=utf-8
+                    url: jdbc:postgresql://127.0.0.1:5432/dev?currentSchema=quartz&useUnicode=true&characterEncoding=utf-8
                     username: test
                     password: 123456
     rabbitmq:

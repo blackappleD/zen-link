@@ -43,6 +43,10 @@ public enum ProductCodeEum {
 
     BG_ENTERPRISE_FOUR_ELEMENT_INFO("BG_ENTERPRISE_FOUR_ELEMENT_001", "企业四要素","/bg/enterpriseFourElementInfo"){},
 
+    BG_EDUCATION_INFO("BG_EDUCATION_001", "全国高等学历信息查询","/bg/educationInfo"){},
+
+    BG_HIGH_SCHOOL_EDUCATION_INFO("BG_HIGH_SCHOOL_EDUCATION_001", "高校学历核查接口","/bg/highSchoolEduInfo"){},
+
     BG_DRIVING_LICENSE_INFO("BG_DRIVING_LICENSE_001", "行驶身份核验","/bg/drivingLicense"){},
 
     SF_DISHONEST_EXECUTIVE_INFO("SF_DISHONEST_EXECUTIVE_001", "失信被执行人","/sf/dishonestExecutive"){},

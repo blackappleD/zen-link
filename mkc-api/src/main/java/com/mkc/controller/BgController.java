@@ -35,6 +35,113 @@ public class BgController extends BaseController {
     private IBgService bgService;
 
     /**
+     * 高校学历核查接口
+     */
+    @PostMapping("/highSchoolEduInfo")
+    public Result highSchoolEducationInfo(HttpServletRequest request, @RequestBody HighSchoolEducationInfoReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckHighSchoolEduInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_HIGH_SCHOOL_EDUCATION_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryHighSchoolEducationInfo(params, merLog);
+            return null;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【高校学历核查接口】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckHighSchoolEduInfoParams(HighSchoolEducationInfoReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String xm = params.getXm();
+        String zsbh = params.getZsbh();
+
+        if (StringUtils.isBlank(zsbh)) {
+            log.error("缺少参数 reqOrderNo {} , merCode： {}", zsbh, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        if (StringUtils.isBlank(xm)) {
+            log.error("缺少参数 reqOrderNo {} , merCode： {}", xm, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        String plaintext = merCode + xm + zsbh;
+
+        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+    }
+
+    /**
+     * 全国高等学历信息查询
+     */
+    @PostMapping("/educationInfo")
+    public Result educationInfo(HttpServletRequest request, @RequestBody EducationInfoReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckEducationInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_EDUCATION_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryEducationInfo(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【全国高等学历信息查询】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckEducationInfoParams(EducationInfoReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String xm = params.getXm();
+        String zjhm = params.getZjhm();
+        if (StringUtils.isBlank(zjhm)) {
+            log.error("缺少参数 reqOrderNo {} , merCode： {}", zjhm, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        if (StringUtils.isBlank(xm)) {
+            log.error("缺少参数 reqOrderNo {} , merCode： {}", xm, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        String plaintext = merCode + xm + zjhm;
+
+        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+    }
+
+
+    /**
      *行驶身份核验
      */
     @PostMapping("/drivingLicense")

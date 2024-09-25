@@ -126,6 +126,16 @@ public class BgServiceImpl implements IBgService {
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryDrivingLicenseInfo(params, supQueryBean));
     }
 
+    @Override
+    public Result queryEducationInfo(EducationInfoReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryEducationInfo(params, supQueryBean));
+    }
+
+    @Override
+    public Result queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog) {
+        return null;
+    }
+
 
     private Result bgCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
 
