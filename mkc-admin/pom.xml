@@ -151,7 +151,7 @@
                 <configuration>
                     <username>admin</username>
                     <password>China76!</password>
-                    <repository>harbor.zhshen0301.xyz:8443/repository/${project.build.finalName}</repository>
+                    <repository>122.228.34.134:9443/repository/${project.build.finalName}</repository>
                     <!--suppress UnresolvedMavenProperty -->
                     <tag>${build-id}</tag>
                     <buildArgs>

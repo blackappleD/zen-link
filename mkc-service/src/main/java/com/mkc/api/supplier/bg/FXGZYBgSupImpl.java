@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.IBgSupService;
+import com.mkc.api.vo.bg.HighSchoolEducationInfoReqVo;
 import com.mkc.api.vo.bg.HouseInfoReqVo;
 import com.mkc.api.vo.bg.HouseResultInfoReqVo;
 import com.mkc.api.vo.bg.MaterialReqVo;
@@ -238,6 +239,38 @@ public class FXGZYBgSupImpl implements IBgSupService {
         }
     }
 
+    @Override
+    public SupResult queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo vo, SuplierQueryBean bean) {
 
+        String result = null;
+        SupResult supResult = null;
+        JSONObject params = new JSONObject();
+        String url=null;
+        try {
+            //url = baseUrlArr[0] + "/open/verification/highSchool/highSchoolCheck";
+
+            params.put("data", vo);
+            supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+           //result = FxSdkTool.highSchoolCheck(params, baseUrlArr[0], bean.getAcc(), bean.getSignPwd(), bean.getSignKey());
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+            if (StringUtils.isBlank(result)) {}
+
+            return null;
+        } catch (Throwable e) {
+
+            errMonitorMsg(log," 【法信公证云供应商】 不动产信息 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(),url, result, e);
+
+            if (supResult == null) {
+                supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            }
+            supResult.setState(ReqState.ERROR);
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+            supResult.setRemark("异常:"+e.getMessage());
+            return supResult;
+        }
+    }
 
 }
