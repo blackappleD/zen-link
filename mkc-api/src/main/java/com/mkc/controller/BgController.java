@@ -35,6 +35,56 @@ public class BgController extends BaseController {
     private IBgService bgService;
 
     /**
+     * 高校学历核查结果查询接口
+     */
+    @PostMapping("/highSchoolEduResultInfo")
+    public Result highSchoolEducationResultInfo(HttpServletRequest request, @RequestBody HighSchoolEducationResultInfoReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckHighSchoolEduResultInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_HIGH_SCHOOL_EDUCATION_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = null;
+                    //bgService.queryHighSchoolEducationInfo(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【高校学历核查接口】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckHighSchoolEduResultInfoParams(HighSchoolEducationResultInfoReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String reqOrderNo = params.getReqOrderNo();
+
+        if (StringUtils.isBlank(reqOrderNo)) {
+            log.error("缺少参数 reqOrderNo {} , merCode： {}", reqOrderNo, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        String plaintext = merCode + reqOrderNo;
+
+        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+    }
+
+
+    /**
      * 高校学历核查接口
      */
     @PostMapping("/highSchoolEduInfo")

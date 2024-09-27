@@ -100,5 +100,15 @@ public class FxSdkTool {
         return JSONUtil.toJsonStr(faXinResponseResultInfo);
     }
 
+    /**
+     * 不动产信息核查结果接口
+     */
+    public static String highSchoolCheck(JSONObject jsonObject, String baseUrl, String appId, String privateKey, String publicKey) {
+        JSONObject data = jsonObject.getJSONObject("data");
+        FaXinApiRequest request = null;
+        FaXinResponseResultInfo<FaXinHouseVerifyResultApiResponse> faXinResponseResultInfo = executeRequest(null, baseUrl, null, appId, privateKey, publicKey);
+        return JSONUtil.toJsonStr(faXinResponseResultInfo);
+    }
+
 
 }

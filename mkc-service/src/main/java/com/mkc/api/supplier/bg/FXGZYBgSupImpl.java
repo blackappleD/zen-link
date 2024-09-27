@@ -248,8 +248,10 @@ public class FXGZYBgSupImpl implements IBgSupService {
         String url=null;
         try {
             //url = baseUrlArr[0] + "/open/verification/highSchool/highSchoolCheck";
-
-            params.put("data", vo);
+            JSONObject data = new JSONObject();
+            data.put("xm", vo.getXm());
+            data.put("zsbh", vo.getZsbh());
+            params.put("data", data);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
            //result = FxSdkTool.highSchoolCheck(params, baseUrlArr[0], bean.getAcc(), bean.getSignPwd(), bean.getSignKey());
             supResult.setRespTime(LocalDateTime.now());

@@ -133,7 +133,7 @@ public class BgServiceImpl implements IBgService {
 
     @Override
     public Result queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog) {
-        return null;
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryHighSchoolEducationInfo(params, supQueryBean));
     }
 
 

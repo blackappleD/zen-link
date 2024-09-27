@@ -150,7 +150,7 @@
                 </executions>
                 <configuration>
                     <username>admin</username>
-                    <password>Harbor12345</password>
+                    <password>Baihang123!</password>
                     <repository>harbor.zjbhsk.com:9443/repository/${project.build.finalName}</repository>
                     <!--suppress UnresolvedMavenProperty -->
                     <tag>${build-id}</tag>
