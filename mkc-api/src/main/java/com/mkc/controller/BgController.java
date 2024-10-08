@@ -53,7 +53,6 @@ public class BgController extends BaseController {
             merLog.setReqJson(reqJson);
 
             Result result = bgService.queryHighSchoolEducationResultInfo(params, merLog);
-                    //bgService.queryHighSchoolEducationInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
             return Result.fail(e.getCode(),e.getMessage());
