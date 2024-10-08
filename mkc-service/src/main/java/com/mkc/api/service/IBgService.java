@@ -112,4 +112,11 @@ public interface IBgService {
      * @return
      */
     Result queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 高校学历证书结果核查接口
+     * @param params
+     * @return
+     */
+    Result queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo params, MerReqLogVo merLog);
 }

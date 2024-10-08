@@ -1,4 +1,4 @@
-FROM harbor.zhshen0301.xyz:8443/library/openjdk:8-jre-base
+FROM harbor.zjbhsk.com:9443/library/openjdk:8-jre-base
 MAINTAINER David Flemström <dflemstr@spotify.com>
 
 # ENTRYPOINT ["/usr/local/openjdk-8/bin/java", "-jar", "/usr/share/myservice/myservice.jar"]

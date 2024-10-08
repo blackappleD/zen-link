@@ -7,6 +7,17 @@ import com.mkc.bean.SuplierQueryBean;
 public interface IBgSupService extends ISupService {
 
     /**
+     * 高校学历核查结果
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+    /**
      * 高校学历核查
      * @param vo
      * @param bean

@@ -52,7 +52,7 @@ public class BgController extends BaseController {
             MerReqLogVo merLog = ckMer(request, ckMerBean);
             merLog.setReqJson(reqJson);
 
-            Result result = null;
+            Result result = bgService.queryHighSchoolEducationResultInfo(params, merLog);
                     //bgService.queryHighSchoolEducationInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {

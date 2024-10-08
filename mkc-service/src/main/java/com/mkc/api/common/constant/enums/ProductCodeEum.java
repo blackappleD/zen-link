@@ -52,6 +52,8 @@ public enum ProductCodeEum {
     SF_DISHONEST_EXECUTIVE_INFO("SF_DISHONEST_EXECUTIVE_001", "失信被执行人","/sf/dishonestExecutive"){},
 
     SF_RESTRICTED_CONSUMER_INFO("SF_RESTRICTED_CONSUMER_001", "限制高消费被执行人接口","/sf/restrictedConsumer"){},
+
+
     ;
 
 
