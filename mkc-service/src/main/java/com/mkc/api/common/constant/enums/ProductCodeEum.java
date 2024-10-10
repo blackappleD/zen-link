@@ -25,6 +25,8 @@ public enum ProductCodeEum {
 
     BG_CAR_INFO("BG_CAR_001", "车五项信息查询","/bg/carInfo"){},
 
+    BG_CAR_FIVE_INFO("BG_CAR_002", "车五项信息查询","/bg/carFiveInfo"){},
+
     BG_VEHICLE_LICENSE_INFO("BG_VEHICLE_LICENSE_001", "行驶证信息查询","/bg/vehicleLicenseInfo"){},
 
     BG_ECONOMIC_RATE_INFO("BG_ECONOMIC_RATE_001", "经济能力评级","/bg/economicRate"){},

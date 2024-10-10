@@ -286,9 +286,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             log.info("响应参数：{}", result);
             System.out.println("result:"+result);
             JSONObject resultJson = JSON.parseObject(result);
-            System.out.println("resultJson:"+resultJson);
             String returnData = resultJson.getString("data");
-            System.out.println("returnData:" + returnData);
             // 校验返回的签名
             boolean isValid = doVerifyReturnSign(resultJson, bean.getSignKey());
             if (!isValid) {

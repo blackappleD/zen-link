@@ -65,7 +65,7 @@ spring:
                     driver-class-name: org.postgresql.Driver
                     url: jdbc:postgresql://pgm-bp1338798xm9d67v.pg.rds.aliyuncs.com:5432/market?currentSchema=sysconf&useUnicode=true&characterEncoding=utf-8
                     username: mkc
-                    password: mkc@2024!!
+                        password: mkc@2024!!
                 # 业务数据源
                 business:
                     driver-class-name: org.postgresql.Driver

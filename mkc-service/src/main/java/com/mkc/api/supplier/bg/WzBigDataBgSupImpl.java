@@ -237,6 +237,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
         JSONObject params = new JSONObject();
         String url=null;
         try {
+
             url = bean.getUrl() + "/api/car/info5";
             String appsecret = bean.getSignKey();
             String appkey = bean.getAcc();
@@ -251,6 +252,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
             params.put("timestamp", timestamp);
             String sign=Md5Utils.md5(appkey+appsecret+timestamp);
             params.put("sign", sign);
+
 
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             String token = "Bearer 58266869751cd646933f418ea5e3811e";
@@ -290,12 +292,6 @@ public class WzBigDataBgSupImpl implements IBgSupService {
                     }
                 }
 
-            } else if (NO.equals(code)) {
-
-                supResult.setFree(FreeState.NO);
-                supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
-                return supResult;
             } else {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
