@@ -34,55 +34,6 @@ public class BgController extends BaseController {
     @Autowired
     private IBgService bgService;
 
-    /**
-     *
-     * 车五项
-     */
-    @PostMapping("/carFiveInfo")
-    public Result carInfo(HttpServletRequest request, @RequestBody CarFiveInfoReqVo params) {
-
-        String reqJson = null;
-        try {
-            reqJson = JSON.toJSONString(params);
-            //检查商户参数完整性
-            CkMerBean ckMerBean = ckCarFiveInfoParams(params);
-            ckMerBean.setProductCode(ProductCodeEum.BG_CAR_FIVE_INFO.getCode());
-
-            //检查商户参数有效性
-            MerReqLogVo merLog = ckMer(request, ckMerBean);
-            merLog.setReqJson(reqJson);
-
-            Result result = null;
-                    //bgService.queryHighSchoolEducationResultInfo(params, merLog);
-            return result;
-        } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
-        } catch (Exception e) {
-            errMonitorMsg("【车五项接口】API 发生异常  reqJson {} ", reqJson,e);
-            return Result.fail();
-        }
-    }
-
-    private CkMerBean ckCarFiveInfoParams(CarFiveInfoReqVo params) {
-
-        String merCode = params.getMerCode();
-
-        String sign = params.getSign();
-        String key = params.getKey();
-
-        ckCommonParams(params);
-
-        String carNo = params.getCarNo();
-
-        if (StringUtils.isBlank(carNo)) {
-            log.error("缺少参数 carNo {} , merCode： {}", carNo, merCode);
-            throw new ApiServiceException(ApiReturnCode.ERR_001);
-        }
-        String plaintext = merCode + carNo;
-
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
-    }
-
 
 
     /**
