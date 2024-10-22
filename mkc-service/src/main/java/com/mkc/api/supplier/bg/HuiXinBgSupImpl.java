@@ -37,7 +37,8 @@ public class HuiXinBgSupImpl implements IBgSupService {
         JSONObject params = new JSONObject();
         String url=null;
         try {
-            url = bean.getUrl() + "/integration/verifyIdentityVehicleLicense";
+//            url = bean.getUrl() + "/integration/verifyIdentityVehicleLicense";
+            url = bean.getUrl() + "/vehicle/verifyVehicleLicense";
             String appsecret = bean.getSignKey();
             String appkey = bean.getAcc();
             Integer timeOut = bean.getTimeOut();
