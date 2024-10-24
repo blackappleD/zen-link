@@ -6,6 +6,15 @@ import com.mkc.bean.SuplierQueryBean;
 
 public interface ICkSupService extends ISupService{
 
+
+    /**
+     * 行驶证核验
+     */
+    default public SupResult ckVehicleLicenseInfo(VehicleLicenseReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
     /**
      * 银行卡四要素
      */

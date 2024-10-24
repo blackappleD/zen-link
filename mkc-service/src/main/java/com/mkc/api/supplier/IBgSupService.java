@@ -162,7 +162,14 @@ public interface IBgSupService extends ISupService {
     }
 
 
-
-
-
+    /**
+     * 婚姻状况信息查询
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryMarriageResultInfo(MarriageInfoReqInfo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
 }

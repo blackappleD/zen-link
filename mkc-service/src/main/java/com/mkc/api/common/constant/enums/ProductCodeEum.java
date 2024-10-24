@@ -22,6 +22,8 @@ public enum ProductCodeEum {
     CK_PERSON_CAR("CK_PERSONCAR_001", "人车核验","/ck/personCarVerify"){},
     CK_WORK_UNIT("CK_WORKUNIT_001", "工作单位核验","/ck/workUnitVerify"){},
     CK_POPULATION_THREE("CK_POPULATION_THREE_001", "全国⼈⼝身份信息三要素核验","/ck/populationThree"){},
+    CK_VEHICLE_LICENSE_INFO("CK_VEHICLE_LICENSE_001", "行驶证核验","/ck/ckVehicleLicense"){},
+    CK_BANK_FOUR("CK_BANK_FOUR_INFO_001", "银行卡四要素核验","/ck/bankFour"){},
 
     BG_CAR_INFO("BG_CAR_001", "车五项信息查询","/bg/carInfo"){},
 
@@ -55,7 +57,7 @@ public enum ProductCodeEum {
 
     SF_RESTRICTED_CONSUMER_INFO("SF_RESTRICTED_CONSUMER_001", "限制高消费被执行人接口","/sf/restrictedConsumer"){},
 
-
+    BG_MARRIAGE_INFO("BG_MARRIAGE_001", "婚姻关系验证", "/bg/marriageResultInfo"){}
     ;
 
 

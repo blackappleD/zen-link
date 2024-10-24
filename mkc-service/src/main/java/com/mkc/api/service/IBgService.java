@@ -119,4 +119,12 @@ public interface IBgService {
      * @return
      */
     Result queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 婚姻状况
+     * @param params
+     * @param merLog
+     * @return
+     */
+    Result queryMarriageResultInfo(MarriageInfoReqInfo params, MerReqLogVo merLog);
 }

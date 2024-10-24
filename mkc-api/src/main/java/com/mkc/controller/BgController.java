@@ -14,6 +14,7 @@ import com.mkc.bean.CkMerBean;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +36,6 @@ public class BgController extends BaseController {
     private IBgService bgService;
 
     /**
-     *
      * 车五项
      */
     @PostMapping("/carFiveInfo")
@@ -53,12 +53,12 @@ public class BgController extends BaseController {
             merLog.setReqJson(reqJson);
 
             Result result = null;
-                    //bgService.queryHighSchoolEducationResultInfo(params, merLog);
+            //bgService.queryHighSchoolEducationResultInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【车五项接口】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【车五项接口】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -80,9 +80,8 @@ public class BgController extends BaseController {
         }
         String plaintext = merCode + carNo;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }
-
 
 
     /**
@@ -106,9 +105,9 @@ public class BgController extends BaseController {
             Result result = bgService.queryHighSchoolEducationResultInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【高校学历核查接口】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【高校学历核查接口】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -130,9 +129,63 @@ public class BgController extends BaseController {
         }
         String plaintext = merCode + reqOrderNo;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }
 
+    /**
+     * 婚姻状况
+     */
+    @PostMapping("/marriageResultInfo")
+    public Result marriageResultInfo(HttpServletRequest request, @RequestBody MarriageInfoReqInfo params) {
+
+        String reqJson = null;
+
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckMarriageResultInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_MARRIAGE_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryMarriageResultInfo(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【婚姻状况接口】API 发生异常  reqJson {} ", reqJson, e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckMarriageResultInfoParams(MarriageInfoReqInfo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String sfzh = params.getSfzh();
+        String xm = params.getXm();
+
+        if (StringUtils.isBlank(sfzh)) {
+            log.error("缺少参数 sfzh {} , merCode： {}", sfzh, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(xm)) {
+            log.error("缺少参数 xm {} , merCode： {}", xm, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        String plaintext = merCode + xm + sfzh;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
 
     /**
      * 高校学历核查接口
@@ -155,9 +208,9 @@ public class BgController extends BaseController {
             Result result = bgService.queryHighSchoolEducationInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【高校学历核查接口】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【高校学历核查接口】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -184,7 +237,7 @@ public class BgController extends BaseController {
         }
         String plaintext = merCode + xm + zsbh;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }
 
     /**
@@ -208,9 +261,9 @@ public class BgController extends BaseController {
             Result result = bgService.queryEducationInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【全国高等学历信息查询】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【全国高等学历信息查询】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -237,12 +290,12 @@ public class BgController extends BaseController {
 
         String plaintext = merCode + xm + zjhm;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }
 
 
     /**
-     *行驶身份核验
+     * 行驶身份核验
      */
     @PostMapping("/drivingLicense")
     public Result drivingLicense(HttpServletRequest request, @RequestBody DrivingLicenseReqVo params) {
@@ -261,9 +314,9 @@ public class BgController extends BaseController {
             Result result = bgService.queryDrivingLicenseInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【行驶身份核验】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【行驶身份核验】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -288,17 +341,17 @@ public class BgController extends BaseController {
             Result result = bgService.queryEconomicRateInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【经济能力评级】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【经济能力评级】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
 
 
-
     /**
      * 企业四要素
+     *
      * @param request
      * @param params
      * @return
@@ -320,16 +373,14 @@ public class BgController extends BaseController {
             Result result = bgService.queryFourElementsInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【企业四要素】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【企业四要素】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
 
 
     }
-
-
 
 
     /**
@@ -352,9 +403,9 @@ public class BgController extends BaseController {
             Result result = bgService.queryPersonCarInfo(params, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【人车核验详版】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【人车核验详版】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -365,7 +416,7 @@ public class BgController extends BaseController {
      */
     @PostMapping("/sureScoreInfo")
     public Result sureScoreInfo(HttpServletRequest request, @RequestBody SureScoreInfoReqVo params) {
-        String reqJson =null;
+        String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
 
@@ -382,9 +433,9 @@ public class BgController extends BaseController {
 
 
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【确信分】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【确信分】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -394,7 +445,7 @@ public class BgController extends BaseController {
      */
     @PostMapping("/financeInfo")
     public Result financeInfo(HttpServletRequest request, @RequestBody FinanceInfoReqVo params) {
-        String reqJson =null;
+        String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
 
@@ -410,18 +461,19 @@ public class BgController extends BaseController {
             return result;
 
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【经济能力2W】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【经济能力2W】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
+
     /**
      * 经济能力评级V3
      */
     @PostMapping("/financeInfoV3")
     public Result financeInfoV3(HttpServletRequest request, @RequestBody FinanceInfoV3ReqVo params) {
-        String reqJson =null;
+        String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
 
@@ -437,17 +489,15 @@ public class BgController extends BaseController {
             return result;
 
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【经济能力评级V3】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【经济能力评级V3】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
 
 
-
     /**
-     *
      * 不动产信息核查
      */
     @PostMapping("/houseReqInfo")
@@ -478,9 +528,9 @@ public class BgController extends BaseController {
             Result result = bgService.queryHouseInfo(houseInfoReqVo, merLog);
             return result;
         } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("不动产信息核查 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("不动产信息核查 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
 
@@ -488,14 +538,12 @@ public class BgController extends BaseController {
     }
 
 
-
     /**
-     *
      * 不动产信息核查
      */
     @PostMapping("/houseResultReqInfo")
     public Result houseResultInfo(HttpServletRequest request, @RequestBody HouseResultInfoReqVo params) {
-        String reqJson =null;
+        String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
 
@@ -513,10 +561,10 @@ public class BgController extends BaseController {
             return result;
         } catch (ApiServiceException e) {
 
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
 
         } catch (Exception e) {
-            errMonitorMsg("【不动产结果信息】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【不动产结果信息】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -528,7 +576,7 @@ public class BgController extends BaseController {
      */
     @PostMapping("/carInfo")
     public Result carInfo(HttpServletRequest request, @RequestBody CarInfoReqVo params) {
-        String reqJson =null;
+        String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
 
@@ -546,10 +594,10 @@ public class BgController extends BaseController {
             return result;
         } catch (ApiServiceException e) {
 
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
 
         } catch (Exception e) {
-            errMonitorMsg("【车5项】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【车5项】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -561,7 +609,7 @@ public class BgController extends BaseController {
      */
     @PostMapping("/vehicleLicenseInfo")
     public Result vehicleLicenseInfo(HttpServletRequest request, @RequestBody VehicleLicenseReqVo params) {
-        String reqJson =null;
+        String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
 
@@ -579,10 +627,10 @@ public class BgController extends BaseController {
             return result;
         } catch (ApiServiceException e) {
 
-            return Result.fail(e.getCode(),e.getMessage());
+            return Result.fail(e.getCode(), e.getMessage());
 
         } catch (Exception e) {
-            errMonitorMsg("【行驶证信息查询】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【行驶证信息查询】API 发生异常  reqJson {} ", reqJson, e);
             return Result.fail();
         }
     }
@@ -598,13 +646,13 @@ public class BgController extends BaseController {
 
         String reqOrderNo = params.getReqOrderNo();
         if (StringUtils.isBlank(reqOrderNo)) {
-            log.error("缺少参数 reqOrderNo {} , merCode： {}", reqOrderNo,merCode);
+            log.error("缺少参数 reqOrderNo {} , merCode： {}", reqOrderNo, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
 
-        String plaintext = merCode + reqOrderNo ;
+        String plaintext = merCode + reqOrderNo;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 
     }
 
@@ -638,6 +686,20 @@ public class BgController extends BaseController {
         String plaintext = merCode + licensePlateNo + name + plateType;
 
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
+    public static void main(String[] args) {
+
+        String xm = "林舒婷";
+        String sfzh = "330381199910181122";
+
+        String merCode = "BhCpTest";
+        String pwd = "e0be01493778d77ecfd2004f54b41a09";
+//        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
+        String plaintext = merCode + xm + sfzh;
+        String signText = plaintext + pwd;
+        String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
+        System.err.println(signMd5);
     }
 
     private CkMerBean ckEconomicRateParams(EconomicRateReqVo params) {
@@ -830,7 +892,7 @@ public class BgController extends BaseController {
 
         String plaintext = merCode + idCard + name + mobile;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 
     }
 
@@ -865,7 +927,7 @@ public class BgController extends BaseController {
 
         String plaintext = merCode + idCard + name + mobile;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 
     }
 
@@ -881,14 +943,14 @@ public class BgController extends BaseController {
         String plateNo = params.getPlateNo();
         String plateType = params.getPlateType();
         if (StringUtils.isBlank(plateNo)) {
-            log.error("缺少参数 plateNo {} , merCode： {}", plateNo,merCode);
+            log.error("缺少参数 plateNo {} , merCode： {}", plateNo, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
 
 
-        String plaintext = merCode + plateNo ;
+        String plaintext = merCode + plateNo;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 
     }
 
@@ -918,9 +980,9 @@ public class BgController extends BaseController {
         }
 
 
-        String plaintext = merCode + name + plateNo + plateType ;
+        String plaintext = merCode + name + plateNo + plateType;
 
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 
     }
 
@@ -936,11 +998,11 @@ public class BgController extends BaseController {
         List<String> types = params.getTypes();
         List<PersonInfoReqVo> persons = params.getPersons();
         if (types == null || types.size() == 0) {
-            log.error("缺少参数 types {} , merCode： {}", types,merCode);
+            log.error("缺少参数 types {} , merCode： {}", types, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
         if (persons == null || persons.size() == 0) {
-            log.error("缺少参数 persons {} , merCode： {}", persons,merCode);
+            log.error("缺少参数 persons {} , merCode： {}", persons, merCode);
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
         if (params.getFiles() == null || params.getFiles().size() == 0) {
@@ -962,18 +1024,10 @@ public class BgController extends BaseController {
             }
         }
 
-        String plaintext = merCode + params.getPersonsStr() ;
-        return new CkMerBean(merCode, key, plaintext, sign,params.getMerSeq());
+        String plaintext = merCode + params.getPersonsStr();
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 
     }
-
-
-
-
-
-
-
-
 
 
 }

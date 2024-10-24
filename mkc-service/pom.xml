@@ -53,6 +53,13 @@
             <version>1.70</version>
         </dependency>
 
+        <!--EasyExcel相关依赖-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
 
         <!-- 蚂蚁链 学历 客户端SDK -->
         <dependency>

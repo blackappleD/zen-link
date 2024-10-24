@@ -8,6 +8,7 @@ import com.mkc.api.common.constant.enums.ReqParamType;
 import com.mkc.api.common.constant.enums.YysProductCode;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.service.ICkService;
+import com.mkc.api.vo.ck.VehicleLicenseReqVo;
 import com.mkc.api.vo.ck.*;
 import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.CkMerBean;
@@ -37,6 +38,136 @@ public class CkController extends BaseController {
     @Autowired
     private ICkService ckService;
 
+    /**
+     * 银行卡四要素
+     */
+    @PostMapping("/bankFour")
+    public Result ckVehicleLicense(HttpServletRequest request, @RequestBody FourBankReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckBankFourParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.CK_BANK_FOUR.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = ckService.ckBankFour(params, merLog);
+
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【行驶证核验】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 行驶证核验
+     */
+    @PostMapping("/ckVehicleLicense")
+    public Result ckVehicleLicense(HttpServletRequest request, @RequestBody VehicleLicenseReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckVehicleLicenseParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.CK_VEHICLE_LICENSE_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = ckService.ckVehicleLicenseInfo(params, merLog);
+
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【行驶证核验】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckVehicleLicenseParams(VehicleLicenseReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String license = params.getLicense();
+        String type = params.getType();
+        String name = params.getName();
+
+        if (StringUtils.isBlank(license)) {
+            log.error("缺少参数 license {} , merCode： {}", license, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(name)) {
+            log.error("缺少参数 name {} , merCode： {}", name, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(type)) {
+            log.error("缺少参数 name {} , merCode： {}", type, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+
+        String plaintext = merCode + name + license + type;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+    private CkMerBean ckBankFourParams(FourBankReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String bankCard = params.getBankCard();
+        String certName = params.getCertName();
+        String certNo = params.getCertNo();
+        String mobile = params.getMobile();
+
+        if (StringUtils.isBlank(bankCard)) {
+            log.error("缺少参数 bankCard {} , merCode： {}", bankCard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(certName)) {
+            log.error("缺少参数 certName {} , merCode： {}", certName, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(certNo)) {
+            log.error("缺少参数 certNo {} , merCode： {}", certNo, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(mobile)) {
+            log.error("缺少参数 mobile {} , merCode： {}", mobile, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+
+        String plaintext = merCode + bankCard + certName + certNo + mobile;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
 
 
     /**

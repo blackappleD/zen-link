@@ -21,6 +21,8 @@ public interface ICkService {
     public SupResult ckCommonSup(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function);
 
 
+    public Result ckVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog);
+
 
     /**
      * 个人手机三要素认证
@@ -50,4 +52,5 @@ public interface ICkService {
      */
     public Result ckPopulationThree(PopulationThreeReqVo params, MerReqLogVo merLog);
 
+    Result ckBankFour(FourBankReqVo params, MerReqLogVo merLog);
 }

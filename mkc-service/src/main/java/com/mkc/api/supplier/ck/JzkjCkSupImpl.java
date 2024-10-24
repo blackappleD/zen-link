@@ -34,6 +34,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 
     private final static String ERROR = "500";
 
+    @Override
     public SupResult ckBankFour(FourBankReqVo vo, SuplierQueryBean bean) {
         String result = null;
         SupResult supResult = null;

@@ -173,6 +173,19 @@ public class CkServiceImpl implements ICkService {
 
     }
 
+    @Override
+    public Result ckVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog) {
+
+        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
+                ckSupService.ckVehicleLicenseInfo(params, supQueryBean));
+    }
+
+    @Override
+    public Result ckBankFour(FourBankReqVo params, MerReqLogVo merLog) {
+
+        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
+                ckSupService.ckBankFour(params, supQueryBean));
+    }
 
 
     /**
