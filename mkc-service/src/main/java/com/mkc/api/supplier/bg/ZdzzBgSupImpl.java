@@ -70,9 +70,11 @@ public class ZdzzBgSupImpl implements IBgSupService {
                 supResult = new SupResult(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
                 Map<String, String> headers = new HashMap<>();
                 headers.put("app-token", appToken);
-                result = HttpUtil.createGet(bean.getUrl() + "/dc-dbapi/data-product/171271637059725")
+                result = HttpUtil.createGet(bean.getUrl() + "/dc-dbapi/data-product/171271592601789")
                         .addHeaders(headers)
                         .form(queryParams)
+                        .setReadTimeout(timeOut)
+                        .setReadTimeout(timeOut)
                         .execute()
                         .body();
                 supResult.setRespTime(LocalDateTime.now());
@@ -101,7 +103,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
                     supResult.setRemark("查询失败");
                     supResult.setState(ReqState.ERROR);
                     errMonitorMsg(log,"  婚姻关系信息查询接口 发生异常 orderNo {} URL {} , 报文: {} "
-                            , bean.getOrderNo(),url, result);
+                            , bean.getOrderNo(), bean.getUrl() + "/dc-dbapi/data-product/171271592601789", result);
                     return supResult;
                 }
             } else {
@@ -169,6 +171,8 @@ public class ZdzzBgSupImpl implements IBgSupService {
                 result = HttpUtil.createGet(bean.getUrl() + "/dc-dbapi/data-product/172621339414163")
                         .addHeaders(headers)
                         .form(queryParams)
+                        .setConnectionTimeout(timeOut)
+                        .setReadTimeout(timeOut)
                         .execute()
                         .body();
                 supResult.setRespTime(LocalDateTime.now());

@@ -8,7 +8,7 @@ import lombok.Data;
  * @date 2024/10/23
  */
 @Data
-public class ExcelRead {
+public class ExcelTest2W {
     @ExcelProperty("姓名")
     private String name;
     @ExcelProperty("身份证")
@@ -23,6 +23,8 @@ public class ExcelRead {
     private String history;
     @ExcelProperty("stability")
     private String stability;
+    @ExcelProperty("level")
+    private String level;
 
 
 }
