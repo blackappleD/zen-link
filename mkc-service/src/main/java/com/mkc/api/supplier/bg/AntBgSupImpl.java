@@ -38,6 +38,7 @@ public class AntBgSupImpl implements IBgSupService {
      */
     private static final String ERROR_CODE1 = "40001";
 
+    @Override
     public SupResult queryFourElementsInfo(EnterpriseFourElementsReqVo vo, SuplierQueryBean bean) {
         String result = null;
         SupResult supResult = null;

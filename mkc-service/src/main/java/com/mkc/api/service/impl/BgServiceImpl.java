@@ -142,8 +142,18 @@ public class BgServiceImpl implements IBgService {
     }
 
     @Override
-    public Result queryMarriageResultInfo(MarriageInfoReqInfo params, MerReqLogVo merLog) {
-        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryMarriageResultInfo(params,supQueryBean));
+    public Result queryMaritalStatus(MarriageInfoReqInfo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryMaritalStatus(params,supQueryBean));
+    }
+
+    @Override
+    public Result queryMaritalRelationship(MaritalRelationshipReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryMaritalRelationship(params,supQueryBean));
+    }
+
+    @Override
+    public Result ckMarriageStabilityParams(MaritalStabilityReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryMaritalStability(params,supQueryBean));
     }
 
 

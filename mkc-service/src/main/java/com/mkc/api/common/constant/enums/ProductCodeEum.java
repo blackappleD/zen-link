@@ -57,7 +57,9 @@ public enum ProductCodeEum {
 
     SF_RESTRICTED_CONSUMER_INFO("SF_RESTRICTED_CONSUMER_001", "限制高消费被执行人接口","/sf/restrictedConsumer"){},
 
-    BG_MARRIAGE_INFO("BG_MARRIAGE_001", "婚姻关系验证", "/bg/marriageResultInfo"){}
+    BG_MARITAL_RELATIONSHIP("BG_MARRIAGE_001", "婚姻关系验证", "/bg/maritalRelationship"){},
+    BG_MARITAL_STATUS("BG_MARRIAGE_002", "婚姻状况查询", "/bg/maritalStatus"){},
+    BG_MARITAL_STABILITY("BG_MARRIAGE_003", "婚姻稳定状况查询", "/bg/maritalStability"){},
     ;
 
 

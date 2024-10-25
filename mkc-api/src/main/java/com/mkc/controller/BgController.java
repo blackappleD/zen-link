@@ -133,10 +133,63 @@ public class BgController extends BaseController {
     }
 
     /**
+     * 婚姻稳定
+     */
+    @PostMapping("/maritalStability")
+    public Result maritalStability(HttpServletRequest request, @RequestBody MaritalStabilityReqVo params) {
+
+        String reqJson = null;
+
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckMarriageStabilityParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_MARITAL_STABILITY.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.ckMarriageStabilityParams(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【婚姻稳定状况接口】API 发生异常  reqJson {} ", reqJson, e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckMarriageStabilityParams(MaritalStabilityReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String xm = params.getXm();
+        String sfzh = params.getSfzh();
+
+        if (StringUtils.isBlank(xm)) {
+            log.error("缺少参数 xm {} , merCode： {}", xm, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        if (StringUtils.isBlank(sfzh)) {
+            log.error("缺少参数 sfzh {} , merCode： {}", sfzh, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        String plaintext = merCode + xm + sfzh;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+    /**
      * 婚姻状况
      */
-    @PostMapping("/marriageResultInfo")
-    public Result marriageResultInfo(HttpServletRequest request, @RequestBody MarriageInfoReqInfo params) {
+    @PostMapping("/maritalStatus")
+    public Result maritalStatus(HttpServletRequest request, @RequestBody MarriageInfoReqInfo params) {
 
         String reqJson = null;
 
@@ -145,13 +198,13 @@ public class BgController extends BaseController {
 
             //检查商户参数完整性
             CkMerBean ckMerBean = ckMarriageResultInfoParams(params);
-            ckMerBean.setProductCode(ProductCodeEum.BG_MARRIAGE_INFO.getCode());
+            ckMerBean.setProductCode(ProductCodeEum.BG_MARITAL_STATUS.getCode());
 
             //检查商户参数有效性
             MerReqLogVo merLog = ckMer(request, ckMerBean);
             merLog.setReqJson(reqJson);
 
-            Result result = bgService.queryMarriageResultInfo(params, merLog);
+            Result result = bgService.queryMaritalStatus(params, merLog);
             return result;
         } catch (ApiServiceException e) {
             return Result.fail(e.getCode(), e.getMessage());
@@ -183,6 +236,72 @@ public class BgController extends BaseController {
             throw new ApiServiceException(ApiReturnCode.ERR_001);
         }
         String plaintext = merCode + xm + sfzh;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
+    /**
+     * 婚姻关系核验
+     */
+    @PostMapping("/maritalRelationship")
+    public Result maritalRelationship(HttpServletRequest request, @RequestBody MaritalRelationshipReqVo params) {
+
+        String reqJson = null;
+
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckMarriageRelationshipParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_MARITAL_RELATIONSHIP.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryMaritalRelationship(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【婚姻状况接口】API 发生异常  reqJson {} ", reqJson, e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckMarriageRelationshipParams(MaritalRelationshipReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String manIdcard = params.getManIdcard();
+        String manName = params.getManName();
+        String womanIdcard = params.getWomanIdcard();
+        String womanName = params.getWomanName();
+
+        if (StringUtils.isBlank(manIdcard)) {
+            log.error("缺少参数 manIdCard {} , merCode： {}", manIdcard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(manName)) {
+            log.error("缺少参数 manName {} , merCode： {}", manName, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        if (StringUtils.isBlank(womanIdcard)) {
+            log.error("缺少参数 womanIdcard {} , merCode： {}", womanIdcard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(womanName)) {
+            log.error("缺少参数 womanName {} , merCode： {}", womanName, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        String plaintext = merCode + manIdcard + manName + womanIdcard + womanName;
 
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }
@@ -690,13 +809,23 @@ public class BgController extends BaseController {
 
     public static void main(String[] args) {
 
-        String xm = "林舒婷";
-        String sfzh = "330381199910181122";
+        String xm = "陈海武";
+        String sfzh = "330322199409262412";
+        String persons = "[{\"name\":\"刘君涛\",\"cardNum\":\"320525198603170531\"}]";
+        String reqOrderNo = "f34d4f8020684de3acc73b8e9d2d82fd";
+        String manIdcard = "陈海武";
+        String manName = "330322199409262412";
+        String womanIdcard = "庄冬雪";
+        String womanName = "330322199501082422";
 
         String merCode = "BhCpTest";
+        //本地
         String pwd = "e0be01493778d77ecfd2004f54b41a09";
+        //线上
 //        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
         String plaintext = merCode + xm + sfzh;
+//        String plaintext = merCode + reqOrderNo;
+//        String plaintext = merCode + manIdcard + manName + womanIdcard + womanName;
         String signText = plaintext + pwd;
         String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
         System.err.println(signMd5);

@@ -13,10 +13,12 @@ import com.mkc.domain.ExcelTest2W;
 import com.mkc.domain.ExcelTestDriving;
 import com.mkc.domain.ExcelTestEdu;
 import com.mkc.domain.ExcelTestEduZjhm;
+import com.mkc.domain.ExcelTestHouse;
 import com.mkc.domain.MerInfo;
 import com.mkc.service.IMerInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -63,6 +66,71 @@ public class TestController {
 
         } catch (Exception e) {
             return Result.fail("服务还未启动成功");
+        }
+    }
+
+    /**
+     * 高等学历-法信
+     */
+    @PostMapping("/testHouse")
+    public void testHouse(@RequestBody MultipartFile excel, HttpServletResponse response) {
+        try {
+            List<ExcelTestHouse> readList = EasyExcel.read(excel.getInputStream())
+                    .headRowNumber(1)
+                    .head(ExcelTestHouse.class)
+                    .sheet(0)
+                    .doReadSync();
+            ArrayList<ExcelTestHouse> writeList = new ArrayList<>();
+            for (ExcelTestHouse read : readList) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("reqOrderNo", read.getReqOrderNo());
+                jsonObject.put("personCardNumList", Collections.singletonList(read.getPersonCardNum()));
+                JSONObject post = postEdu("http://api.zjbhsk.com/bg/houseResultReqInfo", jsonObject);
+                read.setCode(post.getString("code"));
+                try {
+                    JSONObject data = post.getJSONObject("data");
+                    if (Objects.nonNull(data)) {
+                        JSONArray authResults = data.getJSONArray("authResults");
+                        if (!CollectionUtils.isEmpty(authResults)) {
+                            JSONObject authResult = authResults.getJSONObject(0);
+                            JSONArray resultList = authResult.getJSONArray("resultList");
+                            if (!CollectionUtils.isEmpty(resultList)) {
+                                for (int i = 0; i < resultList.size(); i++) {
+                                    JSONObject result = resultList.getJSONObject(i);
+                                    ExcelTestHouse excelTestHouse = new ExcelTestHouse();
+                                    excelTestHouse.setXm(read.getXm());
+                                    excelTestHouse.setPersonCardNum(read.getPersonCardNum());
+                                    excelTestHouse.setCertNo(result.getString("certNo"));
+                                    excelTestHouse.setUnitNo(result.getString("unitNo"));
+                                    excelTestHouse.setLocation(result.getString("location"));
+                                    excelTestHouse.setOwnership(result.getString("ownership"));
+                                    excelTestHouse.setHouseArea(result.getString("houseArea"));
+                                    excelTestHouse.setRightsType(result.getString("rightsType"));
+                                    excelTestHouse.setIsSealUp(result.getString("isSealUp"));
+                                    excelTestHouse.setIsMortgaged(result.getString("isMortgaged"));
+                                    excelTestHouse.setRightsStartTime(result.getString("rightsStartTime"));
+                                    excelTestHouse.setRightsEndTime(result.getString("rightsEndTime"));
+                                    excelTestHouse.setUseTo(result.getString("useTo"));
+                                    writeList.add(excelTestHouse);
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    read.setResultCode(post.toJSONString());
+                    log.error(e.getMessage());
+                }
+                System.err.println(post);
+            }
+            setExcelRespProp(response, DateUtils.dateTimeNow() + "不动产测试结果");
+            EasyExcel.write(response.getOutputStream())
+                    .head(ExcelTestHouse.class)
+                    .excelType(ExcelTypeEnum.XLSX)
+                    .sheet("不动产测试结果")
+                    .doWrite(writeList);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 

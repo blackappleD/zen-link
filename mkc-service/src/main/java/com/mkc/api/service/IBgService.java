@@ -126,5 +126,21 @@ public interface IBgService {
      * @param merLog
      * @return
      */
-    Result queryMarriageResultInfo(MarriageInfoReqInfo params, MerReqLogVo merLog);
+    Result queryMaritalStatus(MarriageInfoReqInfo params, MerReqLogVo merLog);
+
+    /**
+     * 婚姻关系验证
+     * @param params
+     * @param merLog
+     * @return
+     */
+    Result queryMaritalRelationship(MaritalRelationshipReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 婚姻稳定状况
+     * @param params
+     * @param merLog
+     * @return
+     */
+    Result ckMarriageStabilityParams(MaritalStabilityReqVo params, MerReqLogVo merLog);
 }
