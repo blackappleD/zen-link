@@ -44,9 +44,9 @@ public class FXGZYBgSupImpl implements IBgSupService {
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-    private final static  String SUCCESS = "E00000";
-    private final static  String SUCCESS2 = "E00000";
-    private final static String NO="405";
+    private final static String SUCCESS = "E00000";
+    private final static String SUCCESS2 = "E00000";
+    private final static String NO = "405";
 
     @Autowired
     private FxReqRecordMapper fxReqRecordMapper;
@@ -57,7 +57,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();
-        String url=null;
+        String url = null;
         try {
             String[] baseUrlArr = null;
             if (StringUtils.isNotBlank(bean.getUrl())) {
@@ -107,15 +107,15 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
-                errMonitorMsg(log,"  不动产信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                        , bean.getOrderNo(),url, result);
+                errMonitorMsg(log, "  不动产信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(), url, result);
                 return supResult;
             }
             return supResult;
         } catch (Throwable e) {
 
-            errMonitorMsg(log," 【法信公证云供应商】 不动产信息 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(),url, result, e);
+            errMonitorMsg(log, " 【法信公证云供应商】 不动产信息 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(), url, result, e);
 
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
@@ -123,7 +123,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             supResult.setState(ReqState.ERROR);
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
-            supResult.setRemark("异常:"+e.getMessage());
+            supResult.setRemark("异常:" + e.getMessage());
             return supResult;
         }
 
@@ -155,10 +155,10 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 if (dotIndex > 0 && dotIndex < originalFileName.length() - 1) {
                     fileExtension = originalFileName.substring(dotIndex + 1);
                 }
-                File tempFile = new File(tempDir + File.separator + UUID.randomUUID()+"."+fileExtension);
+                File tempFile = new File(tempDir + File.separator + UUID.randomUUID() + "." + fileExtension);
                 file.transferTo(tempFile);
                 JSONObject reqStrJsonObject = new JSONObject();
-                reqStrJsonObject.put("originalFilename",file.getOriginalFilename());
+                reqStrJsonObject.put("originalFilename", file.getOriginalFilename());
                 supResult = new SupResult(JSONUtil.toJsonStr(reqStrJsonObject), LocalDateTime.now());
                 result = FxSdkTool.uploadFile(tempFile, bean.getSignPwd(), bean.getSignKey(), baseUrlArr[1], bean.getAcc());
                 if (StringUtils.isBlank(result)) {
@@ -190,8 +190,8 @@ public class FXGZYBgSupImpl implements IBgSupService {
                     supResult.setRemark("上传文件失败");
                     supResult.setState(ReqState.ERROR);
                     supResult.setData(resultObject);
-                    errMonitorMsg(log,"  不动产信息文件上传 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                            , bean.getOrderNo(),url, result);
+                    errMonitorMsg(log, "  不动产信息文件上传 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                            , bean.getOrderNo(), url, result);
                 }
 
             }
@@ -234,29 +234,30 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
-                errMonitorMsg(log,"  不动产信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                        , bean.getOrderNo(),url, result);
+                errMonitorMsg(log, "  不动产信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(), url, result);
                 return supResult;
             }
 
             return supResult;
         } catch (Throwable e) {
-            errMonitorMsg(log," 【法信公证云】  接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(),url, result, e);
+            errMonitorMsg(log, " 【法信公证云】  接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(), url, result, e);
             supResult.setState(ReqState.ERROR);
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
-            supResult.setRemark("异常:"+e.getMessage());
+            supResult.setRemark("异常:" + e.getMessage());
             return supResult;
         }
     }
+
 
     @Override
     public SupResult queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo vo, SuplierQueryBean bean) {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();
-        String url=null;
+        String url = null;
         try {
             String[] baseUrlArr = null;
             if (StringUtils.isNotBlank(bean.getUrl())) {
@@ -284,7 +285,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             log.info("请求参数：{}", jsonStrParam);
             result = HttpUtil.post(url, jsonStrParam);
             log.info("响应参数：{}", result);
-            System.out.println("result:"+result);
+            System.out.println("result:" + result);
             JSONObject resultJson = JSON.parseObject(result);
             String returnData = resultJson.getString("data");
             // 校验返回的签名
@@ -316,21 +317,21 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
-                errMonitorMsg(log," 高校学历核查结果接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                        , bean.getOrderNo(),url, result);
+                errMonitorMsg(log, " 高校学历核查结果接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(), url, result);
                 return supResult;
             }
             return supResult;
         } catch (Throwable e) {
-            errMonitorMsg(log," 【法信公证云供应商】 高校学历核查结果接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(),url, result, e);
+            errMonitorMsg(log, " 【法信公证云供应商】 高校学历核查结果接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(), url, result, e);
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             }
             supResult.setState(ReqState.ERROR);
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
-            supResult.setRemark("异常:"+e.getMessage());
+            supResult.setRemark("异常:" + e.getMessage());
             return supResult;
         }
     }
@@ -340,7 +341,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();
-        String url=null;
+        String url = null;
         try {
             String[] baseUrlArr = null;
             if (StringUtils.isNotBlank(bean.getUrl())) {
@@ -403,15 +404,15 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
-                errMonitorMsg(log," 高校学历核查接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                        , bean.getOrderNo(),url, result);
+                errMonitorMsg(log, " 高校学历核查接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(), url, result);
                 return supResult;
             }
             return supResult;
         } catch (Throwable e) {
 
-            errMonitorMsg(log," 【法信公证云供应商】 高校学历核查接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(),url, result, e);
+            errMonitorMsg(log, " 【法信公证云供应商】 高校学历核查接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(), url, result, e);
 
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
@@ -419,7 +420,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             supResult.setState(ReqState.ERROR);
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
-            supResult.setRemark("异常:"+e.getMessage());
+            supResult.setRemark("异常:" + e.getMessage());
             return supResult;
         }
     }
@@ -458,13 +459,13 @@ public class FXGZYBgSupImpl implements IBgSupService {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            System.err.println(doDecrypt("PadSZDsfMWdt3RQpNGTypwVmJyKum+T9Z9xkD5DGay/3CDFjZ79hq+6GlMsMJYFQL9C7CjfBYQYEaIqPwWc63fT2mdw1ZrZVw5/xLirY8qHBUOxVlN/vKiRvUn5O/tFGhvz1G5/5w5qm4zkmMc4bDVj0t/w1yo7r2Tn6joMpRtFepcfCGMy6UX47e6Y2l/VDt+nwfr2/T7VXH5hyp+u3l+MeHPjqenk7C+ioEe22vyYp/Eza6xXrQxiEV6wOzfsWMZVyE4tINNqvxy57BE/IAtvL2TtZ3ZC3IHdRizNOgKeQSAANM37n3pWDFe5UsY/8IzNozYHlpaf2doi5cOg5yw==","MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDuvLaCR3ctbgW2h7QJTqzGRM6bgIrRCPtQR8cUXwvMVTat37PDEKIPdzqigaq9fPgAsDyWIl3sggmlsmaGJuGAXZp75tV/hOG2yAhXeaqBYkB6Nq2WIbAVirQ2gFdspz9ECvy/BMH4AAfYGmus8INMd80JSU/5HfVZ4sDGASdnX/aLnFpOmtLFO6LURFuWZOXGbQvKNmmQp3br94jGa/AM4AmVv0CJ4wZvlNv75pQUUWu/rj5hFPHPPIz0RZkqVaZ7v7Ve3JqO9d53MA6FI//3eFesFgt/n0F2dIAsD7LE1JB1BqJenNRFbhCw5M2vUxJ7fhhckkt5d5paZ30o6IENAgMBAAECggEAMGMZTrBzbEbHa6Z3jAdhJ1Jc2dGk0RdT8IKLzAozlveSfI1BnwCpCB9vR+6mD3/buDAAJ6HRjZURpX7SHtCUlfLi08gGb7EcGnLSlgA32b9zOBIK/snXKZaSThWXIpOHVCAx9/lb4wsGi/tW5Zdd1UrWyNIOHny+9LfrwHYNaXr6e1i589ffCxzN/PcJfj6MXtxLo4Q853n2dLiGDCcihebNeLUUh7io8qRkTl83Ms/1oertmBfWrYrTjqhrW5Ydw2MpmCJ4cb/RyMcyWnPscd/vSpnQ9YapA9CFVUZOQfbLpF9AiX+jKiBlvyRVisfrEQcjQg4aX0UX/y5uvCPe4QKBgQD9pPZukzKD6s2RAb+i93vmZiH0aBaFR+YOFJ6J0ABpxX17GtEjmvbDklPpdUhBx4fjqzLKzaVnKNUyuCh1eQJnBaekWTAbzISXGUxFHyrd62LEr7mZ+0h7ZppLnA9YSzJzEyUoSPNnFPJwSSVasnJteGB4Y0XuE6LnatovP9+36QKBgQDw9E75xVsIAcTBq+BG9sErD0IBFp3F9FL6W0oQZDGxd+hSUfIUISTfJCbQg5Ui/BvChHI1v56q+3uz3PIGpgWwBhUKgJMtylvHhOECR2unV2oGMCAqrte8jSJcE1oneWaliodvs49lQOloGWIeCAIf0bc5JmO8BRKZEQBOdUothQKBgAluie9gr98x6wT6YKrpswTFRXv2Jug73TUm1SJgxrMoMdtTCvXc/FIXbeFfiBlSFx6DLjdWYFEutobVTEPaBRnZnvtAicZu23tW6HwlhY2NBDY2JpuwOWjFTvWCzxtEaJLY4mfWFp79q2o7fhUaT6D8efHgFyicOFGMqqJZKLOJAoGBAOsAe94i24vNncZ+CXlsxC1o7ij9k9czWZKPYobmEYlStyVCguWbBckUCz8mdlfupmxqnLFLOEbui1F61hoh5j4tUGwzxlfMmwLW2FVOrvJA0UlDurumVwawZ6iBv1Xsk240067f46UPUBWVXBqKGPhLo3V7uZ3xHJho+nGK91O5AoGAfzg/xKpm0hvFqHbfuuvy1wvFjgsKrg7hDMj9y7eQMs2vY2mF4Mn24bfzxrgv9iCe8Ib1lzQvNsaHCKk4ljtKy3MaXTYNx414sUZ9fHnB+qiKEFNxoyVN5rlacY5XRjTeCacXwbqFvTKwaJsyG5iEtz0buovMlBEcxgxlB6ubM8c="));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        try {
+//            System.err.println(doDecrypt("PadSZDsfMWdt3RQpNGTypwVmJyKum+T9Z9xkD5DGay/3CDFjZ79hq+6GlMsMJYFQL9C7CjfBYQYEaIqPwWc63fT2mdw1ZrZVw5/xLirY8qHBUOxVlN/vKiRvUn5O/tFGhvz1G5/5w5qm4zkmMc4bDVj0t/w1yo7r2Tn6joMpRtFepcfCGMy6UX47e6Y2l/VDt+nwfr2/T7VXH5hyp+u3l+MeHPjqenk7C+ioEe22vyYp/Eza6xXrQxiEV6wOzfsWMZVyE4tINNqvxy57BE/IAtvL2TtZ3ZC3IHdRizNOgKeQSAANM37n3pWDFe5UsY/8IzNozYHlpaf2doi5cOg5yw==","MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDuvLaCR3ctbgW2h7QJTqzGRM6bgIrRCPtQR8cUXwvMVTat37PDEKIPdzqigaq9fPgAsDyWIl3sggmlsmaGJuGAXZp75tV/hOG2yAhXeaqBYkB6Nq2WIbAVirQ2gFdspz9ECvy/BMH4AAfYGmus8INMd80JSU/5HfVZ4sDGASdnX/aLnFpOmtLFO6LURFuWZOXGbQvKNmmQp3br94jGa/AM4AmVv0CJ4wZvlNv75pQUUWu/rj5hFPHPPIz0RZkqVaZ7v7Ve3JqO9d53MA6FI//3eFesFgt/n0F2dIAsD7LE1JB1BqJenNRFbhCw5M2vUxJ7fhhckkt5d5paZ30o6IENAgMBAAECggEAMGMZTrBzbEbHa6Z3jAdhJ1Jc2dGk0RdT8IKLzAozlveSfI1BnwCpCB9vR+6mD3/buDAAJ6HRjZURpX7SHtCUlfLi08gGb7EcGnLSlgA32b9zOBIK/snXKZaSThWXIpOHVCAx9/lb4wsGi/tW5Zdd1UrWyNIOHny+9LfrwHYNaXr6e1i589ffCxzN/PcJfj6MXtxLo4Q853n2dLiGDCcihebNeLUUh7io8qRkTl83Ms/1oertmBfWrYrTjqhrW5Ydw2MpmCJ4cb/RyMcyWnPscd/vSpnQ9YapA9CFVUZOQfbLpF9AiX+jKiBlvyRVisfrEQcjQg4aX0UX/y5uvCPe4QKBgQD9pPZukzKD6s2RAb+i93vmZiH0aBaFR+YOFJ6J0ABpxX17GtEjmvbDklPpdUhBx4fjqzLKzaVnKNUyuCh1eQJnBaekWTAbzISXGUxFHyrd62LEr7mZ+0h7ZppLnA9YSzJzEyUoSPNnFPJwSSVasnJteGB4Y0XuE6LnatovP9+36QKBgQDw9E75xVsIAcTBq+BG9sErD0IBFp3F9FL6W0oQZDGxd+hSUfIUISTfJCbQg5Ui/BvChHI1v56q+3uz3PIGpgWwBhUKgJMtylvHhOECR2unV2oGMCAqrte8jSJcE1oneWaliodvs49lQOloGWIeCAIf0bc5JmO8BRKZEQBOdUothQKBgAluie9gr98x6wT6YKrpswTFRXv2Jug73TUm1SJgxrMoMdtTCvXc/FIXbeFfiBlSFx6DLjdWYFEutobVTEPaBRnZnvtAicZu23tW6HwlhY2NBDY2JpuwOWjFTvWCzxtEaJLY4mfWFp79q2o7fhUaT6D8efHgFyicOFGMqqJZKLOJAoGBAOsAe94i24vNncZ+CXlsxC1o7ij9k9czWZKPYobmEYlStyVCguWbBckUCz8mdlfupmxqnLFLOEbui1F61hoh5j4tUGwzxlfMmwLW2FVOrvJA0UlDurumVwawZ6iBv1Xsk240067f46UPUBWVXBqKGPhLo3V7uZ3xHJho+nGK91O5AoGAfzg/xKpm0hvFqHbfuuvy1wvFjgsKrg7hDMj9y7eQMs2vY2mF4Mn24bfzxrgv9iCe8Ib1lzQvNsaHCKk4ljtKy3MaXTYNx414sUZ9fHnB+qiKEFNxoyVN5rlacY5XRjTeCacXwbqFvTKwaJsyG5iEtz0buovMlBEcxgxlB6ubM8c="));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * 返回结果验签
@@ -580,6 +581,25 @@ public class FXGZYBgSupImpl implements IBgSupService {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         byte[] encodedKey = Base64.decodeBase64(encodedKeyStr);
         return keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
+    }
+
+
+    private static final List<String> FIRST_CLASS_AREAS = Arrays.asList("京", "沪", "申", "广", "粤");
+    private static final List<String> THIRD_CLASS_AREAS = Arrays.asList("陕", "秦", "甘", "陇", "蒙", "琼", "宁", "新", "川", "蜀", "吉", "贵", "黔", "赣");
+
+    public static int getAreaLevelPrice(String realEstateCertNo) {
+        if (FIRST_CLASS_AREAS.stream().anyMatch(realEstateCertNo::contains)) {
+            return 10;
+        } else if (THIRD_CLASS_AREAS.stream().anyMatch(realEstateCertNo::contains)) {
+            return 5;
+        } else {
+            return 8;
+        }
+    }
+
+    public static void main(String[] args) {
+        String certNo = "京(2021)海不动产权第0020831号";
+        System.out.println(getAreaLevelPrice(certNo));
     }
 
 }

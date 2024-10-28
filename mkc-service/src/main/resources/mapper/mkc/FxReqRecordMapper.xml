@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mkc.mapper.FxReqRecordMapper">
-    
+
     <resultMap type="com.mkc.domain.FxReqRecord" id="FxReqRecordResult">
         <result property="id"    column="id"    />
         <result property="merCode"    column="mer_code"    />
@@ -80,6 +80,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </set>
         where req_order_no = #{reqOrderNo} and user_flag = '0'
     </update>
+
+    <select id="listByRangeTime" parameterType="com.mkc.bean.MerReqLogBean" resultType="com.mkc.domain.FxReqRecord">
+        <include refid="selectFxReqRecordVo"/>
+        <where>
+            <if test="startTime != null "> and create_time::timestamptz AT TIME ZONE 'UTC' >= #{startTime}::timestamptz</if>
+            <if test="endTime != null "> and AND create_time::timestamptz AT TIME ZONE 'UTC' <![CDATA[ <= ]]> #{endTime}::timestamptz</if>
+        </where>
+    </select>
 
 
 </mapper>

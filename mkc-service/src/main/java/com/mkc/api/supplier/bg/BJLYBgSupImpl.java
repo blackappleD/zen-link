@@ -67,7 +67,13 @@ public class BJLYBgSupImpl implements IBgSupService {
 
                 JSONObject data = resultObject.getJSONObject("result");
                 if (data != null) {
-                    supResult.setData(data);
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("engineNo", data.getString("engine"));
+                    jsonObject.put("brandName", data.getString("carName"));
+                    jsonObject.put("vin", data.getString("vin"));
+                    jsonObject.put("initialRegistrationDate", data.getString("recordDate"));
+                    jsonObject.put("modelNo", data.getString("vehicleModel"));
+                    supResult.setData(jsonObject);
                     return supResult;
                 }
             } else {
