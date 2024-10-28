@@ -339,8 +339,8 @@ public class ZdzzBgSupImpl implements IBgSupService {
             url = bean.getUrl() + "/dc-sso/componentToken/generateAppToken";
             Integer timeOut = bean.getTimeOut();
 
-            String appKey = JSONObject.parseObject(bean.getSignKey()).getString(bean.getSupProductCode());
-            params.put("appkey", appKey);
+//            String appKey = JSONObject.parseObject(bean.getSignKey()).getString(bean.getSupProductCode());
+            params.put("appkey", bean.getSignKey());
             params.put("password", bean.getSignPwd());
             params.put("input", bean.getAcc());
 
