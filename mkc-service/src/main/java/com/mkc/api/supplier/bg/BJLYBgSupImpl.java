@@ -24,14 +24,15 @@ import java.time.LocalDateTime;
 @Slf4j
 public class BJLYBgSupImpl implements IBgSupService {
 
-    private final static  String SUCCESS="0000";
+    private final static String SUCCESS = "0000";
+    private final static String NOGET = "1910020001";
 
     public SupResult queryCarInfo(CarInfoReqVo vo, SuplierQueryBean bean) {
 
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();
-        String url=null;
+        String url = null;
         try {
             url = bean.getUrl() + "/data_product/traffic/car/cwxByCar";
             String appsecret = bean.getSignKey();
@@ -42,9 +43,9 @@ public class BJLYBgSupImpl implements IBgSupService {
             sendData.put("carNo", plateNo);
             params.put("data", sendData);
             params.put("appkey", appkey);
-            String timestamp=System.currentTimeMillis()+"";
+            String timestamp = System.currentTimeMillis() + "";
             params.put("timestamp", timestamp);
-            String sign= Md5Utils.md5(appkey+appsecret+timestamp);
+            String sign = Md5Utils.md5(appkey + appsecret + timestamp);
             params.put("sign", sign);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             result = HttpUtil.post(url, params.toJSONString(), timeOut);
@@ -76,15 +77,20 @@ public class BJLYBgSupImpl implements IBgSupService {
                     supResult.setData(jsonObject);
                     return supResult;
                 }
+            } else if (NOGET.equals(code)) {
+                supResult.setFree(FreeState.NO);
+                supResult.setRemark("查无");
+                supResult.setState(ReqState.NOGET);
             } else {
                 supResult.setFree(FreeState.NO);
-                supResult.setRemark("查询失败");
+                String message = resultObject.getString("message");
+                supResult.setRemark(StringUtils.isNotBlank(message) ? message : "查询失败");
                 supResult.setState(ReqState.ERROR);
                 return supResult;
             }
             return supResult;
         } catch (Throwable e) {
-            errMonitorMsg(log," 【北京菱云科技有限公司】 车五项 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+            errMonitorMsg(log, " 【北京菱云科技有限公司】 车五项 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(), url, result, e);
 
             if (supResult == null) {
@@ -93,7 +99,7 @@ public class BJLYBgSupImpl implements IBgSupService {
             supResult.setState(ReqState.ERROR);
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
-            supResult.setRemark("异常:"+e.getMessage());
+            supResult.setRemark("异常:" + e.getMessage());
             return supResult;
         }
     }
