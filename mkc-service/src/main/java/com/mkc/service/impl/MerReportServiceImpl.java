@@ -130,18 +130,18 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                 if (!checkHouseSuccess(jsonObject, record, merReport)) {
                     //没核查成功的，且超过10天，去查结果
                     if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
-                        JSONObject request = new JSONObject();
-                        request.put("reqOrderNo", record.getReqOrderNo());
-                        request.put("personCardNumList", JSON.parseArray(record.getMerRequestData()));
-                        String plainText = record.getReqOrderNo();
-                        try {
-                            JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
-                            JSONObject data = post.getJSONObject("data");
-                            record.setUnknownInfo(data.toJSONString());
-                            checkHouseSuccess(data, record, merReport);
-                        } catch (Exception e) {
-                            log.info(request.toJSONString() + "【{}】", e.getMessage());
-                        }
+//                        JSONObject request = new JSONObject();
+//                        request.put("reqOrderNo", record.getReqOrderNo());
+//                        request.put("personCardNumList", JSON.parseArray(record.getMerRequestData()));
+//                        String plainText = record.getReqOrderNo();
+//                        try {
+//                            JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+//                            JSONObject data = post.getJSONObject("data");
+//                            record.setUnknownInfo(data.toJSONString());
+//                            checkHouseSuccess(data, record, merReport);
+//                        } catch (Exception e) {
+//                            log.info(request.toJSONString() + "【{}】", e.getMessage());
+//                        }
                         record.setRemark("超过10天，查询结果");
                     } else {
                         record.setRemark("未超过10天");
@@ -151,25 +151,25 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
             //未查询结果，去查结果
             else {
                 if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
-                    JSONObject request = new JSONObject();
-                    request.put("reqOrderNo", record.getReqOrderNo());
-                    JSONArray jsonArray = JSON.parseArray(record.getPersons());
-                    ArrayList<String> strings = new ArrayList<>();
-                    for (int i = 0; i < jsonArray.size(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        strings.add(jsonObject.getString("cardNum"));
-                    }
-                    request.put("personCardNumList", strings);
-                    System.err.println(request);
-                    String plainText = record.getReqOrderNo();
-                    try {
-                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
-                        JSONObject data = post.getJSONObject("data");
-                        record.setUnknownInfo(data.toJSONString());
-                        checkHouseSuccess(data, record, merReport);
-                    } catch (Exception e) {
-                        log.info(request.toJSONString() + "【{}】", e.getMessage());
-                    }
+//                    JSONObject request = new JSONObject();
+//                    request.put("reqOrderNo", record.getReqOrderNo());
+//                    JSONArray jsonArray = JSON.parseArray(record.getPersons());
+//                    ArrayList<String> strings = new ArrayList<>();
+//                    for (int i = 0; i < jsonArray.size(); i++) {
+//                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                        strings.add(jsonObject.getString("cardNum"));
+//                    }
+//                    request.put("personCardNumList", strings);
+//                    System.err.println(request);
+//                    String plainText = record.getReqOrderNo();
+//                    try {
+//                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+//                        JSONObject data = post.getJSONObject("data");
+//                        record.setUnknownInfo(data.toJSONString());
+//                        checkHouseSuccess(data, record, merReport);
+//                    } catch (Exception e) {
+//                        log.info(request.toJSONString() + "【{}】", e.getMessage());
+//                    }
                     record.setRemark("超过10天，查询结果");
                 } else {
                     record.setRemark("未超过10天");
@@ -196,17 +196,17 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                 if (!checkHouseSuccess(jsonObject.getJSONObject("data"), record, merReport)) {
                     //没核查成功的，且超过10天，去查结果
                     if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
-                        JSONObject request = new JSONObject();
-                        request.put("reqOrderNo", record.getReqOrderNo());
-                        String plainText = record.getReqOrderNo();
-                        try {
-                            JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
-                            record.setUnknownInfo(post.toJSONString());
-                            JSONObject data = post.getJSONObject("data");
-                            checkHouseSuccess(data, record, merReport);
-                        } catch (Exception e) {
-                            log.info(request.toJSONString() + "【{}】", e.getMessage());
-                        }
+//                        JSONObject request = JSON.parseObject(record.getMerRequestData());
+//                        String plainText = record.getReqOrderNo();
+//                        try {
+//                            System.err.println("已有查询结果");
+//                            JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+//                            record.setUnknownInfo(post.toJSONString());
+//                            JSONObject data = post.getJSONObject("data");
+//                            checkHouseSuccess(data, record, merReport);
+//                        } catch (Exception e) {
+//                            log.info(request.toJSONString() + "【{}】", e.getMessage());
+//                        }
                         record.setRemark("超过10天，查询结果");
                     } else {
                         record.setRemark("未超过10天");
@@ -216,18 +216,18 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
             //未查询结果，去查结果
             else {
                 if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
-                    JSONObject request = new JSONObject();
-                    request.put("reqOrderNo", record.getReqOrderNo());
-                    System.err.println(request);
-                    String plainText = record.getReqOrderNo();
-                    try {
-                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
-                        record.setUnknownInfo(post.toJSONString());
-                        JSONObject data = post.getJSONObject("data");
-                        checkHouseSuccess(data, record, merReport);
-                    } catch (Exception e) {
-                        log.info(request.toJSONString() + "【{}】", e.getMessage());
-                    }
+//                 JSONObject request = JSON.parseObject(record.getMerRequestData());
+//                    String plainText = record.getReqOrderNo();
+//                    try {
+//                        System.err.println("未查询结果，去查结果");
+//                        System.err.println(record.toString());
+//                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+//                        record.setUnknownInfo(post.toJSONString());
+//                        JSONObject data = post.getJSONObject("data");
+//                        checkHouseSuccess(data, record, merReport);
+//                    } catch (Exception e) {
+//                        log.info(request.toJSONString() + "【{}】", e.getMessage());
+//                    }
                     record.setRemark("超过10天，查询结果");
                 } else {
                     record.setRemark("未超过10天");
@@ -361,6 +361,8 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                         record.setUpdateTimeStr(dateStr);
                         record.setMerCode(merReqLog.getMerCode());
                         record.setPersons(merReqLog.getReqJson());
+//                        JSONObject reqJson = JSON.parseObject(merReqLog.getReqJson());
+//                        JSONArray persons = reqJson.getJSONArray("persons");
                         record.setUserFlag("0");
                         fxReqRecords.add(record);
                     }
