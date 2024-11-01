@@ -20,6 +20,13 @@ import lombok.Data;
 @Data
 public class FxReqRecord extends BaseEntity {
 
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+
+    /** 编号 */
+    @TableId(type = IdType.AUTO)
+    private Long id;
+
     /** 请求订单号 */
     @Excel(name = "请求订单号")
     private String reqOrderNo;
