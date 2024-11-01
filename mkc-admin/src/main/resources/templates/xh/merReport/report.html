@@ -82,6 +82,12 @@
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:merReport:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
+                <a class="btn btn-primary" onclick="$.table.fxHouseReport()" shiro:hasPermission="xh:merReport:export">
+                    <i class="fa fa-download"></i> 导出法信不动产账单
+                </a>
+                <a class="btn btn-primary" onclick="$.table.fxEduReport()" shiro:hasPermission="xh:merReport:export">
+                    <i class="fa fa-download"></i> 导出法信学历账单
+                </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
@@ -93,30 +99,30 @@
     <script th:inline="javascript">
         $(function() {
 			var cgCodeDict = [[${@dict.getType('xh_product_category')}]];
-			
+
 	        var prefix = ctx + "xh/merReport";
 	        var statClmChged = false;
 	        var statClms = [];
-	        
+
         	// 产品分类联动
             $('#cgCode').change(function(event) {
             	$('.cg-').attr('disabled', true);
             	$('.cg-' + event.target.value).attr('disabled', false);
             }).change();
-            
+
             $('#statClm').on('change.select2', function (e) {
             	statClmChged = true;
             	localStorage.statClm = $(e.target).val();
            	}).val(localStorage.statClm?.split(',')).change();
-           	
+
 	        $('#tblSearch').click(function() {
 	        	if(statClmChged) filterColumns();
-	        	
+
 	        	$.table.search();
-	        	
+
 	        	statClmChged = false;
 	        });
-	        
+
 	        $('#statMerLogBtn').click(function() {
 	        	var today = [[${date}]];
 	        	var opts = $('#scMerCode').html();
@@ -137,7 +143,7 @@
 	                			   </li>
 	                			 </ul>
 	                		   </div>`;
-	
+
 	        	layer.open({
 					type: 1,
 					skin: 'layui-layer-rim', //加上边框
@@ -161,16 +167,19 @@
 						layer.close(index);
 	                }
 	       		});
-	        	
+
 	        	$('#stMerCode').select2();
 	        	initTwoDate($("#stStartDate"), $("#stEndDate"));
 	        	$('.layui-layer-rim,.layui-layer-shade').css('zIndex', '');
 	        });
-	        
+	        $('#houseQueryReport').click(function() {
+	            console.log("111");
+	        });
+
 	        function filterColumns() {
 	        	var selCols = $('#statClm').val();
 	        	var len = selCols.length;
-	        	
+
 	        	statClms.forEach(c => {
 	        		if(len == 0 || selCols.includes(c.field)) {
 	        			$.table.showColumn(c.field);
@@ -179,8 +188,8 @@
 	        		}
 	        	});
 	        }
-            
-            
+
+
             var options = {
                 url: prefix + "/list",
                 exportUrl: prefix + "/export",
@@ -285,7 +294,7 @@
                 }]
             };
             $.table.init(options);
-            
+
            	// 得到维度列，并根据选择显示与否
             statClms = options.columns.filter(c => c.ft);
             filterColumns();

@@ -93,7 +93,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
                     supResult.setFree(FreeState.YES);
                     supResult.setRemark("查询成功");
                     supResult.setState(ReqState.SUCCESS);
-                    JSONArray data = resultObject.getJSONArray("data");
+                    JSONObject data = resultObject.getJSONObject("data");
                     if (data != null) {
                         supResult.setData(data);
                         return supResult;
@@ -191,7 +191,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
                     supResult.setFree(FreeState.YES);
                     supResult.setRemark("查询成功");
                     supResult.setState(ReqState.SUCCESS);
-                    JSONArray data = resultObject.getJSONArray("data");
+                    JSONObject data = resultObject.getJSONObject("data");
                     if (data != null) {
                         supResult.setData(data);
                         return supResult;
@@ -289,7 +289,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
                     supResult.setFree(FreeState.YES);
                     supResult.setRemark("查询成功");
                     supResult.setState(ReqState.SUCCESS);
-                    JSONArray data = resultObject.getJSONArray("data");
+                    JSONObject data = resultObject.getJSONObject("data");
                     if (data != null) {
                         supResult.setData(data);
                         return supResult;

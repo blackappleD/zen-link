@@ -1,29 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mkc.mapper.FxReqRecordMapper">
 
     <resultMap type="com.mkc.domain.FxReqRecord" id="FxReqRecordResult">
-        <result property="id"    column="id"    />
-        <result property="merCode"    column="mer_code"    />
-        <result property="reqOrderNo"    column="req_order_no"    />
-        <result property="queryCount"    column="query_count"    />
-        <result property="merRequestData"    column="mer_request_data"    />
-        <result property="merResultData"    column="mer_result_data"    />
-        <result property="userFlag"    column="user_flag"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
+        <result property="id" column="id"/>
+        <result property="merCode" column="mer_code"/>
+        <result property="merName" column="mer_name"/>
+        <result property="reqOrderNo" column="req_order_no"/>
+        <result property="queryCount" column="query_count"/>
+        <result property="merRequestData" column="mer_request_data"/>
+        <result property="merResultData" column="mer_result_data"/>
+        <result property="userFlag" column="user_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="persons" column="persons"/>
     </resultMap>
 
     <sql id="selectFxReqRecordVo">
-        select id, req_order_no, query_count,mer_request_data,mer_result_data, user_flag, create_By, update_By, create_time, update_time, remark from t_fx_req_record
+        select id,
+               req_order_no,
+               mer_code,
+               persons,
+               query_count,
+               mer_request_data,
+               mer_result_data,
+               user_flag,
+               create_By,
+               update_By,
+               create_time,
+               update_time,
+               remark
+        from t_fx_req_record
     </sql>
 
-    <select id="selectFxReqRecordByReqOrderNoAndUserFlag" parameterType="com.mkc.domain.FxReqRecord" resultType="com.mkc.domain.FxReqRecord">
+    <select id="selectFxReqRecordByReqOrderNoAndUserFlag" parameterType="com.mkc.domain.FxReqRecord"
+            resultType="com.mkc.domain.FxReqRecord">
         <include refid="selectFxReqRecordVo"></include>
         <where>
             <if test="reqOrderNo != null and reqOrderNo != ''">
@@ -36,7 +52,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectCountByReqOrderNo" parameterType="string" resultType="int">
-        select count(*) from t_fx_req_record
+        select count(*)
+        from t_fx_req_record
         where req_order_no = #{reqOrderNo}
     </select>
 
@@ -54,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="reqOrderNo != null">#{reqOrderNo},</if>
             <if test="merCode != null">#{merCode},</if>
@@ -67,7 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateFxReqRecordByRequestOrderNo" parameterType="com.mkc.domain.FxReqRecord">
@@ -81,12 +98,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where req_order_no = #{reqOrderNo} and user_flag = '0'
     </update>
 
-    <select id="listByRangeTime" parameterType="com.mkc.bean.MerReqLogBean" resultType="com.mkc.domain.FxReqRecord">
-        <include refid="selectFxReqRecordVo"/>
+    <select id="listByRangeTime" parameterType="com.mkc.domain.MerReport" resultType="com.mkc.domain.FxReqRecord">
+        select t_fx_req_record.id,
+        t_fx_req_record.req_order_no,
+        t_fx_req_record.mer_code,
+        t_fx_req_record.persons,
+        t_fx_req_record.query_count,
+        t_fx_req_record.mer_request_data,
+        t_fx_req_record.mer_result_data,
+        t_fx_req_record.user_flag,
+        t_fx_req_record.create_By,
+        t_fx_req_record.update_By,
+        t_fx_req_record.create_time,
+        t_fx_req_record.update_time,
+        t_fx_req_record.remark, t_mer_info.mer_name
+        from t_fx_req_record
+            LEFT JOIN t_mer_info ON t_fx_req_record.mer_code = t_mer_info.mer_code
+<!--        <where>-->
+<!--            (t_fx_req_record.create_time::timestamptz AT TIME ZONE 'UTC' >= '2024-10-01 00:00:00'::timestamptz-->
+<!--            and t_fx_req_record.create_time::timestamptz AT TIME ZONE 'UTC' <![CDATA[ <= ]]> '2024-10-31 23:59:59'::timestamptz) or-->
+<!--            (t_fx_req_record.update_time::timestamptz AT TIME ZONE 'UTC' >= '2024-10-01 00:00:00'::timestamptz-->
+<!--            and t_fx_req_record.update_time::timestamptz AT TIME ZONE 'UTC' <![CDATA[ <= ]]> '2024-10-31 23:59:59'::timestamptz)-->
+<!--        </where>-->
         <where>
-            <if test="startTime != null "> and create_time::timestamptz AT TIME ZONE 'UTC' >= #{startTime}::timestamptz</if>
-            <if test="endTime != null "> and AND create_time::timestamptz AT TIME ZONE 'UTC' <![CDATA[ <= ]]> #{endTime}::timestamptz</if>
+            <if test="merCode != null  and merCode != ''">and t_fx_req_record.mer_code = #{merCode}</if>
+            <if test="startTime != null ">and t_fx_req_record.create_time >= #{startTime}</if>
+            <if test="endTime != null ">and t_fx_req_record.create_time <![CDATA[ <= ]]> #{endTime}</if>
+            <if test="startTime != null ">and t_fx_req_record.update_time >= #{startTime}</if>
+            <if test="endTime != null ">and t_fx_req_record.update_time <![CDATA[ <= ]]> #{endTime}</if>
         </where>
+        order by t_fx_req_record.create_time desc
     </select>
 
 

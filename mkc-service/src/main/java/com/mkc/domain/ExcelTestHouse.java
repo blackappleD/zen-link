@@ -19,9 +19,6 @@ public class ExcelTestHouse {
     @ExcelProperty("code")
     private String code;
     @ColumnWidth(25)
-    @ExcelProperty("resultCode")
-    private String resultCode;
-    @ColumnWidth(25)
     @ExcelProperty("reqOrderNo")
     private String reqOrderNo;
     @ColumnWidth(25)

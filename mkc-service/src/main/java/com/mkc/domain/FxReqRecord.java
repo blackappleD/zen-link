@@ -20,13 +20,6 @@ import lombok.Data;
 @Data
 public class FxReqRecord extends BaseEntity {
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
-
-    /** 编号 */
-    @TableId(type = IdType.AUTO)
-    private Long id;
-
     /** 请求订单号 */
     @Excel(name = "请求订单号")
     private String reqOrderNo;
@@ -38,6 +31,10 @@ public class FxReqRecord extends BaseEntity {
     /** 商户code*/
     @Excel(name = "商户code")
     private String merCode;
+
+    /** 商户code*/
+    @Excel(name = "商户名称")
+    private transient String merName;
 
     /** 商户code*/
     @Excel(name = "人员信息")
@@ -53,4 +50,17 @@ public class FxReqRecord extends BaseEntity {
     /**商户请求查询结果人员信息*/
     @Excel(name = "用户查询结果标记")
     private String userFlag;
+    @Excel(name = "创建时间")
+    private transient String createTimeStr;
+    @Excel(name = "更新时间")
+    private transient String updateTimeStr;
+    @Excel(name = "商户未查询信息")
+    private transient String unknownInfo;
+    @Excel(name = "进价")
+    private transient Integer inPrice = 0;
+    @Excel(name = "计费人次")
+    private transient Integer billedTimes = 0;
+    @Excel(name = "备注")
+    private transient String remark;
+
 }

@@ -7,40 +7,49 @@ import com.mkc.domain.MerReqLog;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.List;
 
 /**
  * 商户调用日志Mapper接口
- * 
+ *
  * @author atd
  * @date 2023-04-24
  */
 
 @Mapper
-public interface MerReqLogMapper extends BaseMapper<MerReqLog>
-{
+public interface MerReqLogMapper extends BaseMapper<MerReqLog> {
     /**
      * 查询商户调用日志
-     * 
+     *
      * @param id 商户调用日志主键
      * @return 商户调用日志
      */
     public MerReqLog selectMerReqLogById(Long id);
+
     public MerReqLog selectMerReqLogByOrderNo(String orderNo);
 
     /**
      * 查询商户调用日志列表
-     * 
+     *
      * @param merReqLog 商户调用日志
      * @return 商户调用日志集合
      */
     public List<MerReqLog> selectMerReqLogList(MerReqLogBean merReqLog);
 
+    /**
+     * 查询商户调用日志列表,请求时间升序
+     *
+     * @param merReqLog 商户调用日志
+     * @return 商户调用日志集合
+     */
+    public List<MerReqLog> selectListOrderByReqTime(MerReqLogBean merReqLog);
+
 
     /**
      * 修改商户调用日志
-     * 
+     *
      * @param merReqLog 商户调用日志
      * @return 结果
      */
@@ -48,7 +57,7 @@ public interface MerReqLogMapper extends BaseMapper<MerReqLog>
 
     /**
      * 删除商户调用日志
-     * 
+     *
      * @param id 商户调用日志主键
      * @return 结果
      */
@@ -56,20 +65,28 @@ public interface MerReqLogMapper extends BaseMapper<MerReqLog>
 
     /**
      * 批量删除商户调用日志
-     * 
+     *
      * @param Ids 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteMerReqLogByIds(Integer[] Ids);
-    
-    
-    
+
+
     /**
      * 统计商户调用日志
-     * 
+     *
      * @param startDate 开始日期 2023-06-17
-     * @param endDate 结束日期 2023-06-18
+     * @param endDate   结束日期 2023-06-18
      * @return 统计商户调用集合
      */
     public List<MerReport> selectMerReqLogReport(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("merCode") String merCode);
+
+
+    /**
+     * 查询申请时间
+     *
+     * @return
+     */
+    LocalDateTime selectCreateTime(@Param("reqJson") String reqJson, @Param("startTime") LocalDate startTime, @Param("endTime") LocalDate endTime);
+
 }

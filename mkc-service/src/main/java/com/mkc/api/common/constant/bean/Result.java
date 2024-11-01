@@ -5,6 +5,7 @@ import com.mkc.common.enums.FreeState;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 响应信息主体
@@ -46,6 +47,11 @@ public class Result<T> implements Serializable
     public static <T> Result<T> ok(T data) {
 
         return restResult(data,ApiReturnCode.SUCCESS, FreeState.YES);
+    }
+
+    public static <T> Result<T> ok(T data, FreeState freeState, String seqNo) {
+
+        return restResult(data, ApiReturnCode.SUCCESS,Objects.nonNull(freeState) ? freeState : FreeState.YES,seqNo);
     }
 
     public static <T> Result<T> ok(T data, String seqNo,String msg) {

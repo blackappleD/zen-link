@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class ExcelTest2W {
     @ExcelProperty("姓名")
-    private String name;
+    private String name = "张三";
     @ExcelProperty("身份证")
     private String idCard;
     @ExcelProperty("手机号")

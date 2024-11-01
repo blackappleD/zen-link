@@ -1,25 +1,18 @@
 package com.mkc.controller;
 
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.Result;
+import com.mkc.api.common.utils.ApiUtils;
 import com.mkc.common.utils.DateUtils;
-import com.mkc.domain.ExcelTest2W;
-import com.mkc.domain.ExcelTestDriving;
-import com.mkc.domain.ExcelTestEdu;
-import com.mkc.domain.ExcelTestEduZjhm;
-import com.mkc.domain.ExcelTestHouse;
-import com.mkc.domain.MerInfo;
+import com.mkc.domain.*;
 import com.mkc.service.IMerInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author tqlei
@@ -85,8 +77,8 @@ public class TestController {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("reqOrderNo", read.getReqOrderNo());
                 jsonObject.put("personCardNumList", Collections.singletonList(read.getPersonCardNum()));
-                JSONObject post = postEdu("http://api.zjbhsk.com/bg/houseResultReqInfo", jsonObject);
-                read.setCode(post.getString("code"));
+                String plaintext = read.getReqOrderNo();
+                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", jsonObject, plaintext);
                 try {
                     JSONObject data = post.getJSONObject("data");
                     if (Objects.nonNull(data)) {
@@ -100,6 +92,8 @@ public class TestController {
                                     ExcelTestHouse excelTestHouse = new ExcelTestHouse();
                                     excelTestHouse.setXm(read.getXm());
                                     excelTestHouse.setPersonCardNum(read.getPersonCardNum());
+                                    excelTestHouse.setCode(post.getString("code"));
+                                    excelTestHouse.setReqOrderNo(read.getReqOrderNo());
                                     excelTestHouse.setCertNo(result.getString("certNo"));
                                     excelTestHouse.setUnitNo(result.getString("unitNo"));
                                     excelTestHouse.setLocation(result.getString("location"));
@@ -113,11 +107,18 @@ public class TestController {
                                     excelTestHouse.setUseTo(result.getString("useTo"));
                                     writeList.add(excelTestHouse);
                                 }
+                            }else {
+                                ExcelTestHouse excelTestHouse = new ExcelTestHouse();
+                                excelTestHouse.setXm(read.getXm());
+                                excelTestHouse.setPersonCardNum(read.getPersonCardNum());
+                                excelTestHouse.setCode(post.getString("code"));
+                                excelTestHouse.setReqOrderNo(read.getReqOrderNo());
+                                writeList.add(excelTestHouse);
                             }
                         }
                     }
                 } catch (Exception e) {
-                    read.setResultCode(post.toJSONString());
+                    read.setCertNo(post.toJSONString());
                     log.error(e.getMessage());
                 }
                 System.err.println(post);
@@ -147,8 +148,9 @@ public class TestController {
                     .doReadSync();
 
             for (ExcelTest2W read : readList) {
-                com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
-                com.alibaba.fastjson.JSONObject post = post2W("http://api.zjbhsk.com/bg/economicRate", jsonObject);
+                JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
+                String plaintext = read.getIdCard() + read.getName() + read.getMobile();
+                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/economicRate", jsonObject, plaintext);
                 read.setCode(post.getString("code"));
                 try {
                     JSONObject data = post.getJSONObject("data");
@@ -186,8 +188,12 @@ public class TestController {
                     .doReadSync();
 
             for (ExcelTest2W read : readList) {
-                com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
-                com.alibaba.fastjson.JSONObject post = post2W("http://api.zjbhsk.com/bg/financeInfo", jsonObject);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("idCard", read.getIdCard());
+                jsonObject.put("name", read.getName());
+                jsonObject.put("mobile", read.getMobile());
+                String plainText = read.getIdCard() + read.getName() + read.getMobile();
+                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/financeInfo", jsonObject, plainText);
                 read.setCode(post.getString("code"));
                 try {
                     JSONObject data = post.getJSONObject("data");
@@ -214,24 +220,6 @@ public class TestController {
         }
     }
 
-    public JSONObject post2W(String url, JSONObject bodyObject) {
-        String merCode = "BhCpTest";
-        bodyObject.put("merCode", merCode);
-        bodyObject.put("key", "80bb75f192ad62fc9dd59e6b39ce9ba5");
-        bodyObject.put("merSeq", UUID.randomUUID().toString().replace("-", "").substring(0, 16));
-        String plaintext = merCode + bodyObject.getString("idCard") + bodyObject.getString("name") + bodyObject.getString("mobile");
-        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
-        String signText = plaintext + pwd;
-        String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
-        bodyObject.put("sign", signMd5);
-        String bodyJson = bodyObject.toJSONString();
-        HttpResponse execute = HttpRequest.post(url)
-                .body(bodyJson)
-                .execute();
-        log.info("queryPost url = 【{}】 request = 【{}】, response = 【{}】", url, bodyJson, execute.body());
-        return JSONObject.parseObject(execute.body());
-    }
-
 
     /**
      * 行驶证核验
@@ -250,7 +238,8 @@ public class TestController {
                 jsonObject.put("name", read.getName());
                 jsonObject.put("licensePlateNo", read.getLicensePlateNo());
                 jsonObject.put("plateType", read.getPlateType());
-                JSONObject post = postDriving("http://api.zjbhsk.com/bg/drivingLicense", jsonObject);
+                String plainText = read.getName() + read.getLicensePlateNo() + read.getPlateType();
+                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/drivingLicense", jsonObject, plainText);
                 read.setCode(post.getString("code"));
                 try {
                     JSONObject data = post.getJSONObject("data");
@@ -306,23 +295,6 @@ public class TestController {
         }
     }
 
-    public JSONObject postDriving(String url, JSONObject bodyObject) {
-        String merCode = "BhCpTest";
-        bodyObject.put("merCode", merCode);
-        bodyObject.put("key", "80bb75f192ad62fc9dd59e6b39ce9ba5");
-        bodyObject.put("merSeq", UUID.randomUUID().toString().replace("-", "").substring(0, 16));
-        String plaintext = merCode + bodyObject.getString("name") + bodyObject.getString("licensePlateNo") + bodyObject.getString("plateType");
-        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
-        String signText = plaintext + pwd;
-        String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
-        bodyObject.put("sign", signMd5);
-        String bodyJson = bodyObject.toJSONString();
-        HttpResponse execute = HttpRequest.post(url)
-                .body(bodyJson)
-                .execute();
-        log.info("queryPost url = 【{}】 request = 【{}】, response = 【{}】", url, bodyJson, execute.body());
-        return JSONObject.parseObject(execute.body());
-    }
 
 
     /**
@@ -342,7 +314,8 @@ public class TestController {
 //                jsonObject.put("reqOrderNo", read.getReqOrderNo());
                 jsonObject.put("xm", read.getXm());
                 jsonObject.put("zsbh", read.getZsbh());
-                JSONObject post = postEdu("http://api.zjbhsk.com/bg/highSchoolEduResultInfo", jsonObject);
+                String plainText = read.getXm() + read.getZsbh();
+                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/highSchoolEduResultInfo", jsonObject, plainText);
                 read.setCode(post.getString("code"));
                 try {
                     JSONObject data = post.getJSONObject("data");
@@ -377,24 +350,6 @@ public class TestController {
         }
     }
 
-    public JSONObject postEdu(String url, JSONObject bodyObject) {
-        String merCode = "BhCpTest";
-        bodyObject.put("merCode", merCode);
-        bodyObject.put("key", "80bb75f192ad62fc9dd59e6b39ce9ba5");
-        bodyObject.put("merSeq", UUID.randomUUID().toString().replace("-", "").substring(0, 16));
-//        String plaintext = merCode + bodyObject.getString("reqOrderNo");
-        String plaintext = merCode + bodyObject.getString("xm") + bodyObject.getString("zsbh");
-        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
-        String signText = plaintext + pwd;
-        String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
-        bodyObject.put("sign", signMd5);
-        String bodyJson = bodyObject.toJSONString();
-        HttpResponse execute = HttpRequest.post(url)
-                .body(bodyJson)
-                .execute();
-        log.info("queryPost url = 【{}】 request = 【{}】, response = 【{}】", url, bodyJson, execute.body());
-        return JSONObject.parseObject(execute.body());
-    }
 
     /**
      * 高等学历-中电郑州
@@ -413,7 +368,8 @@ public class TestController {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("xm", read.getXm());
                 jsonObject.put("zjhm", read.getZjhm());
-                JSONObject post = postEduZjhm("http://api.zjbhsk.com/bg/educationInfo", jsonObject);
+                String plainText = read.getXm() + read.getZjhm();
+                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/educationInfo", jsonObject, plainText);
                 try {
                     JSONArray dataList = post.getJSONArray("data");
                     for (int i = 0; i < dataList.size(); i++) {
@@ -454,24 +410,6 @@ public class TestController {
         }
     }
 
-    public JSONObject postEduZjhm(String url, JSONObject bodyObject) {
-        String merCode = "BhCpTest";
-        bodyObject.put("merCode", merCode);
-        bodyObject.put("key", "80bb75f192ad62fc9dd59e6b39ce9ba5");
-        bodyObject.put("merSeq", UUID.randomUUID().toString().replace("-", "").substring(0, 16));
-//        String plaintext = merCode + bodyObject.getString("reqOrderNo");
-        String plaintext = merCode + bodyObject.getString("xm") + bodyObject.getString("zjhm");
-        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
-        String signText = plaintext + pwd;
-        String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
-        bodyObject.put("sign", signMd5);
-        String bodyJson = bodyObject.toJSONString();
-        HttpResponse execute = HttpRequest.post(url)
-                .body(bodyJson)
-                .execute();
-        log.info("queryPost url = 【{}】 request = 【{}】, response = 【{}】", url, bodyJson, execute.body());
-        return JSONObject.parseObject(execute.body());
-    }
 
 
     public static void setExcelRespProp(HttpServletResponse response, String rawFileName) throws UnsupportedEncodingException {

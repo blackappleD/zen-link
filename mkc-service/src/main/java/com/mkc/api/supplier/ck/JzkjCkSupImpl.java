@@ -103,7 +103,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 
             return null;
         }  catch (Throwable e) {
-            errMonitorMsg(log," 【上海敬众科技股份有限公司供应商】 【银联】银行卡四要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+            errMonitorMsg(log," 【上海敬众科技股份有限公司供应商】 【银联】x四要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(),url, result, e);
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());

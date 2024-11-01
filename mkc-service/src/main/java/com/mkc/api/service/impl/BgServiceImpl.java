@@ -262,7 +262,7 @@ public class BgServiceImpl implements IBgService {
         //判断是否 一致
         if (supResult.isSuccess()) {
            // result = Result.ok(supResult.getData(), orderNo, "认证信息一致");
-            result = Result.ok(supResult.getData(), orderNo);
+            result = Result.ok(supResult.getData(), supResult.getFree(), orderNo);
             //判断是否 不一致
         } else if (supResult.isNot()) {
             result = Result.not(supResult.getData(), orderNo);

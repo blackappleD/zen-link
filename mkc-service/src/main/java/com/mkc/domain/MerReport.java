@@ -16,20 +16,20 @@ import lombok.Data;
 
 /**
  * 商户调用日志统计对象 t_mer_report
- * 
+ *
  * @author mkc
  * @date 2023-06-16
  */
 @Data
 @TableName(value = "t_mer_report")
 public class MerReport {
-	
+
 	/** 编号 */
 	@TableId(type = IdType.AUTO)
 	private Long id;
 
 	/** 供应商编码 */
-	//@Excel(name = "供应商编码")
+	@Excel(name = "供应商编码")
 	private String supCode;
 
 	/** 供应商名称 */
@@ -37,7 +37,7 @@ public class MerReport {
 	private String supName;
 
 	/** 商户编码 */
-	//@Excel(name = "商户编码")
+	@Excel(name = "商户编码")
 	private String merCode;
 
 	/** 商户名称 */
@@ -45,7 +45,7 @@ public class MerReport {
 	private String merName;
 
 	/** 产品编码 */
-	//@Excel(name = "产品编码")
+	@Excel(name = "产品编码")
 	private String productCode;
 
 	/** 产品名称 */
@@ -58,12 +58,12 @@ public class MerReport {
 
 	/** 总成本价 */
 	@Excel(name = "总成本价")
-	private BigDecimal inPrice;
+	private BigDecimal inPrice = BigDecimal.valueOf(0);
 
 	/** 单价 */
 	@Excel(name = "单价")
 	private BigDecimal sellPrice;
-	
+
 	/** 收费次数 */
 	@Excel(name = "收费次数")
 	private Integer feeTimes;
@@ -80,7 +80,7 @@ public class MerReport {
 	/** 查得次数 */
 	@Excel(name = "查得匹配次数")
 	private Integer statusOkFit;
-	
+
 	/** 查得次数 */
 	@Excel(name = "查得不匹配次数")
 	private Integer statusOkUnfit;
@@ -120,14 +120,14 @@ public class MerReport {
 	/** 更新时间 */
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date updateTime;
-	
+
 	@TableField(exist = false)
 	@JsonIgnore
 	private String statClm;
 	@TableField(exist = false)
 	@JsonIgnore
 	private Integer reportType;
-	
+
 	@TableField(exist = false)
 	@JsonIgnore
 	private LocalDate startTime;
