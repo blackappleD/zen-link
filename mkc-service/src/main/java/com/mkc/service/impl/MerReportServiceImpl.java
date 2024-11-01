@@ -180,6 +180,65 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
     }
 
     @Override
+    public List<FxReqRecord> listFxHouseReport(MerReport merReport) {
+        MerReqLogBean merReqLogBean = new MerReqLogBean();
+        merReqLogBean.setStartTime(merReport.getStartTime());
+        merReqLogBean.setEndTime(merReport.getEndTime().atTime(23, 59, 59));
+        merReqLogBean.setProductCode("BG_HOUSE_002");
+        merReqLogBean.setMerCode(merReport.getMerCode());
+        List<MerReqLog> merReqLogs = merReqLogMapper.selectListOrderByReqTime(merReqLogBean);
+        ArrayList<FxReqRecord> fxReqRecords = getFxReqRecords(merReqLogs);
+        for (FxReqRecord record : fxReqRecords) {
+            String merResultData = record.getMerResultData();
+            //已有查询结果
+            if (StringUtils.isNotBlank(merResultData)) {
+                JSONObject jsonObject = JSON.parseObject(merResultData);
+                if (!checkHouseSuccess(jsonObject.getJSONObject("data"), record, merReport)) {
+                    //没核查成功的，且超过10天，去查结果
+                    if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
+                        JSONObject request = new JSONObject();
+                        request.put("reqOrderNo", record.getReqOrderNo());
+                        String plainText = record.getReqOrderNo();
+                        try {
+                            JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+                            record.setUnknownInfo(post.toJSONString());
+                            JSONObject data = post.getJSONObject("data");
+                            checkHouseSuccess(data, record, merReport);
+                        } catch (Exception e) {
+                            log.info(request.toJSONString() + "【{}】", e.getMessage());
+                        }
+                        record.setRemark("超过10天，查询结果");
+                    } else {
+                        record.setRemark("未超过10天");
+                    }
+                }
+            }
+            //未查询结果，去查结果
+            else {
+                if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
+                    JSONObject request = new JSONObject();
+                    request.put("reqOrderNo", record.getReqOrderNo());
+                    System.err.println(request);
+                    String plainText = record.getReqOrderNo();
+                    try {
+                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+                        record.setUnknownInfo(post.toJSONString());
+                        JSONObject data = post.getJSONObject("data");
+                        checkHouseSuccess(data, record, merReport);
+                    } catch (Exception e) {
+                        log.info(request.toJSONString() + "【{}】", e.getMessage());
+                    }
+                    record.setRemark("超过10天，查询结果");
+                } else {
+                    record.setRemark("未超过10天");
+                }
+            }
+        }
+
+        return fxReqRecords;
+    }
+
+    @Override
     public List<FxReqRecord> listFxEduReport(MerReport merReport) {
         MerReqLogBean merReqLogBean = new MerReqLogBean();
         merReqLogBean.setStartTime(merReport.getStartTime());
@@ -281,55 +340,59 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
 
     private ArrayList<FxReqRecord> getFxReqRecords(List<MerReqLog> merReqLogs) {
         ArrayList<FxReqRecord> fxReqRecords = new ArrayList<>();
-        for (MerReqLog log : merReqLogs) {
-            if (StringUtils.isNotBlank(log.getReqJson()) && StringUtils.isNotBlank(log.getRespJson())) {
-                //申请请求
-                if (!StringUtils.contains(log.getReqJson(), "reqOrderNo")) {
-                    JSONObject jsonObject = JSON.parseObject(ZipStrUtils.gunzip(log.getRespJson()));
-                    JSONObject data = jsonObject.getJSONObject("data");
-                    if (Objects.isNull(data) || StringUtils.isBlank(data.getString("reqOrderNo"))) {
-                        continue;
-                    }
-                    String reqOrderNo = data.getString("reqOrderNo");
-                    FxReqRecord record = new FxReqRecord();
-                    record.setReqOrderNo(reqOrderNo);
-                    Date date = Date.from(log.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
-                    String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
-                    record.setCreateTime(date);
-                    record.setUpdateTime(date);
-                    record.setCreateTimeStr(dateStr);
-                    record.setUpdateTimeStr(dateStr);
-                    record.setMerCode(log.getMerCode());
-                    record.setPersons(log.getReqJson());
-                    record.setUserFlag("0");
-                    fxReqRecords.add(record);
-                }
-                //查询结果请求
-                else {
-                    JSONObject jsonObject = JSON.parseObject(log.getReqJson());
-                    String reqOrderNo = jsonObject.getString("reqOrderNo");
-                    FxReqRecord record = fxReqRecords.stream().filter(p -> Objects.equals(p.getReqOrderNo(), reqOrderNo)).findFirst().orElse(null);
-                    if (Objects.nonNull(record)) {
-                        Date date = Date.from(log.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
+        for (MerReqLog merReqLog : merReqLogs) {
+            if (StringUtils.isNotBlank(merReqLog.getReqJson()) && StringUtils.isNotBlank(merReqLog.getRespJson())) {
+                try {
+                    //申请请求
+                    if (!StringUtils.contains(merReqLog.getReqJson(), "reqOrderNo")) {
+                        JSONObject jsonObject = JSON.parseObject(ZipStrUtils.gunzip(merReqLog.getRespJson()));
+                        JSONObject data = jsonObject.getJSONObject("data");
+                        if (Objects.isNull(data) || StringUtils.isBlank(data.getString("reqOrderNo"))) {
+                            continue;
+                        }
+                        String reqOrderNo = data.getString("reqOrderNo");
+                        FxReqRecord record = new FxReqRecord();
+                        record.setReqOrderNo(reqOrderNo);
+                        Date date = Date.from(merReqLog.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
+                        String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
+                        record.setCreateTime(date);
                         record.setUpdateTime(date);
-                        String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
+                        record.setCreateTimeStr(dateStr);
                         record.setUpdateTimeStr(dateStr);
-                        record.setMerRequestData(log.getReqJson());
-                        record.setMerResultData(ZipStrUtils.gunzip(log.getRespJson()));
-                        record.setUserFlag("1");
-                    } else {
-                        FxReqRecord recordTmp = new FxReqRecord();
-                        recordTmp.setReqOrderNo(reqOrderNo);
-                        Date date = Date.from(log.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
-                        recordTmp.setUpdateTime(date);
-                        String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
-                        recordTmp.setUpdateTimeStr(dateStr);
-                        recordTmp.setMerCode(log.getMerCode());
-                        recordTmp.setMerRequestData(log.getReqJson());
-                        recordTmp.setMerResultData(ZipStrUtils.gunzip(log.getRespJson()));
-                        recordTmp.setUserFlag("1");
-                        fxReqRecords.add(recordTmp);
+                        record.setMerCode(merReqLog.getMerCode());
+                        record.setPersons(merReqLog.getReqJson());
+                        record.setUserFlag("0");
+                        fxReqRecords.add(record);
                     }
+                    //查询结果请求
+                    else {
+                        JSONObject jsonObject = JSON.parseObject(merReqLog.getReqJson());
+                        String reqOrderNo = jsonObject.getString("reqOrderNo");
+                        FxReqRecord record = fxReqRecords.stream().filter(p -> Objects.equals(p.getReqOrderNo(), reqOrderNo)).findFirst().orElse(null);
+                        if (Objects.nonNull(record)) {
+                            Date date = Date.from(merReqLog.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
+                            record.setUpdateTime(date);
+                            String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
+                            record.setUpdateTimeStr(dateStr);
+                            record.setMerRequestData(merReqLog.getReqJson());
+                            record.setMerResultData(ZipStrUtils.gunzip(merReqLog.getRespJson()));
+                            record.setUserFlag("1");
+                        } else {
+                            FxReqRecord recordTmp = new FxReqRecord();
+                            recordTmp.setReqOrderNo(reqOrderNo);
+                            Date date = Date.from(merReqLog.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
+                            recordTmp.setUpdateTime(date);
+                            String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
+                            recordTmp.setUpdateTimeStr(dateStr);
+                            recordTmp.setMerCode(merReqLog.getMerCode());
+                            recordTmp.setMerRequestData(merReqLog.getReqJson());
+                            recordTmp.setMerResultData(ZipStrUtils.gunzip(merReqLog.getRespJson()));
+                            recordTmp.setUserFlag("1");
+                            fxReqRecords.add(recordTmp);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("getFxReqRecords：{}", e.getMessage());
                 }
             }
         }
@@ -343,7 +406,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         List<MerReqLog> merReqLogs = null;
         //没有起始时间，找到起始时间
         if (Objects.isNull(record.getCreateTime())) {
-            LocalDateTime localDateTime = merReqLogMapper.selectCreateTime("\"reqOrderNo\":\"" + record.getReqOrderNo() + "\"", merReport.getStartTime(), merReport.getEndTime());
+            LocalDateTime localDateTime = merReqLogMapper.selectCreateTime("\"reqOrderNo\":\"" + record.getReqOrderNo() + "\"", merReport.getStartTime(), merReport.getEndTime(), "BG_HIGH_SCHOOL_EDUCATION_001");
             Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
             record.setCreateTime(date);
             String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
@@ -398,6 +461,24 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         int billedTimes = 0;
         boolean isAllSuccess = true;
         List<MerReqLog> merReqLogs = null;
+        //没有起始时间，找到起始时间
+        if (Objects.isNull(record.getCreateTime())) {
+            FxReqRecord reqRecordTmp = new FxReqRecord();
+            reqRecordTmp.setReqOrderNo(record.getReqOrderNo());
+            FxReqRecord reqRecord = fxReqRecordMapper.selectFxReqRecordByReqOrderNoAndUserFlag(reqRecordTmp);
+            if (Objects.isNull(reqRecord)) {
+                long time = java.sql.Date.valueOf(merReport.getStartTime()).getTime();
+                Date date = new Date(time);
+                record.setCreateTime(date);
+                String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
+                record.setCreateTimeStr(dateStr);
+            }else {
+                Date date = reqRecord.getCreateTime();
+                record.setCreateTime(date);
+                String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
+                record.setCreateTimeStr(dateStr);
+            }
+        }
         //超过15天，获本月取调用日志
         if (record.getUpdateTime().getTime() - record.getCreateTime().getTime() > 1296000000) {
             MerReqLogBean merReqLogBean = new MerReqLogBean();

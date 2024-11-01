@@ -87,6 +87,6 @@ public interface MerReqLogMapper extends BaseMapper<MerReqLog> {
      *
      * @return
      */
-    LocalDateTime selectCreateTime(@Param("reqJson") String reqJson, @Param("startTime") LocalDate startTime, @Param("endTime") LocalDate endTime);
+    LocalDateTime selectCreateTime(@Param("reqJson") String reqJson, @Param("startTime") LocalDate startTime, @Param("endTime") LocalDate endTime, @Param("productCode") String productCode);
 
 }

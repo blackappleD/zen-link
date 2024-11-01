@@ -149,7 +149,7 @@ public class MerReportController extends BaseController {
 	@PostMapping("/fxHouseReport")
 	public AjaxResult queryReport(MerReport merReport, HttpServletResponse response) {
 //		ExcelUtil<FxReqRecord> util = new ExcelUtil<FxReqRecord>(FxReqRecord.class);
-		List<FxReqRecord> fxReqRecords = merReportService.listFxReport(merReport);
+		List<FxReqRecord> fxReqRecords = merReportService.listFxHouseReport(merReport);
 		List<MerReportExcel> merReports = merReportService.listReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
 		List<MerReportExcel> merDateReports = merReportService.listDateReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
 		HashMap<String, Object> map = new HashMap<>();

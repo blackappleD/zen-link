@@ -191,10 +191,10 @@
     </select>
 
 
-    <select id="selectCreateTime">
-        SELECT max(create_time) FROM t_mer_req_log WHERE req_json like concat('%', #{reqJson}, '%') AND product_code = 'BG_HIGH_SCHOOL_EDUCATION_001'
+    <select id="selectCreateTime" resultType="java.time.LocalDateTime">
+        SELECT max(create_time) FROM t_mer_req_log WHERE req_json like concat('%', #{reqJson}, '%') AND product_code = #{productCode}
         <![CDATA[
-            where req_time >= #{startTime} and req_time <= #{endTime}
+            and req_time >= #{startTime} and req_time <= #{endTime}
         ]]>
     </select>
 </mapper>

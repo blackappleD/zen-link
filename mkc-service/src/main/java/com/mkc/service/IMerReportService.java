@@ -22,6 +22,8 @@ public interface IMerReportService extends IService<MerReport> {
 
     List<FxReqRecord> listFxReport(MerReport merReport);
 
+    List<FxReqRecord> listFxHouseReport(MerReport merReport);
+
     /**
      * 法信学历调用报告
      *
