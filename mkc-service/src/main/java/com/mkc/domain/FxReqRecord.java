@@ -52,7 +52,7 @@ public class FxReqRecord extends BaseEntity {
     private String merRequestData;
 
     /**供应商返回的结果*/
-    @Excel(name = "供应商返回的结果")
+    @Excel(name = "商户最终请求查询结果")
     private String merResultData;
     /**商户请求查询结果人员信息*/
     @Excel(name = "用户查询结果标记")

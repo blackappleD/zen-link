@@ -196,18 +196,17 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                 if (!checkHouseSuccess(jsonObject.getJSONObject("data"), record, merReport)) {
                     //没核查成功的，且超过10天，去查结果
                     if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
-//                        JSONObject request = JSON.parseObject(record.getMerRequestData());
-//                        String plainText = record.getReqOrderNo();
-//                        try {
-//                            System.err.println("已有查询结果");
-//                            JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
-//                            record.setUnknownInfo(post.toJSONString());
-//                            JSONObject data = post.getJSONObject("data");
-//                            checkHouseSuccess(data, record, merReport);
-//                        } catch (Exception e) {
-//                            log.info(request.toJSONString() + "【{}】", e.getMessage());
-//                        }
-                        record.setRemark("超过10天，查询结果");
+                        JSONObject request = JSON.parseObject(record.getMerRequestData());
+                        String plainText = record.getReqOrderNo();
+                        try {
+                            JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+                            record.setUnknownInfo(post.toJSONString());
+                            JSONObject data = post.getJSONObject("data");
+                            checkHouseSuccess(data, record, merReport);
+                        } catch (Exception e) {
+                            log.info(request.toJSONString() + "【{}】", e.getMessage());
+                        }
+                        record.setRemark("超过10天，更新结果");
                     } else {
                         record.setRemark("未超过10天");
                     }
@@ -216,18 +215,24 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
             //未查询结果，去查结果
             else {
                 if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
-//                 JSONObject request = JSON.parseObject(record.getMerRequestData());
-//                    String plainText = record.getReqOrderNo();
-//                    try {
-//                        System.err.println("未查询结果，去查结果");
-//                        System.err.println(record.toString());
-//                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
-//                        record.setUnknownInfo(post.toJSONString());
-//                        JSONObject data = post.getJSONObject("data");
-//                        checkHouseSuccess(data, record, merReport);
-//                    } catch (Exception e) {
-//                        log.info(request.toJSONString() + "【{}】", e.getMessage());
-//                    }
+                    try {
+                        JSONObject jsonObject = JSON.parseObject(record.getPersons());
+                        JSONArray personCardNumList = new JSONArray();
+                        JSONArray persons = jsonObject.getJSONArray("persons");
+                        for (int i = 0; i < persons.size(); i++) {
+                            personCardNumList.add(persons.getJSONObject(i).getString("cardNum"));
+                        }
+                        JSONObject request = new JSONObject();
+                        request.put("personCardNumList", personCardNumList);
+                        request.put("reqOrderNo", record.getReqOrderNo());
+                        String plainText = record.getReqOrderNo();
+                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+                        record.setUnknownInfo(post.toJSONString());
+                        JSONObject data = post.getJSONObject("data");
+                        checkHouseSuccess(data, record, merReport);
+                    } catch (Exception e) {
+                        log.info("listFxHouseReport 超过10天，查询结果 queryApi【{}】", e.getMessage());
+                    }
                     record.setRemark("超过10天，查询结果");
                 } else {
                     record.setRemark("未超过10天");
@@ -370,7 +375,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                     else {
                         JSONObject jsonObject = JSON.parseObject(merReqLog.getReqJson());
                         String reqOrderNo = jsonObject.getString("reqOrderNo");
-                        FxReqRecord record = fxReqRecords.stream().filter(p -> Objects.equals(p.getReqOrderNo(), reqOrderNo)).findFirst().orElse(null);
+                        FxReqRecord record = fxReqRecords.stream().filter(p -> Objects.equals(p.getReqOrderNo(), reqOrderNo) && Objects.equals(p.getMerCode(), merReqLog.getMerCode() )).findFirst().orElse(null);
                         if (Objects.nonNull(record)) {
                             Date date = Date.from(merReqLog.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
                             record.setUpdateTime(date);
@@ -483,66 +488,74 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         }
         //超过15天，获本月取调用日志
         if (record.getUpdateTime().getTime() - record.getCreateTime().getTime() > 1296000000) {
+            System.err.println(record.getCreateTime());
             MerReqLogBean merReqLogBean = new MerReqLogBean();
             merReqLogBean.setStartTime(merReport.getStartTime());
             merReqLogBean.setEndTime(merReport.getEndTime().atTime(23, 59, 59));
+            merReqLogBean.setMerCode(record.getMerCode());
             merReqLogBean.setProductCode("BG_HOUSE_002");
             merReqLogBean.setReqJson("\"reqOrderNo\":\"" + record.getReqOrderNo() + "\"");
             merReqLogs = merReqLogMapper.selectListOrderByReqTime(merReqLogBean);
         }
-        for (int i = 0; i < authResults.size(); i++) {
-            JSONObject authResult = authResults.getJSONObject(i);
-            if (Objects.equals(authResult.getString("authStateDesc"), "核查成功")) {
-                String cardNum = authResult.getString("cardNum");
-                JSONArray resultList = authResult.getJSONArray("resultList");
-                //根据最新结果计算进价
-                int resultInPrice = 0;
-                for (int j = 0; j < resultList.size(); j++) {
-                    JSONObject result = resultList.getJSONObject(j);
-                    String certNo = result.getString("certNo");
-                    if (StringUtils.isBlank(certNo)) {
-                        System.err.println(result.toJSONString());
-                    } else {
-                        int areaLevelPrice = getAreaLevelPrice(certNo);
-                        resultInPrice = Math.max(areaLevelPrice, resultInPrice);
+        if (Objects.nonNull(authResults)) {
+            for (int i = 0; i < authResults.size(); i++) {
+                JSONObject authResult = authResults.getJSONObject(i);
+                if (Objects.equals(authResult.getString("authStateDesc"), "核查成功")) {
+                    String cardNum = authResult.getString("cardNum");
+                    JSONArray resultList = authResult.getJSONArray("resultList");
+                    //根据最新结果计算进价
+                    int resultInPrice = 0;
+                    for (int j = 0; j < resultList.size(); j++) {
+                        JSONObject result = resultList.getJSONObject(j);
+                        String certNo = result.getString("certNo");
+                        if (StringUtils.isBlank(certNo)) {
+                            System.err.println(result.toJSONString());
+                        } else {
+                            int areaLevelPrice = getAreaLevelPrice(certNo);
+                            resultInPrice = Math.max(areaLevelPrice, resultInPrice);
+                        }
                     }
-                }
-                inPrice += resultInPrice;
-                //本月调用日志不为空（超过15天）。15天内的所有核查成功算一笔，15天外的每次算一笔。
-                if (!CollectionUtils.isEmpty(merReqLogs)) {
-                    int count = 0;
-                    for (MerReqLog log : merReqLogs) {
-                        String logRes = ZipStrUtils.gunzip(log.getRespJson());
-                        JSONObject resJson = JSON.parseObject(logRes);
-                        JSONObject redData = resJson.getJSONObject("data");
-                        JSONArray resAuthResults = redData.getJSONArray("authResults");
-                        for (int j = 0; j < resAuthResults.size(); j++) {
-                            JSONObject resAuthResult = resAuthResults.getJSONObject(j);
-                            if (Objects.equals(cardNum, resAuthResult.getString("cardNum"))) {
-                                if (Objects.equals(authResult.getString("authStateDesc"), "核查成功")) {
-                                    JSONArray authResultList = authResult.getJSONArray("resultList");
-                                    if (Objects.nonNull(authResultList) && authResultList.size() > 0) {
-                                        ZonedDateTime zonedDateTime = log.getCreateTime().atZone(ZoneId.systemDefault());
-                                        if (zonedDateTime.toInstant().toEpochMilli() - record.getCreateTime().getTime() <= 1296000000) {
-                                            if (count == 0) {
-                                                count++;
+                    inPrice += resultInPrice;
+                    //本月调用日志不为空（超过15天）。15天内的所有核查成功算一笔，15天外的每次算一笔。
+                    if (!CollectionUtils.isEmpty(merReqLogs)) {
+                        int count = 0;
+                        for (MerReqLog merReqLog : merReqLogs) {
+                            try {
+                                String logRes = ZipStrUtils.gunzip(merReqLog.getRespJson());
+                                JSONObject resJson = JSON.parseObject(logRes);
+                                JSONObject redData = resJson.getJSONObject("data");
+                                JSONArray resAuthResults = redData.getJSONArray("authResults");
+                                for (int j = 0; j < resAuthResults.size(); j++) {
+                                    JSONObject resAuthResult = resAuthResults.getJSONObject(j);
+                                    if (Objects.equals(cardNum, resAuthResult.getString("cardNum"))) {
+                                        if (Objects.equals(authResult.getString("authStateDesc"), "核查成功")) {
+                                            JSONArray authResultList = authResult.getJSONArray("resultList");
+                                            if (Objects.nonNull(authResultList) && authResultList.size() > 0) {
+                                                ZonedDateTime zonedDateTime = merReqLog.getCreateTime().atZone(ZoneId.systemDefault());
+                                                if (zonedDateTime.toInstant().toEpochMilli() - record.getCreateTime().getTime() <= 1296000000) {
+                                                    if (count == 0) {
+                                                        count++;
+                                                    }
+                                                } else {
+                                                    count++;
+                                                }
                                             }
-                                        } else {
-                                            count++;
                                         }
                                     }
                                 }
+                            }catch (Exception e) {
+                                log.error("checkHouseSuccess：{}", e.getMessage());
                             }
                         }
+                        billedTimes += count;
                     }
-                    billedTimes += count;
+                    //没有调用日志，根据结果算笔数。
+                    else {
+                        billedTimes += (resultList.size() > 0 ? 1 : 0);
+                    }
+                } else {
+                    isAllSuccess = false;
                 }
-                //没有调用日志，根据结果算笔数。
-                else {
-                    billedTimes += (resultList.size() > 0 ? 1 : 0);
-                }
-            } else {
-                isAllSuccess = false;
             }
         }
         record.setInPrice(inPrice);
