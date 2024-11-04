@@ -197,7 +197,7 @@ public class BgController extends BaseController {
             reqJson = JSON.toJSONString(params);
 
             //检查商户参数完整性
-            CkMerBean ckMerBean = ckMarriageResultInfoParams(params);
+            CkMerBean ckMerBean = ckMarriageStatusParams(params);
             ckMerBean.setProductCode(ProductCodeEum.BG_MARITAL_STATUS.getCode());
 
             //检查商户参数有效性
@@ -214,7 +214,7 @@ public class BgController extends BaseController {
         }
     }
 
-    private CkMerBean ckMarriageResultInfoParams(MarriageInfoReqInfo params) {
+    private CkMerBean ckMarriageStatusParams(MarriageInfoReqInfo params) {
 
         String merCode = params.getMerCode();
 
@@ -812,19 +812,20 @@ public class BgController extends BaseController {
         String xm = "陈海武";
         String sfzh = "330322199409262412";
         String persons = "[{\"name\":\"刘君涛\",\"cardNum\":\"320525198603170531\"}]";
-        String reqOrderNo = "f34d4f8020684de3acc73b8e9d2d82fd";
+        String reqOrderNo = "7b79f68792f84522b652f9dd2fc73cde";
         String manIdcard = "陈海武";
         String manName = "330322199409262412";
         String womanIdcard = "庄冬雪";
         String womanName = "330322199501082422";
+        String plateNo = "330322199501082422";
 
         String merCode = "BhCpTest";
         //本地
-        String pwd = "e0be01493778d77ecfd2004f54b41a09";
+//        String pwd = "e0be01493778d77ecfd2004f54b41a09";
         //线上
-//        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
-        String plaintext = merCode + xm + sfzh;
-//        String plaintext = merCode + reqOrderNo;
+        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
+//        String plaintext = merCode + xm + sfzh;
+        String plaintext = merCode + plateNo;
 //        String plaintext = merCode + manIdcard + manName + womanIdcard + womanName;
         String signText = plaintext + pwd;
         String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
