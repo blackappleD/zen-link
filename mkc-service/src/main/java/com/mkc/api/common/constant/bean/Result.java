@@ -1,5 +1,6 @@
 package com.mkc.api.common.constant.bean;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mkc.api.common.constant.ApiReturnCode;
 import com.mkc.common.enums.FreeState;
 import lombok.Data;
@@ -34,6 +35,9 @@ public class Result<T> implements Serializable
     private String free=FreeState.NO.getCode();
 
     private String msg;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Integer billedTimes;
 
     private T data;
 

@@ -117,6 +117,17 @@ public interface IBgSupService extends ISupService {
     }
 
     /**
+     * 经济能力评级V7查询
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryFinanceInfoV7(FinanceInfoV3ReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+    /**
      * 确信分信息查询
      * @param vo
      * @param bean

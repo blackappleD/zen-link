@@ -42,7 +42,7 @@ public class CkController extends BaseController {
      * 银行卡四要素
      */
     @PostMapping("/bankFour")
-    public Result ckVehicleLicense(HttpServletRequest request, @RequestBody FourBankReqVo params) {
+    public Result ckBankFour(HttpServletRequest request, @RequestBody BankReqVo params) {
 
         String reqJson = null;
         try {
@@ -57,6 +57,64 @@ public class CkController extends BaseController {
             merLog.setReqJson(reqJson);
 
             Result result = ckService.ckBankFour(params, merLog);
+
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【行驶证核验】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 银行卡四要素
+     */
+    @PostMapping("/bankThree")
+    public Result ckBankThree(HttpServletRequest request, @RequestBody BankReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckBankThreeParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.CK_BANK_THREE.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = ckService.ckBankThree(params, merLog);
+
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【行驶证核验】API 发生异常  reqJson {} ", reqJson,e);
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 银行卡四要素
+     */
+    @PostMapping("/bankTwo")
+    public Result ckBankTwo(HttpServletRequest request, @RequestBody BankReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckBankTwoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.CK_BANK_TWO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = ckService.ckBankTwo(params, merLog);
 
             return result;
         } catch (ApiServiceException e) {
@@ -129,7 +187,7 @@ public class CkController extends BaseController {
 
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }
-    private CkMerBean ckBankFourParams(FourBankReqVo params) {
+    private CkMerBean ckBankFourParams(BankReqVo params) {
 
         String merCode = params.getMerCode();
 
@@ -165,6 +223,66 @@ public class CkController extends BaseController {
 
 
         String plaintext = merCode + bankCard + certName + certNo + mobile;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
+    private CkMerBean ckBankThreeParams(BankReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String bankCard = params.getBankCard();
+        String certName = params.getCertName();
+        String certNo = params.getCertNo();
+
+        if (StringUtils.isBlank(bankCard)) {
+            log.error("缺少参数 bankCard {} , merCode： {}", bankCard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(certName)) {
+            log.error("缺少参数 certName {} , merCode： {}", certName, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(certNo)) {
+            log.error("缺少参数 certNo {} , merCode： {}", certNo, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        String plaintext = merCode + bankCard + certName + certNo;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
+    private CkMerBean ckBankTwoParams(BankReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String bankCard = params.getBankCard();
+        String certName = params.getCertName();
+
+        if (StringUtils.isBlank(bankCard)) {
+            log.error("缺少参数 bankCard {} , merCode： {}", bankCard, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        if (StringUtils.isBlank(certName)) {
+            log.error("缺少参数 certName {} , merCode： {}", certName, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+
+        String plaintext = merCode + bankCard + certName;
 
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }

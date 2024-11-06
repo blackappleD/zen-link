@@ -8,6 +8,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.utils.ApiUtils;
 import com.mkc.common.utils.DateUtils;
+import com.mkc.common.utils.StringUtils;
 import com.mkc.domain.*;
 import com.mkc.service.IMerInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -107,7 +108,7 @@ public class TestController {
                                     excelTestHouse.setUseTo(result.getString("useTo"));
                                     writeList.add(excelTestHouse);
                                 }
-                            }else {
+                            } else {
                                 ExcelTestHouse excelTestHouse = new ExcelTestHouse();
                                 excelTestHouse.setXm(read.getXm());
                                 excelTestHouse.setPersonCardNum(read.getPersonCardNum());
@@ -150,7 +151,7 @@ public class TestController {
             for (ExcelTest2W read : readList) {
                 JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
                 String plaintext = read.getIdCard() + read.getName() + read.getMobile();
-                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/economicRate", jsonObject, plaintext);
+                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/financeInfoV3", jsonObject, plaintext);
                 read.setCode(post.getString("code"));
                 try {
                     JSONObject data = post.getJSONObject("data");
@@ -163,11 +164,11 @@ public class TestController {
                 }
             }
             log.info(readList.size() + "条样例测试完毕！");
-            setExcelRespProp(response, DateUtils.dateTimeNow() + "社保经济能力评级测试结果");
+            setExcelRespProp(response, DateUtils.dateTimeNow() + "经济能力评级V3测试结果");
             EasyExcel.write(response.getOutputStream())
                     .head(ExcelTest2W.class)
                     .excelType(ExcelTypeEnum.XLSX)
-                    .sheet("社保经济能力评级测试结果")
+                    .sheet("经济能力评级V3测试结果")
                     .doWrite(readList);
         } catch (IOException e) {
             e.printStackTrace();
@@ -213,6 +214,54 @@ public class TestController {
                     .head(ExcelTest2W.class)
                     .excelType(ExcelTypeEnum.XLSX)
                     .sheet("社保经济能力2W测试结果")
+                    .doWrite(readList);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 企业四要素
+     */
+    @PostMapping("/testEnterpriseFour")
+    public void testEnterpriseFour(@RequestBody MultipartFile excel, HttpServletResponse response) {
+        try {
+            List<ExcelEnterpriseFour> readList = EasyExcel.read(excel.getInputStream())
+                    .headRowNumber(1)
+                    .head(ExcelEnterpriseFour.class)
+                    .sheet(0)
+                    .doReadSync();
+
+            for (ExcelEnterpriseFour read : readList) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("companyName", read.getCompanyName());
+                jsonObject.put("creditCode", StringUtils.isNotBlank(read.getCreditCode()) ? read.getCreditCode() : read.getRegistrationNumber());
+                jsonObject.put("legalPerson", read.getLegalPerson());
+                jsonObject.put("certNo", read.getCertNo());
+                String plainText = jsonObject.getString("companyName") + jsonObject.getString("creditCode") + jsonObject.getString("legalPerson") + jsonObject.getString("certNo");
+                JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/enterpriseFourElementInfo", jsonObject, plainText);
+                read.setCode(post.getString("code"));
+                try {
+                    JSONObject data = post.getJSONObject("data");
+                    if (Objects.nonNull(data)) {
+                        read.setReturnCode(data.getString("returnCode"));
+                        read.setCreditCodeMatch(data.getString("creditCodeMatch"));
+                        read.setCompanyNameMatch(data.getString("companyNameMatch"));
+                        read.setLegalPersonMatch(data.getString("legalPersonMatch"));
+                        read.setCertNoMatch(data.getString("certNoMatch"));
+                    }
+                } catch (Exception e) {
+                    read.setReturnCode(post.getString("data"));
+                    log.error(e.getMessage());
+                }
+            }
+            log.info(readList.size() + "条样例测试完毕！");
+            setExcelRespProp(response, DateUtils.dateTimeNow() + "企业四要素测试结果");
+            EasyExcel.write(response.getOutputStream())
+                    .head(ExcelEnterpriseFour.class)
+                    .excelType(ExcelTypeEnum.XLSX)
+                    .sheet("企业四要素测试结果")
                     .doWrite(readList);
         } catch (IOException e) {
             e.printStackTrace();
@@ -294,7 +343,6 @@ public class TestController {
             log.error(e.getMessage());
         }
     }
-
 
 
     /**
@@ -409,7 +457,6 @@ public class TestController {
             log.error(e.getMessage());
         }
     }
-
 
 
     public static void setExcelRespProp(HttpServletResponse response, String rawFileName) throws UnsupportedEncodingException {

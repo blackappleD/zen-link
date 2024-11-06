@@ -60,6 +60,10 @@ public class SupResult<T> implements Serializable
 
     private FreeState free=FreeState.NO;
 
+    private Integer billedTimes;
+
+    private String level;
+
     //运营商 针对手机号 相关接口 使用，需要根据手机号实际的运营商重新判断
     private YysCode yysCode;
 

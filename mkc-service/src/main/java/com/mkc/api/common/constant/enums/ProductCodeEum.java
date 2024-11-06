@@ -24,6 +24,8 @@ public enum ProductCodeEum {
     CK_POPULATION_THREE("CK_POPULATION_THREE_001", "全国⼈⼝身份信息三要素核验","/ck/populationThree"){},
     CK_VEHICLE_LICENSE_INFO("CK_VEHICLE_LICENSE_001", "行驶证核验","/ck/ckVehicleLicense"){},
     CK_BANK_FOUR("CK_BANK_FOUR_INFO_001", "银行卡四要素核验","/ck/bankFour"){},
+    CK_BANK_THREE("CK_BANK_THREE_INFO_001", "银行卡三要素核验","/ck/bankThree"){},
+    CK_BANK_TWO("CK_BANK_TWO_INFO_001", "银行卡二要素核验","/ck/bankTwo"){},
 
     BG_CAR_INFO("BG_CAR_001", "车五项信息查询","/bg/carInfo"){},
 
@@ -40,6 +42,8 @@ public enum ProductCodeEum {
     BG_FINANCE_INFO("BG_FINANCE_001", "经济能力2W查询","/bg/financeInfo"){},
 
     BG_FINANCE_INFO_V3("BG_FINANCE_002", "经济能力评级V3","/bg/financeInfoV3"){},
+
+    BG_FINANCE_INFO_V7("BG_FINANCE_003", "经济能力评级V7","/bg/financeInfoV3"){},
 
     BG_SURE_SCORE_INFO("BG_SURE_SCORE_001", "确信分","/bg/sureScoreInfo"){},
 
@@ -60,6 +64,7 @@ public enum ProductCodeEum {
     BG_MARITAL_RELATIONSHIP("BG_MARRIAGE_001", "婚姻关系验证", "/bg/maritalRelationship"){},
     BG_MARITAL_STATUS("BG_MARRIAGE_002", "婚姻状况查询", "/bg/maritalStatus"){},
     BG_MARITAL_STABILITY("BG_MARRIAGE_003", "婚姻稳定状况查询", "/bg/maritalStability"){},
+
     ;
 
 

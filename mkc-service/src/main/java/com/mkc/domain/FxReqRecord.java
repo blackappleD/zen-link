@@ -63,6 +63,8 @@ public class FxReqRecord extends BaseEntity {
     private transient String updateTimeStr;
     @Excel(name = "商户未查询信息")
     private transient String unknownInfo;
+    @Excel(name = "是否查得")
+    private transient Boolean isGet;
     @Excel(name = "进价")
     private transient Integer inPrice = 0;
     @Excel(name = "计费人次")

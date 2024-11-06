@@ -18,7 +18,21 @@ public interface ICkSupService extends ISupService{
     /**
      * 银行卡四要素
      */
-    default public SupResult ckBankFour(FourBankReqVo vo, SuplierQueryBean bean)
+    default public SupResult ckBankFour(BankReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+    /**
+     * 银行卡四要素
+     */
+    default public SupResult ckBankThree(BankReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+    /**
+     * 银行卡四要素
+     */
+    default public SupResult ckBankTwo(BankReqVo vo, SuplierQueryBean bean)
     {
         return SupResult.err();
     }

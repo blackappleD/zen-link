@@ -615,6 +615,34 @@ public class BgController extends BaseController {
         }
     }
 
+    /**
+     * 经济能力评级V7
+     */
+    @PostMapping("/financeInfoV7")
+    public Result financeInfoV7(HttpServletRequest request, @RequestBody FinanceInfoV3ReqVo params) {
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckfinanceInfoV3Params(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_FINANCE_INFO_V7.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryFinanceInfoV7(params, merLog);
+            return result;
+
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【经济能力评级V7】API 发生异常  reqJson {} ", reqJson, e);
+            return Result.fail();
+        }
+    }
+
 
     /**
      * 不动产信息核查
@@ -813,20 +841,23 @@ public class BgController extends BaseController {
         String sfzh = "330322199409262412";
         String persons = "[{\"name\":\"刘君涛\",\"cardNum\":\"320525198603170531\"}]";
         String reqOrderNo = "7b79f68792f84522b652f9dd2fc73cde";
-        String manIdcard = "陈海武";
-        String manName = "330322199409262412";
-        String womanIdcard = "庄冬雪";
-        String womanName = "330322199501082422";
+        String manIdcard = "330322199409262412";
+        String manName = "陈海武";
+        String womanIdcard = "330322199501082422";
+        String womanName = "庄冬雪";
         String plateNo = "330322199501082422";
+        String idCard = "330381199910181122";
+        String name = "林舒婷";
+        String mobile = "15558996627";
 
         String merCode = "BhCpTest";
         //本地
-//        String pwd = "e0be01493778d77ecfd2004f54b41a09";
+        String pwd = "e0be01493778d77ecfd2004f54b41a09";
         //线上
-        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
+//        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
 //        String plaintext = merCode + xm + sfzh;
-        String plaintext = merCode + plateNo;
-//        String plaintext = merCode + manIdcard + manName + womanIdcard + womanName;
+//        String plaintext = merCode + plateNo;
+        String plaintext = merCode + idCard + name + mobile;
         String signText = plaintext + pwd;
         String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
         System.err.println(signMd5);
@@ -879,10 +910,10 @@ public class BgController extends BaseController {
         String legalPerson = params.getLegalPerson();
         String certNo = params.getCertNo();
 
-        if (StringUtils.isBlank(companyName)) {
-            log.error("缺少参数 companyName {} , merCode： {}", companyName, merCode);
-            throw new ApiServiceException(ApiReturnCode.ERR_001);
-        }
+//        if (StringUtils.isBlank(companyName)) {
+//            log.error("缺少参数 companyName {} , merCode： {}", companyName, merCode);
+//            throw new ApiServiceException(ApiReturnCode.ERR_001);
+//        }
 
         if (StringUtils.isBlank(creditCode)) {
             log.error("缺少参数 creditCode {} , merCode： {}", creditCode, merCode);

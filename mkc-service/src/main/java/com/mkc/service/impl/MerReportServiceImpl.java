@@ -356,20 +356,29 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                             continue;
                         }
                         String reqOrderNo = data.getString("reqOrderNo");
-                        FxReqRecord record = new FxReqRecord();
-                        record.setReqOrderNo(reqOrderNo);
-                        Date date = Date.from(merReqLog.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
-                        String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
-                        record.setCreateTime(date);
-                        record.setUpdateTime(date);
-                        record.setCreateTimeStr(dateStr);
-                        record.setUpdateTimeStr(dateStr);
-                        record.setMerCode(merReqLog.getMerCode());
-                        record.setPersons(merReqLog.getReqJson());
+                        FxReqRecord record = fxReqRecords.stream().filter(p -> Objects.equals(p.getReqOrderNo(), reqOrderNo) && Objects.equals(p.getMerCode(), merReqLog.getMerCode())).findFirst().orElse(null);
+                        if (Objects.isNull(record)) {
+                            FxReqRecord recordTmp = new FxReqRecord();
+                            recordTmp.setReqOrderNo(reqOrderNo);
+                            Date date = Date.from(merReqLog.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
+                            String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
+                            recordTmp.setCreateTime(date);
+                            recordTmp.setUpdateTime(date);
+                            recordTmp.setCreateTimeStr(dateStr);
+                            recordTmp.setUpdateTimeStr(dateStr);
+                            recordTmp.setMerCode(merReqLog.getMerCode());
+                            recordTmp.setPersons(merReqLog.getReqJson());
 //                        JSONObject reqJson = JSON.parseObject(merReqLog.getReqJson());
 //                        JSONArray persons = reqJson.getJSONArray("persons");
-                        record.setUserFlag("0");
-                        fxReqRecords.add(record);
+                            recordTmp.setUserFlag("0");
+                            fxReqRecords.add(recordTmp);
+                        }else {
+                            Date date = Date.from(merReqLog.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
+                            String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
+                            record.setCreateTime(date);
+                            record.setCreateTimeStr(dateStr);
+                            record.setPersons(merReqLog.getReqJson());
+                        }
                     }
                     //查询结果请求
                     else {
@@ -530,8 +539,10 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                                             JSONArray authResultList = authResult.getJSONArray("resultList");
                                             if (Objects.nonNull(authResultList) && authResultList.size() > 0) {
                                                 ZonedDateTime zonedDateTime = merReqLog.getCreateTime().atZone(ZoneId.systemDefault());
+                                                long logCreateTime = zonedDateTime.toInstant().toEpochMilli();
                                                 if (zonedDateTime.toInstant().toEpochMilli() - record.getCreateTime().getTime() <= 1296000000) {
-                                                    if (count == 0) {
+                                                    //只算本月提交申请的且第一次查询
+                                                    if (count == 0 && logCreateTime > java.sql.Date.valueOf(merReport.getStartTime()).getTime()) {
                                                         count++;
                                                     }
                                                 } else {

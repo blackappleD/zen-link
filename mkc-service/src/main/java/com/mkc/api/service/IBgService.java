@@ -64,6 +64,14 @@ public interface IBgService {
      */
     public Result queryFinanceInfoV3(FinanceInfoV3ReqVo params, MerReqLogVo merLog);
 
+
+    /**
+     * 经济能力评级V7
+     * @param params
+     * @return
+     */
+    Result queryFinanceInfoV7(FinanceInfoV3ReqVo params, MerReqLogVo merLog);
+
     /**
      * 确信分信息查询
      * @param params

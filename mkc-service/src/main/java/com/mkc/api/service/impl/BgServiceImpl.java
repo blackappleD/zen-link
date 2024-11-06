@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 /**
@@ -99,6 +100,13 @@ public class BgServiceImpl implements IBgService {
     public Result queryFinanceInfoV3(FinanceInfoV3ReqVo params, MerReqLogVo merLog) {
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->
                 bgSupService.queryFinanceInfoV3(params, supQueryBean));
+    }
+
+    @Override
+    public Result queryFinanceInfoV7(FinanceInfoV3ReqVo params, MerReqLogVo merLog) {
+
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->
+                bgSupService.queryFinanceInfoV7(params, supQueryBean));
     }
 
     @Override
@@ -263,6 +271,9 @@ public class BgServiceImpl implements IBgService {
         if (supResult.isSuccess()) {
            // result = Result.ok(supResult.getData(), orderNo, "认证信息一致");
             result = Result.ok(supResult.getData(), supResult.getFree(), orderNo);
+            if (Objects.equals(supResult.getFree(), FreeState.YES)) {
+                result.setBilledTimes(supResult.getBilledTimes());
+            }
             //判断是否 不一致
         } else if (supResult.isNot()) {
             result = Result.not(supResult.getData(), orderNo);
@@ -283,7 +294,7 @@ public class BgServiceImpl implements IBgService {
         merLog.setSupName(supResult.getSupName());
         merLog.setStatus(supResult.getState().getCode());
         merLog.setInPrice(inPrice);
-        merLog.setFree(supResult.getFree().getCode());
+        merLog.setFree(Objects.nonNull(supResult.getBilledTimes())? String.valueOf(supResult.getBilledTimes()) : supResult.getFree().getCode());
 
         merLog.setRespTime(LocalDateTime.now());
         merLog.setRespJson(JSON.toJSONString(result));

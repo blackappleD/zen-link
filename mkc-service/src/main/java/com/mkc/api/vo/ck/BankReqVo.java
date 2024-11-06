@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @Date 2024/9/11 17:01
  */
 @Data
-public class FourBankReqVo extends BaseVo implements Serializable {
+public class BankReqVo extends BaseVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

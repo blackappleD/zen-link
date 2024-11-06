@@ -95,7 +95,7 @@
             <if test="merResultData != null and merResultData != ''">mer_result_data = #{merResultData},</if>
             update_time = now()
         </set>
-        where req_order_no = #{reqOrderNo} and user_flag = '0'
+        where req_order_no = #{reqOrderNo} and mer_code = #{merCode}
     </update>
 
     <select id="listByRangeTime" parameterType="com.mkc.domain.MerReport" resultType="com.mkc.domain.FxReqRecord">
@@ -128,6 +128,19 @@
             <if test="endTime != null ">and t_fx_req_record.update_time <![CDATA[ <= ]]> #{endTime}</if>
         </where>
         order by t_fx_req_record.create_time desc
+    </select>
+
+    <select id="list" parameterType="com.mkc.domain.FxReqRecord" resultType="com.mkc.domain.FxReqRecord">
+        <include refid="selectFxReqRecordVo"/>
+        <where>
+            <if test="reqOrderNo!= null and reqOrderNo!= ''">and req_order_no = #{reqOrderNo}</if>
+            <if test="queryCount!= null and queryCount!= ''">and query_count = #{queryCount}</if>
+            <if test="merCode!= null and merCode!= ''">and mer_code = #{merCode}</if>
+            <if test="persons!= null and persons!= ''">and persons = #{persons}</if>
+            <if test="merRequestData!= null and merRequestData!= ''">and mer_request_data = #{merRequestData}</if>
+            <if test="merResultData!= null and merResultData!= ''">and mer_result_data = #{merResultData}</if>
+            <if test="userFlag!= null and userFlag!= ''">and user_flag = #{userFlag}</if>
+        </where>
     </select>
 
 

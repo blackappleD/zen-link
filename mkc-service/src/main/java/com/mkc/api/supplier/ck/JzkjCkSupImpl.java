@@ -6,7 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.vo.ck.FourBankReqVo;
+import com.mkc.api.vo.ck.BankReqVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeState;
 import com.mkc.common.enums.ReqState;
@@ -34,8 +34,170 @@ public class JzkjCkSupImpl implements ICkSupService {
 
     private final static String ERROR = "500";
 
+
     @Override
-    public SupResult ckBankFour(FourBankReqVo vo, SuplierQueryBean bean) {
+    public SupResult ckBankTwo(BankReqVo vo, SuplierQueryBean bean) {
+        String result = null;
+        SupResult supResult = null;
+        JSONObject params = new JSONObject();
+        String url = null;
+
+        try {
+            url = bean.getUrl() + "/ck/twoBank_YL";
+            String appsecret = bean.getSignKey();
+            String appkey = bean.getAcc();
+            String signPwd = bean.getSignPwd();
+            Integer timeOut = bean.getTimeOut();
+            String bankCard = vo.getBankCard();
+            String certName = vo.getCertName();
+            String certNo = vo.getCertNo();
+            String mobile = vo.getMobile();
+
+            params.put("bankCard", bankCard);
+            params.put("certName", certName);
+            params.put("appKey", appkey);
+            params.put("merSeq", vo.getMerSeq());
+            params.put("key", appsecret);
+            String sign = Md5Utils.md5(appkey + certName + certNo + mobile + bankCard + signPwd);
+            params.put("sign", sign);
+            supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            result = HttpUtil.post(url, params.toJSONString(), timeOut);
+            supResult.setRespJson(result);
+
+            //判断是否有响应结果 无就是请求异常或超时
+            if (StringUtils.isBlank(result)) {
+                supResult.setRemark("供应商没有响应结果");
+                supResult.setState(ReqState.ERROR);
+                return supResult;
+            }
+            JSONObject resultObject = JSON.parseObject(result);
+            String code = resultObject.getString("code");
+
+            //                0：成功（收费）
+            //                405：查无（不收费）
+            if (SUCCESS.equals(code)) {
+                supResult.setFree(FreeState.YES);
+                supResult.setRemark("查询成功");
+                supResult.setState(ReqState.SUCCESS);
+                JSONObject resultJson = resultObject.getJSONObject("data");
+                if (resultJson != null) {
+                    supResult.setData(resultJson);
+                    return supResult;
+                }
+            } else if (NOGET.equals(code)) {
+                supResult.setFree(FreeState.NO);
+                supResult.setRemark("查无");
+                supResult.setState(ReqState.NOGET);
+                return supResult;
+            } else if (NOT.equals(code)) {
+                supResult.setFree(FreeState.YES);
+                supResult.setRemark("不一致");
+                supResult.setState(ReqState.NOT);
+                return supResult;
+            } else {
+                supResult.setFree(FreeState.NO);
+                supResult.setRemark("查询失败");
+
+            }
+
+            return null;
+        }  catch (Throwable e) {
+            errMonitorMsg(log," 【上海敬众科技股份有限公司供应商】 【银联】x二要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(),url, result, e);
+            if (supResult == null) {
+                supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            }
+            supResult.setState(ReqState.ERROR);
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+            supResult.setRemark("异常：" + e.getMessage());
+            return supResult;
+        }
+    }
+
+    @Override
+    public SupResult ckBankThree(BankReqVo vo, SuplierQueryBean bean) {
+        String result = null;
+        SupResult supResult = null;
+        JSONObject params = new JSONObject();
+        String url = null;
+
+        try {
+            url = bean.getUrl() + "/ck/threeBank_YL";
+            String appsecret = bean.getSignKey();
+            String appkey = bean.getAcc();
+            String signPwd = bean.getSignPwd();
+            Integer timeOut = bean.getTimeOut();
+            String bankCard = vo.getBankCard();
+            String certName = vo.getCertName();
+            String certNo = vo.getCertNo();
+            String mobile = vo.getMobile();
+
+            params.put("bankCard", bankCard);
+            params.put("certName", certName);
+            params.put("certNo", certNo);
+            params.put("appKey", appkey);
+            params.put("merSeq", vo.getMerSeq());
+            params.put("key", appsecret);
+            String sign = Md5Utils.md5(appkey + certName + certNo + mobile + bankCard + signPwd);
+            params.put("sign", sign);
+            supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            result = HttpUtil.post(url, params.toJSONString(), timeOut);
+            supResult.setRespJson(result);
+
+            //判断是否有响应结果 无就是请求异常或超时
+            if (StringUtils.isBlank(result)) {
+                supResult.setRemark("供应商没有响应结果");
+                supResult.setState(ReqState.ERROR);
+                return supResult;
+            }
+            JSONObject resultObject = JSON.parseObject(result);
+            String code = resultObject.getString("code");
+
+            //                0：成功（收费）
+            //                405：查无（不收费）
+            if (SUCCESS.equals(code)) {
+                supResult.setFree(FreeState.YES);
+                supResult.setRemark("查询成功");
+                supResult.setState(ReqState.SUCCESS);
+                JSONObject resultJson = resultObject.getJSONObject("data");
+                if (resultJson != null) {
+                    supResult.setData(resultJson);
+                    return supResult;
+                }
+            } else if (NOGET.equals(code)) {
+                supResult.setFree(FreeState.NO);
+                supResult.setRemark("查无");
+                supResult.setState(ReqState.NOGET);
+                return supResult;
+            } else if (NOT.equals(code)) {
+                supResult.setFree(FreeState.YES);
+                supResult.setRemark("不一致");
+                supResult.setState(ReqState.NOT);
+                return supResult;
+            } else {
+                supResult.setFree(FreeState.NO);
+                supResult.setRemark("查询失败");
+
+            }
+
+            return null;
+        }  catch (Throwable e) {
+            errMonitorMsg(log," 【上海敬众科技股份有限公司供应商】 【银联】x三要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(),url, result, e);
+            if (supResult == null) {
+                supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            }
+            supResult.setState(ReqState.ERROR);
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+            supResult.setRemark("异常：" + e.getMessage());
+            return supResult;
+        }
+    }
+
+    @Override
+    public SupResult ckBankFour(BankReqVo vo, SuplierQueryBean bean) {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();

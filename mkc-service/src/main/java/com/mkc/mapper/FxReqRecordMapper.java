@@ -17,4 +17,6 @@ public interface FxReqRecordMapper extends BaseMapper<FxReqRecord> {
    public int updateFxReqRecordByRequestOrderNo(FxReqRecord fxReqRecord);
 
    List<FxReqRecord> listByRangeTime(MerReport merReport);
+
+   List<FxReqRecord> list(FxReqRecord fxReqRecord);
 }

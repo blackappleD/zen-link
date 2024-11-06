@@ -35,13 +35,21 @@ public class YrzxBgSupImpl implements IBgSupService {
 
     @Override
     public SupResult queryFinanceInfoV3(FinanceInfoV3ReqVo vo, SuplierQueryBean bean) {
+        return getSupResult(vo, bean, "/yrzx/finan/net/jjnl/v3");
+    }
 
+    @Override
+    public SupResult queryFinanceInfoV7(FinanceInfoV3ReqVo vo, SuplierQueryBean bean) {
+        return getSupResult(vo, bean, "/yrzx/finan/net/jjnl/v7");
+    }
+
+    private SupResult getSupResult(FinanceInfoV3ReqVo vo, SuplierQueryBean bean, String urlSuffix) {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();
         String url=null;
         try {
-            url = bean.getUrl() + "/yrzx/finan/net/jjnl/v3";
+            url = bean.getUrl() + urlSuffix;
             String appsecret = bean.getSignKey();
             String appkey = bean.getAcc();
             Integer timeOut = bean.getTimeOut();
@@ -93,13 +101,13 @@ public class YrzxBgSupImpl implements IBgSupService {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
-                errMonitorMsg(log,"  经济能力评级V3查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                errMonitorMsg(log,url + " 接口 发生异常 orderNo {} URL {} , 报文: {} "
                         , bean.getOrderNo(),url, result);
                 return supResult;
             }
             return supResult;
         }  catch (Throwable e) {
-            errMonitorMsg(log," 【北京银融致信科技供应商】 经济能力评级V3 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+            errMonitorMsg(log," 【北京银融致信科技供应商】 经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(),url, result, e);
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
@@ -110,7 +118,6 @@ public class YrzxBgSupImpl implements IBgSupService {
             supResult.setRemark("异常：" + e.getMessage());
             return supResult;
         }
-
     }
 
 
