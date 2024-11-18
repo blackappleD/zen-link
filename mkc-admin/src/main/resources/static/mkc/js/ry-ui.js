@@ -411,7 +411,7 @@ var table = {
             // 导出数据
             fxHouseReportV1: function(formId) {
                 table.set();
-                $.modal.confirm("确定导出法信不动产账单吗？", function() {
+                $.modal.confirm("确定导出不动产账单吗？", function() {
                     var params = $("#" + table.options.id).bootstrapTable('getOptions');
 					var dataParam = $.table.queryParams({
 						formId: formId,
@@ -434,7 +434,7 @@ var table = {
             // 导出数据
             fxHouseReportV2: function(formId) {
                 table.set();
-                $.modal.confirm("确定导出法信不动产账单吗？", function() {
+                $.modal.confirm("确定导出不动产账单吗？", function() {
                     var params = $("#" + table.options.id).bootstrapTable('getOptions');
 					var dataParam = $.table.queryParams({
 						formId: formId,
@@ -457,7 +457,7 @@ var table = {
             // 导出数据
             fxEduReport: function(formId) {
                 table.set();
-                $.modal.confirm("确定导出法信学历账单吗？", function() {
+                $.modal.confirm("确定导出学历账单吗？", function() {
                     var params = $("#" + table.options.id).bootstrapTable('getOptions');
 					var dataParam = $.table.queryParams({
 						formId: formId,

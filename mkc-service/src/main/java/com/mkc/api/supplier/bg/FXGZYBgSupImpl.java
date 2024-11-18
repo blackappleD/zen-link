@@ -766,9 +766,26 @@ public class FXGZYBgSupImpl implements IBgSupService {
         }
     }
 
+
     public static void main(String[] args) {
-        String certNo = "京(2021)海不动产权第0020831号";
-        System.out.println(getAreaLevelPrice(certNo));
+        /**
+         * 生成密钥对
+         *
+         * @return 密钥对
+         * @throws Exception 生成密钥对异常
+         */
+        KeyPairGenerator keyGen = null;
+        try {
+            keyGen = KeyPairGenerator.getInstance("RSA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        keyGen.initialize(2048);
+        KeyPair keyPair = keyGen.generateKeyPair();
+        String publicKey = Base64.encodeBase64String(keyPair.getPublic().getEncoded());
+        String privateKey = Base64.encodeBase64String(keyPair.getPrivate().getEncoded());
+        System.out.println("公钥:" + publicKey);
+        System.out.println("私钥:" + privateKey);
     }
 
 }
