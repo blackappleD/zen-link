@@ -3,6 +3,7 @@ package com.mkc.api.supplier.bg;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.IBgSupService;
@@ -10,6 +11,7 @@ import com.mkc.api.vo.bg.*;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeState;
 import com.mkc.common.enums.ReqState;
+import com.mkc.common.utils.DateUtils;
 import com.mkc.domain.FxReqRecord;
 import com.mkc.mapper.FxReqRecordMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +19,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -71,6 +72,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             params.put("data", data);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             result = FxSdkTool.houseCheckResult(params, baseUrlArr[0], bean.getAcc(), bean.getSignPwd(), bean.getSignKey());
+//            result = "{\"code\":\"E00000\",\"message\":\"请求成功\",\"requestId\":\"049ecf7d61b745e6a0bf413530aba6b7\",\"sign\":\"GeMHFQ65UbLMkMNf3kow/5EwnTEaYA20vclvttWFHSgaq2g9f9zRIaY2jqttBlk8H0x0LD4qXPvmAM70lUYFD3ucrHmN2OEix4xDFSg4tyh09TkpyzYu5AvJzBkHGu1/3AldqDa6mYwfeQGq4eGHxjvJ3fP7dl4Rqp+gXOxw94eHrDipIiV4sW/W77mtdHNQVoUzUR7PBgPDf9LdxHGL/7ZUwpOiQwVeIivMKBTSwOzEB6I8djVmh4i8HpfycMoKm9HdKwUqFQjsy/2fpHb0OtfRsZF00Nsubi7+ZY4ha+xhaqppWk0Un9Mb5/kbbYuoFrC9x29qABXd2Mj+ZjEgJw==\",\"data\":{\"reqOrderNo\":\"ed6ca24402a9418d900212993418b4c8\",\"approvalStatus\":\"APPROVED\",\"authResults\":[{\"cardNum\":\"432801196806012027\",\"authState\":\"30\",\"authStateDesc\":\"核查成功\",\"isReAuth\":0,\"resultList\":[{\"certNo\":\"湘（2022）苏仙不动产权第0062645号\",\"unitNo\":\"431003002021GB00196F00010008\",\"location\":\"郴州市肖家洞路10号苏仙住宅小区12栋104\",\"ownership\":\"单独所有\",\"houseArea\":\"13.01\",\"rightsType\":\"国有建设用地使用权/房屋所有权\",\"isSealUp\":\"否\",\"isMortgaged\":\"否\",\"rightsStartTime\":\"\",\"rightsEndTime\":\"\"},{\"certNo\":\"湘（2022）苏仙不动产权第0062709号\",\"unitNo\":\"431003002021GB00196F00010022\",\"location\":\"郴州市肖家洞路10号苏仙住宅小区12栋601\",\"ownership\":\"单独所有\",\"houseArea\":\"127.17\",\"rightsType\":\"国有建设用地使用权/房屋所有权\",\"isSealUp\":\"否\",\"isMortgaged\":\"否\",\"rightsStartTime\":\"\",\"rightsEndTime\":\"\",\"useTo\":\"住宅\"},{\"certNo\":\"湘（2019）苏仙不动产权第0092013号\",\"unitNo\":\"431003009002GB00002F00020018\",\"location\":\"郴州市苏仙区白鹿洞镇上白水村四组雅苑小区3栋306\",\"ownership\":\"单独所有\",\"houseArea\":\"131.47\",\"rightsType\":\"国有建设用地使用权/房屋所有权\",\"isSealUp\":\"否\",\"isMortgaged\":\"否\",\"rightsStartTime\":\"\",\"rightsEndTime\":\"2079-06-02\",\"useTo\":\"成套住宅\"}]},{\"cardNum\":\"432801196806012027\",\"authState\":\"30\",\"authStateDesc\":\"核查成功\",\"isReAuth\":0,\"resultList\":[{\"certNo\":\"湘（2022）苏仙不动产权第0062645号\",\"unitNo\":\"431003002021GB00196F00010008\",\"location\":\"郴州市肖家洞路10号苏仙住宅小区12栋104\",\"ownership\":\"单独所有\",\"houseArea\":\"13.01\",\"rightsType\":\"国有建设用地使用权/房屋所有权\",\"isSealUp\":\"否\",\"isMortgaged\":\"否\",\"rightsStartTime\":\"\",\"rightsEndTime\":\"\"},{\"certNo\":\"沪（2022）苏仙不动产权第0062709号\",\"unitNo\":\"431003002021GB00196F00010022\",\"location\":\"郴州市肖家洞路10号苏仙住宅小区12栋601\",\"ownership\":\"单独所有\",\"houseArea\":\"127.17\",\"rightsType\":\"国有建设用地使用权/房屋所有权\",\"isSealUp\":\"否\",\"isMortgaged\":\"否\",\"rightsStartTime\":\"\",\"rightsEndTime\":\"\",\"useTo\":\"住宅\"}]}]}}";
             supResult.setRespTime(LocalDateTime.now());
             supResult.setRespJson(result);
             if (StringUtils.isBlank(result)) {
@@ -86,15 +88,89 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 supResult.setState(ReqState.SUCCESS);
                 JSONObject resultJson = resultObject;
                 if (resultJson != null) {
+                    //查询该商户该流水号的记录
+                    boolean isExist = false;
+                    FxReqRecord fxReqRecord = new FxReqRecord();
+                    fxReqRecord.setReqOrderNo(vo.getReqOrderNo());
+                    fxReqRecord.setMerCode(vo.getMerCode());
+                    List<FxReqRecord> list = fxReqRecordMapper.list(fxReqRecord);
+                    //已存在
+                    if (!CollectionUtils.isEmpty(list)) {
+                        fxReqRecord = list.get(0);
+                        isExist = true;
+                    }
+                    //不存在
+                    else {
+                        fxReqRecord.setCreateTime(new Date());
+                    }
+
+                    fxReqRecord.setUpdateTime(new Date());
+                    fxReqRecord.setMerResultData(JSONUtil.toJsonStr(resultJson.getJSONObject("data")));
+                    fxReqRecord.setMerRequestData(JSONUtil.toJsonStr(personCardNumList));
+
+
                     JSONObject returnData = resultJson.getJSONObject("data");
                     supResult.setData(returnData);
+
                     if (returnData != null && "APPROVED".equals(returnData.getString("approvalStatus"))) {
-                        FxReqRecord fxReqRecord = new FxReqRecord();
-                        fxReqRecord.setReqOrderNo(vo.getReqOrderNo());
-                        fxReqRecord.setMerResultData(JSONUtil.toJsonStr(resultJson.getJSONObject("data")));
-                        fxReqRecord.setMerRequestData(JSONUtil.toJsonStr(personCardNumList));
-                        fxReqRecord.setUserFlag("1");
-                        fxReqRecordMapper.updateFxReqRecordByRequestOrderNo(fxReqRecord);
+                        JSONArray authResults = returnData.getJSONArray("authResults");
+                        if (Objects.nonNull(authResults) && authResults.size() > 0) {
+                            //初始化是否查得最终结果
+                            String resultUserFlag = "1";
+                            //初始化计费次数
+                            int count = 0;
+                            //初始化档次
+                            StringBuilder level = new StringBuilder(StringUtils.EMPTY);
+
+                            for (int i = 0; i < authResults.size(); i++) {
+                                int maxLevel = 4;
+                                JSONObject jsonObject = authResults.getJSONObject(i);
+                                if (Objects.equals(jsonObject.getString("authStateDesc"), "核查成功")) {
+                                    fxReqRecord.setUserFlag("1");
+                                    JSONArray resultList = jsonObject.getJSONArray("resultList");
+                                    if (!CollectionUtils.isEmpty(resultList)) {
+                                        //15天后计费每次
+                                        if (fxReqRecord.getUpdateTime().getTime() - fxReqRecord.getCreateTime().getTime() > 1296000000) {
+                                            count++;
+                                            supResult.setFree(FreeState.YES);
+                                        }
+                                        //15天内计费仅计费本月发起申请的首次查询结果
+                                        else if (Objects.equals(fxReqRecord.getUserFlag(), "0")
+                                                && Objects.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM, fxReqRecord.getCreateTime()), DateUtils.getDateMonth())) {
+                                            count++;
+                                            supResult.setFree(FreeState.YES);
+                                        }
+                                        for (int j = 0; j < resultList.size(); j++) {
+                                            JSONObject perResult = resultList.getJSONObject(j);
+                                            maxLevel = Math.min(getAreaLevelPrice(perResult.getString("certNo")), maxLevel);
+                                        }
+                                    }
+                                } else {
+                                    resultUserFlag = "0";
+                                }
+                                if (StringUtils.isNotBlank(level)) {
+                                    level.append(",");
+                                }
+                                if (maxLevel == 4) {
+                                    level.append(0);
+                                }else {
+                                    level.append(maxLevel);
+                                }
+                            }
+                            supResult.setBilledTimes(count);
+                            fxReqRecord.setFeeCount(count);
+                            supResult.setLevel(String.valueOf(level));
+                            fxReqRecord.setLevel(String.valueOf(level));
+                            fxReqRecord.setUserFlag(resultUserFlag);
+                        }
+
+                    }
+                    if (isExist) {
+                        fxReqRecordMapper.updateById(fxReqRecord);
+                    }
+                    //测试账号查询结果不新增
+                    else if (!Objects.equals(vo.getMerCode(), "BhCpTest")){
+                        fxReqRecordMapper.insertFxReqRecord(fxReqRecord);
                     }
                     return supResult;
                 }
@@ -425,6 +501,96 @@ public class FXGZYBgSupImpl implements IBgSupService {
         }
     }
 
+
+    @Override
+    public SupResult queryHighSchoolEducation(HighSchoolEducationInfoReqVo vo, SuplierQueryBean bean) {
+        String result = null;
+        SupResult supResult = null;
+        JSONObject params = new JSONObject();
+        String url = null;
+        try {
+            String[] baseUrlArr = null;
+            if (StringUtils.isNotBlank(bean.getUrl())) {
+                baseUrlArr = bean.getUrl().split(",");
+            }
+            url = baseUrlArr[0] + "/open/verification/xl/check";
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("xm", vo.getXm());
+            jsonData.put("zsbh", vo.getZsbh());
+            params.put("data", jsonData);
+            supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            String data = doEncrypt(jsonData.toJSONString(), bean.getSignKey());
+            TreeMap<String, Object> map = new TreeMap<>();
+            map.put("appId", bean.getAcc());
+            map.put("requestId", UUID.randomUUID().toString());
+            map.put("securityType", "RSA2");
+            map.put("requestTime", LocalDateTime.now().format(FORMATTER));
+            map.put("version", "3.0");
+            map.put("data", data);
+
+            // 签名
+            String sign = doSign(getPlainTextSign(map), bean.getSignPwd());
+            map.put("sign", sign);
+
+            String jsonStrParam = JSONUtil.toJsonStr(map);
+            log.info("请求参数：{}", jsonStrParam);
+            result = HttpUtil.post(url, jsonStrParam);
+            log.info("响应参数：{}", result);
+
+            JSONObject resultJson = JSON.parseObject(result);
+            String returnData = (String) resultJson.get("data");
+            // 校验返回的签名
+            boolean isValid = doVerifyReturnSign(resultJson, bean.getSignKey());
+            if (!isValid) {
+                supResult.setFree(FreeState.NO);
+                supResult.setRemark("签名校验失败");
+                supResult.setState(ReqState.ERROR);
+                return supResult;
+            }
+            log.info("签名校验通过");
+            String decryptResult = null;
+            // 返回的data数据解密
+            if (null != returnData) {
+                decryptResult = doDecrypt(returnData, bean.getSignPwd());
+                log.info("解密后data参数:{}", decryptResult);
+            }
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+            if (StringUtils.isBlank(result)) {
+                supResult.setRemark("供应商没有响应结果");
+                supResult.setState(ReqState.ERROR);
+                return supResult;
+            }
+            if (SUCCESS.equals(resultJson.get("code"))) {
+                supResult.setData(JSONObject.parseObject(decryptResult));
+                supResult.setFree(FreeState.NO);
+                supResult.setState(ReqState.SUCCESS);
+                supResult.setRemark("查询成功");
+            } else {
+                supResult.setFree(FreeState.NO);
+                supResult.setRemark("查询失败");
+                supResult.setState(ReqState.ERROR);
+                errMonitorMsg(log, " 高校学历核查实时接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(), url, result);
+                return supResult;
+            }
+            return supResult;
+        } catch (Throwable e) {
+
+            errMonitorMsg(log, " 【法信公证云供应商】 高校学历核查实时接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(), url, result, e);
+
+            if (supResult == null) {
+                supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+            }
+            supResult.setState(ReqState.ERROR);
+            supResult.setRespTime(LocalDateTime.now());
+            supResult.setRespJson(result);
+            supResult.setRemark("异常:" + e.getMessage());
+            return supResult;
+        }
+    }
+
     /**
      * 解密方法
      *
@@ -587,13 +753,16 @@ public class FXGZYBgSupImpl implements IBgSupService {
     private static final List<String> FIRST_CLASS_AREAS = Arrays.asList("京", "沪", "申", "广", "粤");
     private static final List<String> THIRD_CLASS_AREAS = Arrays.asList("陕", "秦", "甘", "陇", "蒙", "琼", "宁", "新", "川", "蜀", "吉", "贵", "黔", "赣");
 
-    public static int getAreaLevelPrice(String realEstateCertNo) {
+    private static int getAreaLevelPrice(String realEstateCertNo) {
+        if (StringUtils.isBlank(realEstateCertNo)) {
+            return 2;
+        }
         if (FIRST_CLASS_AREAS.stream().anyMatch(realEstateCertNo::contains)) {
-            return 10;
+            return 1;
         } else if (THIRD_CLASS_AREAS.stream().anyMatch(realEstateCertNo::contains)) {
-            return 5;
+            return 3;
         } else {
-            return 8;
+            return 2;
         }
     }
 

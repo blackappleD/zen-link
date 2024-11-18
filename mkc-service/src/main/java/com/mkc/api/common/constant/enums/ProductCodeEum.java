@@ -55,6 +55,8 @@ public enum ProductCodeEum {
 
     BG_HIGH_SCHOOL_EDUCATION_INFO("BG_HIGH_SCHOOL_EDUCATION_001", "高校学历核查接口","/bg/highSchoolEduInfo"){},
 
+    BG_HIGH_SCHOOL_EDUCATION("BG_HIGH_SCHOOL_EDUCATION_002", "高校学历核查实时接口","/bg/highSchoolEdu"){},
+
     BG_DRIVING_LICENSE_INFO("BG_DRIVING_LICENSE_001", "行驶身份核验","/bg/drivingLicense"){},
 
     SF_DISHONEST_EXECUTIVE_INFO("SF_DISHONEST_EXECUTIVE_001", "失信被执行人","/sf/dishonestExecutive"){},

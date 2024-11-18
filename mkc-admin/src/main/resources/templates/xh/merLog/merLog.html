@@ -1,148 +1,156 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('商户调用日志列表')" />
-    <th:block th:include="include :: select2-css" />
+    <th:block th:include="include :: header('商户调用日志列表')"/>
+    <th:block th:include="include :: select2-css"/>
 </head>
 <body class="gray-bg">
-     <div class="container-div">
-        <div class="row">
-            <div class="col-sm-12 search-collapse">
-                <form id="formId">
-                    <div class="select-list">
-                        <ul>
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
 
-       <!--                     <li>
-                                <label>供应商code：</label>
-                                <input type="text" name="supCode"/>
-                            </li>
--->
-                            <li>
-                                <label>商户：</label>
-                                <select id="merCode" name="merCode" class="form-control select2-multiple"  >
-                                    <option value="">所有</option>
-                                    <option th:each="merInfo : ${merInfos}" th:text="${merInfo.merName}" th:value="${merInfo.merCode}"></option>
-                                </select>
-                            </li>
-
-
-                            <li>
-                                <label>产品分类：</label>
-                                <select id="cgCode" name="cgCode" th:with="type=${@dict.getType('xh_product_category')}" class="form-control">
-                                    <option value="">所有</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
-
-                            <li>
-                                <label>产品：</label>
-                                <input type="text" name="productName"/>
-                            </li>
+                        <!--                     <li>
+                                                 <label>供应商code：</label>
+                                                 <input type="text" name="supCode"/>
+                                             </li>
+                 -->
+                        <li>
+                            <label>商户：</label>
+                            <select id="merCode" name="merCode" class="form-control select2-multiple">
+                                <option value="">所有</option>
+                                <option th:each="merInfo : ${merInfos}" th:text="${merInfo.merName}"
+                                        th:value="${merInfo.merCode}"></option>
+                            </select>
+                        </li>
 
 
-                            <li>
-                                <label>日志编号：</label>
-                                <input type="text" name="orderNo"/>
-                            </li>
-                            <li>
-                                <label>商日志号：</label>
-                                <input type="text" name="merSeq"/>
-                            </li>
+                        <li>
+                            <label>产品分类：</label>
+                            <select id="cgCode" name="cgCode" th:with="type=${@dict.getType('xh_product_category')}"
+                                    class="form-control">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
 
-                            <li>
-                                <label>请求参数：</label>
-                                <input type="text" name="reqJson"/>
-                            </li>
+                        <li>
+                            <label>产品：</label>
+                            <input type="text" name="productName"/>
+                        </li>
 
-<!--                            <li>-->
-<!--                                <label>售价(元)：</label>-->
-<!--                                <input type="text" name="sellPrice"/>-->
-<!--                            </li>-->
-<!--                            <li>-->
-<!--                                <label>进价(元)：</label>-->
-<!--                                <input type="text" name="inPrice"/>-->
-<!--                            </li>-->
-                            <li>
-                                <label>查询状态：</label>
-                                <select name="status" th:with="type=${@dict.getType('xh_mer_req_state')}" class="form-control noselect2">
-                                    <option value="">所有</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
-                            <li class="select-time">
-								<label>请求时间：</label>
-								<input type="text" id="startTime" name="startTime" placeholder="开始时间" data-trigger-end-time="false" data-interval="30">
-								<span>-</span>
-								<input type="text" id="endTime" name="endTime" placeholder="结束时间" data-interval="30">
-							</li>
-                            <li>
-                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-                            </li>
-                        </ul>
-                    </div>
-                </form>
-            </div>
 
-            <div class="btn-group-sm" id="toolbar" role="group">
-<!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="xh:merLog:add">-->
-<!--                    <i class="fa fa-plus"></i> 添加-->
-<!--                </a>-->
-<!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="xh:merLog:edit">-->
-<!--                    <i class="fa fa-edit"></i> 修改-->
-<!--                </a>-->
-    <!--            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="xh:merLog:remove">
-                    <i class="fa fa-remove"></i> 删除
-                </a>-->
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:merLog:export">
-                    <i class="fa fa-download"></i> 导出
-                </a>
-            </div>
-            <div class="col-sm-12 select-table table-striped">
-                <table id="bootstrap-table"></table>
-            </div>
+                        <li>
+                            <label>日志编号：</label>
+                            <input type="text" name="orderNo"/>
+                        </li>
+                        <li>
+                            <label>商日志号：</label>
+                            <input type="text" name="merSeq"/>
+                        </li>
+
+                        <li>
+                            <label>请求参数：</label>
+                            <input type="text" name="reqJson"/>
+                        </li>
+
+                        <!--                            <li>-->
+                        <!--                                <label>售价(元)：</label>-->
+                        <!--                                <input type="text" name="sellPrice"/>-->
+                        <!--                            </li>-->
+                        <!--                            <li>-->
+                        <!--                                <label>进价(元)：</label>-->
+                        <!--                                <input type="text" name="inPrice"/>-->
+                        <!--                            </li>-->
+                        <li>
+                            <label>查询状态：</label>
+                            <select name="status" th:with="type=${@dict.getType('xh_mer_req_state')}"
+                                    class="form-control noselect2">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <li class="select-time">
+                            <label>请求时间：</label>
+                            <input type="text" id="startTime" name="startTime" placeholder="开始时间"
+                                   data-trigger-end-time="false" data-interval="30">
+                            <span>-</span>
+                            <input type="text" id="endTime" name="endTime" placeholder="结束时间" data-interval="30">
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="xh:merLog:add">-->
+            <!--                    <i class="fa fa-plus"></i> 添加-->
+            <!--                </a>-->
+            <!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="xh:merLog:edit">-->
+            <!--                    <i class="fa fa-edit"></i> 修改-->
+            <!--                </a>-->
+            <!--            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="xh:merLog:remove">
+                            <i class="fa fa-remove"></i> 删除
+                        </a>-->
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="xh:merLog:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
         </div>
     </div>
-     <th:block th:include="include :: select2-js" />
-    <th:block th:include="include :: footer" />
+</div>
+<th:block th:include="include :: select2-js"/>
+<th:block th:include="include :: footer"/>
 
-    <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('xh:merLog:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('xh:merLog:remove')}]];
-        var statusDatas = [[${@dict.getType('xh_mer_req_state')}]];
-        var prefix = ctx + "xh/merLog";
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('xh:merLog:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('xh:merLog:remove')}]];
+    var statusDatas = [[${@dict.getType('xh_mer_req_state')}]];
+    var prefix = ctx + "xh/merLog";
 
-        $(function() {
-			function onQuerying(cpm) {
-				if(!cpm.orderNo && !cpm.merSeq && (!cpm.startTime && !cpm.endTime)) {
-					$.modal.msgWarning('请求日期不能为空');
-					return false;
-				}
-				if(!startTime.value && !endTime.value 
-					&& new Date(endTime.value).getTime() - new Date(startTime.value).getTime() / 86400000 > 30) {
-					$.modal.msgWarning('请求日期跨度不能超过30天');
-					return false;
-				}
-				
-				if(cpm.startTime || cpm.endTime) {
-					if(!cpm.startTime) cpm.startTime = cpm.endTime;
-					if(!cpm.endTime) cpm.endTime = cpm.startTime;
-					cpm.endTime = cpm.endTime + ' 23:59:59.999';
-				}
-			}
-		
-            var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{orderNo}",
-                removeUrl: prefix + "/remove",
-                exportUrl: prefix + "/export",
-                firstLoad: false,
-                modalName: "商户调用日志",
-                onQuerying: onQuerying,
-                columns: [{
-                    checkbox: true
-                },
+    $(function () {
+        function onQuerying(cpm) {
+            if (!cpm.orderNo && !cpm.merSeq && (!cpm.startTime && !cpm.endTime)) {
+                $.modal.msgWarning('请求日期不能为空');
+                return false;
+            }
+            if (!startTime.value && !endTime.value
+                && new Date(endTime.value).getTime() - new Date(startTime.value).getTime() / 86400000 > 30) {
+                $.modal.msgWarning('请求日期跨度不能超过30天');
+                return false;
+            }
+
+            if (cpm.startTime || cpm.endTime) {
+                if (!cpm.startTime) cpm.startTime = cpm.endTime;
+                if (!cpm.endTime) cpm.endTime = cpm.startTime;
+                cpm.endTime = cpm.endTime + ' 23:59:59.999';
+            }
+        }
+
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{orderNo}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            firstLoad: false,
+            modalName: "商户调用日志",
+            onQuerying: onQuerying,
+            columns: [{
+                checkbox: true
+            },
                 // {
                 //     field: 'id',
                 //     title: '编号',
@@ -179,7 +187,7 @@
                 {
                     field: 'status',
                     title: '查询状态',
-                    formatter: function(value, row, index) {
+                    formatter: function (value, row, index) {
                         return $.table.selectDictLabel(statusDatas, value);
                     }
                 },
@@ -192,50 +200,55 @@
                     title: '请求时间'
                 },
                 {
-                	field: 'reqJson',
-                	title: '商户入参',
-                	formatter: function(value, row, index) {
-                		return $.table.tooltip(value, 10, 'open');
-                	}
+                    field: 'reqJson',
+                    title: '商户入参',
+                    formatter: function (value, row, index) {
+                        return $.table.tooltip(value, 10, 'open');
+                    }
                 },
                 {
-                	field: 'respJson',
-                	title: '响应参数',
-                	formatter: function(value, row, index) {
-                		return $.table.tooltip(value, 10, 'open');
-                	}
+                    field: 'respJson',
+                    title: '响应参数',
+                    formatter: function (value, row, index) {
+                        return $.table.tooltip(value, 10, 'open');
+                    }
+                },
+                {
+                    field: 'level',
+                    title: '档次'
                 },
 
                 {
                     title: '操作',
                     align: 'center',
-                    formatter: function(value, row, index) {
+                    formatter: function (value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-info btn-xs"  href="javascript:void(0)" onclick="detail(\'' + row.orderNo + '\')"><i class="fa fa-search"></i>详情</a> ');
                         actions.push('<a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="supLogList(\'' + row.orderNo + '\')"><i class="fa fa-search"></i>路由</a> ');
 
-                       // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        // actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
                         return actions.join('');
                     }
                 }]
-            };
-            $.table.init(options);
-        });
+        };
+        $.table.init(options);
+    });
 
-        // 商户信息详情
-        function detail (orderNo) {
-            table.set();
-            var routeUrl =  prefix + "/edit/"+orderNo;
-            // routeUrl=routeUrl("{id}", id);
-            $.modal.open("商户调用日志详情" , routeUrl, $(window).width() - 100, $(top.window).height() - 100, false);
-        }
-        // 商户信息详情
-        function supLogList (orderNo) {
-            table.set();
-            var routeUrl =  prefix + "/supReqLog/"+orderNo;
-            // routeUrl=routeUrl("{id}", id);
-            $.modal.open("供应商调用日志" , routeUrl, $(window).width() - 100, $(top.window).height() - 100, false);
-        }
-    </script>
+    // 商户信息详情
+    function detail(orderNo) {
+        table.set();
+        var routeUrl = prefix + "/edit/" + orderNo;
+        // routeUrl=routeUrl("{id}", id);
+        $.modal.open("商户调用日志详情", routeUrl, $(window).width() - 100, $(top.window).height() - 100, false);
+    }
+
+    // 商户信息详情
+    function supLogList(orderNo) {
+        table.set();
+        var routeUrl = prefix + "/supReqLog/" + orderNo;
+        // routeUrl=routeUrl("{id}", id);
+        $.modal.open("供应商调用日志", routeUrl, $(window).width() - 100, $(top.window).height() - 100, false);
+    }
+</script>
 </body>
 </html>

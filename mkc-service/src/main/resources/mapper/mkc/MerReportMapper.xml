@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mkc.mapper.MerReportMapper">
-    
+
     <resultMap type="MerReport" id="MerReportResult">
         <result property="id"    column="id"    />
         <result property="supCode"    column="sup_code"    />
@@ -26,17 +26,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="times1"    column="times1"    />
         <result property="times3"    column="times3"    />
         <result property="times10"    column="times10"    />
+        <result property="level1"    column="level1"    />
+        <result property="level2"    column="level2"    />
+        <result property="level3"    column="level3"    />
         <result property="timesGe10"    column="times_ge10"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectMerReportVo">
-        select id, sup_code, sup_name, mer_code, mer_name, product_code, product_name, cg_code, in_price, sell_price, fee_times, total_price, req_date, status_ok_fit, status_ok_unfit, status_no, status_err, avg_time, times1, times3, times10, times_ge10, create_time, update_time from t_mer_report
+        select id, sup_code, sup_name, mer_code, mer_name, product_code, product_name, cg_code, in_price, sell_price, fee_times, total_price, req_date, status_ok_fit, status_ok_unfit, status_no, status_err, avg_time, times1, times3, times10, times_ge10, create_time, update_time, level1, level2, level3 from t_mer_report
     </sql>
 
 	<select id="selectMerReport" parameterType="MerReport" resultMap="MerReportResult" timeout="600">
-        select 
+        select
         	<foreach item="item" collection="statClm.split(',')" separator=", ">
         		${item}
         	</foreach>,
@@ -44,18 +47,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				sell_price,
 			</if>
 			sum(total_price) total_price,sum(fee_times) fee_times,sum(in_price) in_price,
-			sum(status_ok_fit) status_ok_fit, sum(status_ok_unfit) status_ok_unfit, sum(status_no) status_no, sum(status_err) status_err, 
-			avg(avg_time) avg_time, sum(times1) times1, sum(times3) times3, sum(times10) times10, sum(times_ge10) times_ge10
+			sum(status_ok_fit) status_ok_fit, sum(status_ok_unfit) status_ok_unfit, sum(status_no) status_no, sum(status_err) status_err,
+			avg(avg_time) avg_time, sum(times1) times1, sum(times3) times3, sum(times10) times10, sum(times_ge10) times_ge10,
+            sum(level1) level1, sum(level2) level2, sum(level3) level3
 		from t_mer_report
         <where>
             <if test="supCode != null  and supCode != ''">
-				and sup_code in 
+				and sup_code in
 				<foreach item="sitem" collection="supCode.split(',')" open="(" separator=", " close=")">
 	        		#{sitem}
 	        	</foreach>
 			</if>
             <if test="merCode != null  and merCode != ''">
-				and mer_code in 
+				and mer_code in
 				<foreach item="mitem" collection="merCode.split(',')" open="(" separator=", " close=")">
 	        		#{mitem}
 	        	</foreach>
@@ -73,5 +77,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			,sell_price
 		</if>
     </select>
-    
+
 </mapper>

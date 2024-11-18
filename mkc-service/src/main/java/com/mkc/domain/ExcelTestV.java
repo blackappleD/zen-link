@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2024/10/23
  */
 @Data
-public class ExcelTest2W {
+public class ExcelTestV {
     @ColumnWidth(20)
     @ExcelProperty("姓名")
     private String name = "张三";
@@ -22,14 +22,8 @@ public class ExcelTest2W {
     @ExcelProperty("code")
     private String code;
     @ColumnWidth(15)
-    @ExcelProperty("range")
-    private String range;
-    @ColumnWidth(15)
-    @ExcelProperty("history")
-    private String history;
-    @ColumnWidth(15)
-    @ExcelProperty("stability")
-    private String stability;
+    @ExcelProperty("level")
+    private String level;
 
 
 }

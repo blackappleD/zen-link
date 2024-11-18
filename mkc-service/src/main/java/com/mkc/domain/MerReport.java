@@ -28,16 +28,21 @@ public class MerReport {
 	@TableId(type = IdType.AUTO)
 	private Long id;
 
+	/** 调用日期 */
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@Excel(name = "调用日期", width = 30, dateFormat = "yyyy-MM-dd")
+	private LocalDate reqDate;
+
 	/** 供应商编码 */
-	@Excel(name = "供应商编码")
+//	@Excel(name = "供应商编码")
 	private String supCode;
 
 	/** 供应商名称 */
-	@Excel(name = "供应商名称")
+//	@Excel(name = "供应商名称")
 	private String supName;
 
 	/** 商户编码 */
-	@Excel(name = "商户编码")
+//	@Excel(name = "商户编码")
 	private String merCode;
 
 	/** 商户名称 */
@@ -45,7 +50,7 @@ public class MerReport {
 	private String merName;
 
 	/** 产品编码 */
-	@Excel(name = "产品编码")
+//	@Excel(name = "产品编码")
 	private String productCode;
 
 	/** 产品名称 */
@@ -53,29 +58,29 @@ public class MerReport {
 	private String productName;
 
 	/** 产品分类编码 */
-	@Excel(name = "产品分类编码")
+//	@Excel(name = "产品分类编码")
 	private String cgCode;
 
 	/** 总成本价 */
-	@Excel(name = "总成本价")
+//	@Excel(name = "总成本价")
 	private BigDecimal inPrice = BigDecimal.valueOf(0);
 
 	/** 单价 */
-	@Excel(name = "单价")
+//	@Excel(name = "单价")
 	private BigDecimal sellPrice;
 
-	/** 收费次数 */
-	@Excel(name = "收费次数")
-	private Integer feeTimes;
-
 	/** 总价 */
-	@Excel(name = "总价")
+//	@Excel(name = "总价")
 	private BigDecimal totalPrice;
 
-	/** 调用日期 */
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	@Excel(name = "调用日期", width = 30, dateFormat = "yyyy-MM-dd")
-	private LocalDate reqDate;
+	/** 收费次数 */
+	@Excel(name = "总次数")
+	@TableField(exist = false)
+	private transient Integer totalTimes;
+
+	/** 收费次数 */
+	@Excel(name = "计费次数")
+	private Integer feeTimes;
 
 	/** 查得次数 */
 	@Excel(name = "查得匹配次数")
@@ -94,23 +99,23 @@ public class MerReport {
 	private Integer statusErr;
 
 	/** 平均响应时间ms */
-	@Excel(name = "平均响应时间ms")
+//	@Excel(name = "平均响应时间ms")
 	private BigDecimal avgTime;
 
 	/** 响应时间1秒内请求次数 不包含1秒 */
-	@Excel(name = "响应时间1秒内请求次数 不包含1秒")
+//	@Excel(name = "响应时间1秒内请求次数 不包含1秒")
 	private Integer times1;
 
 	/** 响应时间1-3秒内请求次数 不包含3秒 */
-	@Excel(name = "响应时间1-3秒内请求次数 不包含3秒")
+//	@Excel(name = "响应时间1-3秒内请求次数 不包含3秒")
 	private Integer times3;
 
 	/** 响应时间3-10秒内请求次数 不包含10秒 */
-	@Excel(name = "响应时间3-10秒内请求次数 不包含10秒")
+//	@Excel(name = "响应时间3-10秒内请求次数 不包含10秒")
 	private Integer times10;
 
 	/** 响应时间大于等于10秒请求次数 */
-	@Excel(name = "响应时间大于等于10秒请求次数")
+//	@Excel(name = "响应时间大于等于10秒请求次数")
 	private Integer timesGe10;
 
 	/** 创建时间 */
@@ -134,5 +139,12 @@ public class MerReport {
 	@TableField(exist = false)
 	@JsonIgnore
 	private LocalDate endTime;
+
+	@Excel(name = "第一档次")
+	private Integer level1;
+	@Excel(name = "第二档次")
+	private Integer level2;
+	@Excel(name = "第三档次")
+	private Integer level3;
 
 }

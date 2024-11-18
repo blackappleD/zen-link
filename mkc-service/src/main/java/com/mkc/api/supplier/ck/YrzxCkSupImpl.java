@@ -16,6 +16,7 @@ import com.mkc.common.enums.ReqState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 
 /**
@@ -55,10 +56,9 @@ public class YrzxCkSupImpl implements ICkSupService {
             params.put("account", appkey);
             if (StringUtils.isNotBlank(vo.getMerSeq()) && vo.getMerSeq().length() > 20) {
                 params.put("reqid", StrUtil.sub(vo.getMerSeq(), vo.getMerSeq().length() - 20, vo.getMerSeq().length()));
-            } else {
+            } else if (StringUtils.isNotBlank(vo.getMerSeq())) {
                 params.put("reqid", vo.getMerSeq());
             }
-            params.put("account", appkey);
 
             StringBuilder verify = new StringBuilder();
             verify.append(params.getString("account")).append(params.getString("license")).append(params.getString("type")).append(params.getString("name"))
@@ -85,19 +85,19 @@ public class YrzxCkSupImpl implements ICkSupService {
                 if (resultJson != null) {
                     supResult.setData(resultJson);
                     return supResult;
-                }  else {
+                } else {
                     supResult.setFree(FreeState.NO);
                     supResult.setRemark("查询失败");
                     supResult.setState(ReqState.ERROR);
-                    errMonitorMsg(log,"  行驶证核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                            , bean.getOrderNo(),url, result);
+                    errMonitorMsg(log, "  行驶证核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                            , bean.getOrderNo(), url, result);
                     return supResult;
                 }
             }
             return supResult;
-        }  catch (Throwable e) {
-            errMonitorMsg(log," 【北京银融致信科技供应商】 行驶证核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(),url, result, e);
+        } catch (Throwable e) {
+            errMonitorMsg(log, " 【北京银融致信科技供应商】 行驶证核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(), url, result, e);
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             }
@@ -157,19 +157,19 @@ public class YrzxCkSupImpl implements ICkSupService {
                 if (resultJson != null) {
                     supResult.setData(resultJson);
                     return supResult;
-                }  else {
+                } else {
                     supResult.setFree(FreeState.NO);
                     supResult.setRemark("查询失败");
                     supResult.setState(ReqState.ERROR);
-                    errMonitorMsg(log,"  工作单位核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                            , bean.getOrderNo(),url, result);
+                    errMonitorMsg(log, "  工作单位核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                            , bean.getOrderNo(), url, result);
                     return supResult;
                 }
             }
             return supResult;
-        }  catch (Throwable e) {
-            errMonitorMsg(log," 【北京银融致信科技供应商】 工作单位核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(),url, result, e);
+        } catch (Throwable e) {
+            errMonitorMsg(log, " 【北京银融致信科技供应商】 工作单位核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(), url, result, e);
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             }
@@ -188,7 +188,7 @@ public class YrzxCkSupImpl implements ICkSupService {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();
-        String url=null;
+        String url = null;
 
         try {
             url = bean.getUrl() + "/yrzx/car/personalCarCheck";
@@ -235,19 +235,19 @@ public class YrzxCkSupImpl implements ICkSupService {
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 supResult.setData(resultObject.getJSONObject("msg"));
-                return  supResult;
+                return supResult;
             } else {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
-                errMonitorMsg(log,"  人车核验信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
-                        , bean.getOrderNo(),url, result);
+                errMonitorMsg(log, "  人车核验信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                        , bean.getOrderNo(), url, result);
                 return supResult;
             }
             return supResult;
-        }  catch (Throwable e) {
-            errMonitorMsg(log," 【北京银融致信科技供应商】 人车核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(),url, result, e);
+        } catch (Throwable e) {
+            errMonitorMsg(log, " 【北京银融致信科技供应商】 人车核验 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+                    , bean.getOrderNo(), url, result, e);
             if (supResult == null) {
                 supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 /**
  * 商户调用日志对象 t_mer_req_log
- * 
+ *
  * @author atd
  * @date 2023-04-24
  */
@@ -108,6 +108,9 @@ public class MerReqLogVo implements Serializable
 
     /** 是否收费 0 否，1 是 */
     private String free;
+
+    /** 档次 */
+    private String level;
 
     /** 实际收费 金额 (元)*/
     private BigDecimal actualPrice=BigDecimal.ZERO;

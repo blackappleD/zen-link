@@ -2,6 +2,9 @@ package com.mkc.controller.xh;
 
 import java.util.List;
 
+import com.mkc.common.utils.StringUtils;
+import com.mkc.domain.Product;
+import com.mkc.service.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,9 +25,6 @@ import com.mkc.common.utils.poi.ExcelUtil;
 import com.mkc.domain.MerInfo;
 import com.mkc.domain.SupReqLog;
 import com.mkc.domain.Supplier;
-import com.mkc.service.IMerInfoService;
-import com.mkc.service.ISupReqLogService;
-import com.mkc.service.ISupplierService;
 
 /**
  * 调用供应商日志Controller
@@ -43,6 +43,8 @@ public class SupReqLogController extends BaseController {
     private ISupplierService supplierService;
     @Autowired
     private IMerInfoService merInfoService;
+    @Autowired
+    private IProductService productService;
 
     @RequiresPermissions("xh:supLog:view")
     @GetMapping()
@@ -51,8 +53,8 @@ public class SupReqLogController extends BaseController {
         List<Supplier> suppliers = supplierService.selectSupplierList(null);
         mmap.addAttribute("suppliers", suppliers);
 
-//        List<Product> products = productService.selectProductList(null);
-//        mmap.addAttribute("products",products);
+        List<Product> products = productService.selectProductList(null);
+        mmap.addAttribute("products",products);
 
         List<MerInfo> merInfos = merInfoService.selectMerInfoList(null);
         mmap.addAttribute("merInfos",merInfos);
@@ -68,6 +70,9 @@ public class SupReqLogController extends BaseController {
     @ResponseBody
     public TableDataInfo list(SupReqLogBean supReqLog) {
         startPage();
+        if (StringUtils.isNotBlank(supReqLog.getProductCode())) {
+            supReqLog.setProcductCode(supReqLog.getProductCode());
+        }
         List<SupReqLog> list = supReqLogService.selectSupReqLogList(supReqLog);
         return getDataTable(list);
     }

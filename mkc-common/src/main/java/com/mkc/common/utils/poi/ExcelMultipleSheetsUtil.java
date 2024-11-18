@@ -165,7 +165,7 @@ public class ExcelMultipleSheetsUtil {
         // 创建数据行
         Row dataRow = sheet.createRow(rowIndex);
         Field[] fields = data.getClass().getDeclaredFields();
-        Field[] superFields = fields.getClass().getSuperclass().getDeclaredFields();
+
 
         for (int i = 0; i < fields.length; i++) {
             createDataCell(dataCellStyle, fields, dataRow, i, data);

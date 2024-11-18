@@ -33,9 +33,17 @@
                                     <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                                 </select>
                             </li>
+                            <li>
+                                <label>产品：</label>
+                                <select name="productCode" class="form-control select2">
+                                    <option value="">所有</option>
+                                    <option th:each="product : ${products}" th:text="${product.productName}" th:value="${product.productCode}" th:class="|cg- cg-${product.cgCode}|"></option>
+                                </select>
+                            </li>
+
 <!--                            <li>-->
 <!--                                <label>产品：</label>-->
-<!--                                <input type="text" name="procductCode"/>-->
+<!--                                <input type="text" name="productName"/>-->
 <!--                            </li>-->
 <!--                            <li>-->
 <!--                                <label>供应产品：</label>-->
@@ -109,6 +117,7 @@
         var prefix = ctx + "xh/supLog";
 
         $(function() {
+
 			function onQuerying(cpm) {
 				if(!cpm.orderNo && !cpm.supSeq && (!cpm.startTime && !cpm.endTime)) {
 					if(!cpm.isFormReset) $.modal.msgWarning('请求日期不能为空');

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -130,6 +131,87 @@ public class BgController extends BaseController {
         String plaintext = merCode + reqOrderNo;
 
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
+    /**
+     * 高校学历核查接口
+     */
+    @PostMapping("/highSchoolEduInfo")
+    public Result highSchoolEducationInfo(HttpServletRequest request, @RequestBody HighSchoolEducationInfoReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckHighSchoolEduInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_HIGH_SCHOOL_EDUCATION_INFO.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryHighSchoolEducationInfo(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【高校学历核查接口】API 发生异常  reqJson {} ", reqJson, e);
+            return Result.fail();
+        }
+    }
+
+    private CkMerBean ckHighSchoolEduInfoParams(HighSchoolEducationInfoReqVo params) {
+
+        String merCode = params.getMerCode();
+
+        String sign = params.getSign();
+        String key = params.getKey();
+
+        ckCommonParams(params);
+
+        String xm = params.getXm();
+        String zsbh = params.getZsbh();
+
+        if (StringUtils.isBlank(zsbh)) {
+            log.error("缺少参数 zsbh {} , merCode： {}", zsbh, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        if (StringUtils.isBlank(xm)) {
+            log.error("缺少参数 xm {} , merCode： {}", xm, merCode);
+            throw new ApiServiceException(ApiReturnCode.ERR_001);
+        }
+        String plaintext = merCode + xm + zsbh;
+
+        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+    }
+
+    /**
+     * 高校学历核查实时接口
+     */
+    @PostMapping("/highSchoolEdu")
+    public Result highSchoolEdu(HttpServletRequest request, @RequestBody HighSchoolEducationInfoReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckHighSchoolEduInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_HIGH_SCHOOL_EDUCATION.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryHighSchoolEducation(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【高校学历核查实时接口】API 发生异常  reqJson {} ", reqJson, e);
+            return Result.fail();
+        }
     }
 
     /**
@@ -306,58 +388,6 @@ public class BgController extends BaseController {
         return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
     }
 
-    /**
-     * 高校学历核查接口
-     */
-    @PostMapping("/highSchoolEduInfo")
-    public Result highSchoolEducationInfo(HttpServletRequest request, @RequestBody HighSchoolEducationInfoReqVo params) {
-
-        String reqJson = null;
-        try {
-            reqJson = JSON.toJSONString(params);
-
-            //检查商户参数完整性
-            CkMerBean ckMerBean = ckHighSchoolEduInfoParams(params);
-            ckMerBean.setProductCode(ProductCodeEum.BG_HIGH_SCHOOL_EDUCATION_INFO.getCode());
-
-            //检查商户参数有效性
-            MerReqLogVo merLog = ckMer(request, ckMerBean);
-            merLog.setReqJson(reqJson);
-
-            Result result = bgService.queryHighSchoolEducationInfo(params, merLog);
-            return result;
-        } catch (ApiServiceException e) {
-            return Result.fail(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            errMonitorMsg("【高校学历核查接口】API 发生异常  reqJson {} ", reqJson, e);
-            return Result.fail();
-        }
-    }
-
-    private CkMerBean ckHighSchoolEduInfoParams(HighSchoolEducationInfoReqVo params) {
-
-        String merCode = params.getMerCode();
-
-        String sign = params.getSign();
-        String key = params.getKey();
-
-        ckCommonParams(params);
-
-        String xm = params.getXm();
-        String zsbh = params.getZsbh();
-
-        if (StringUtils.isBlank(zsbh)) {
-            log.error("缺少参数 zsbh {} , merCode： {}", zsbh, merCode);
-            throw new ApiServiceException(ApiReturnCode.ERR_001);
-        }
-        if (StringUtils.isBlank(xm)) {
-            log.error("缺少参数 xm {} , merCode： {}", xm, merCode);
-            throw new ApiServiceException(ApiReturnCode.ERR_001);
-        }
-        String plaintext = merCode + xm + zsbh;
-
-        return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
-    }
 
     /**
      * 全国高等学历信息查询
@@ -690,6 +720,7 @@ public class BgController extends BaseController {
      */
     @PostMapping("/houseResultReqInfo")
     public Result houseResultInfo(HttpServletRequest request, @RequestBody HouseResultInfoReqVo params) {
+        System.err.println(params.toString());
         String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
@@ -837,10 +868,11 @@ public class BgController extends BaseController {
 
     public static void main(String[] args) {
 
-        String xm = "陈海武";
+        String xm = "林舒婷";
+        String zsbh = "103461202205003976";
         String sfzh = "330322199409262412";
-        String persons = "[{\"name\":\"刘君涛\",\"cardNum\":\"320525198603170531\"}]";
-        String reqOrderNo = "7b79f68792f84522b652f9dd2fc73cde";
+        String persons = "[{\"name\":\"郭信良\",\"cardNum\":\"610582198509280036\"}]";
+        String reqOrderNo = "65b5285b8595489b808bb7d2c385a6a7";
         String manIdcard = "330322199409262412";
         String manName = "陈海武";
         String womanIdcard = "330322199501082422";
@@ -848,19 +880,26 @@ public class BgController extends BaseController {
         String plateNo = "330322199501082422";
         String idCard = "330381199910181122";
         String name = "林舒婷";
-        String mobile = "15558996627";
+        String license = "浙CDY6675";
+        String type = "52";
+//        String name = "林舒婷";
+//        String mobile = "15558996627";
+        String mobile = "18888888888";
 
         String merCode = "BhCpTest";
         //本地
         String pwd = "e0be01493778d77ecfd2004f54b41a09";
         //线上
 //        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
-//        String plaintext = merCode + xm + sfzh;
+        String plaintext = merCode + manIdcard + manName + womanIdcard + womanName;
 //        String plaintext = merCode + plateNo;
-        String plaintext = merCode + idCard + name + mobile;
+//        String persons = "[{\"name\":\""+name+"\",\"cardNum\":\""+idCard+"\"}]";
+//        String plaintext = merCode + persons;
+//        String plaintext = merCode + xm + zsbh;
         String signText = plaintext + pwd;
         String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
         System.err.println(signMd5);
+
     }
 
     private CkMerBean ckEconomicRateParams(EconomicRateReqVo params) {

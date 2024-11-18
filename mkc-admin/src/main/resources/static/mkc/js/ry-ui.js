@@ -409,7 +409,7 @@ var table = {
                 });
             },
             // 导出数据
-            fxHouseReport: function(formId) {
+            fxHouseReportV1: function(formId) {
                 table.set();
                 $.modal.confirm("确定导出法信不动产账单吗？", function() {
                     var params = $("#" + table.options.id).bootstrapTable('getOptions');
@@ -419,7 +419,30 @@ var table = {
 						order: params.sortOrder
 					});
                     $.modal.loading("正在导出，请稍候...");
-                    $.post("/xh/merReport/fxHouseReport", dataParam, function(result) {
+                    $.post("/xh/merReport/fxHouseReportV1", dataParam, function(result) {
+                        if (result.code == web_status.SUCCESS) {
+                            window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+                        } else if (result.code == web_status.WARNING) {
+                            $.modal.alertWarning(result.msg)
+                        } else {
+                            $.modal.alertError(result.msg);
+                        }
+                        $.modal.closeLoading();
+                    });
+                });
+            },
+            // 导出数据
+            fxHouseReportV2: function(formId) {
+                table.set();
+                $.modal.confirm("确定导出法信不动产账单吗？", function() {
+                    var params = $("#" + table.options.id).bootstrapTable('getOptions');
+					var dataParam = $.table.queryParams({
+						formId: formId,
+						sort: params.sortName,
+						order: params.sortOrder
+					});
+                    $.modal.loading("正在导出，请稍候...");
+                    $.post("/xh/merReport/fxHouseReportV2", dataParam, function(result) {
                         if (result.code == web_status.SUCCESS) {
                             window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
                         } else if (result.code == web_status.WARNING) {

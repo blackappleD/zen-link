@@ -151,4 +151,12 @@ public interface IBgService {
      * @return
      */
     Result ckMarriageStabilityParams(MaritalStabilityReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 高校学历核查实时接口
+     * @param params
+     * @param merLog
+     * @return
+     */
+    Result queryHighSchoolEducation(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog);
 }

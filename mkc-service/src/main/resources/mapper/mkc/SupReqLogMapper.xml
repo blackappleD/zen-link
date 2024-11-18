@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mkc.mapper.SupReqLogMapper">
-    
+
     <resultMap type="com.mkc.domain.SupReqLog" id="SupReqLogResult">
         <result property="id"    column="id"    />
         <result property="orderNo"    column="order_no"    />
@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectSupReqLogList" parameterType="com.mkc.bean.SupReqLogBean" resultMap="SupReqLogResult" timeout="60">
         <include refid="selectSupReqLogVo"/>
-        <where>  
+        <where>
             <if test="supSeq != null  and supSeq != ''"> and sup_seq = #{supSeq}</if>
             <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
             <if test="supCode != null  and supCode != ''"> and sup_code = #{supCode}</if>
@@ -55,12 +55,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by id desc
     </select>
-    
+
     <select id="selectSupReqLogById" parameterType="Long" resultMap="SupReqLogResult">
         <include refid="selectSupReqLogVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertSupReqLog" parameterType="com.mkc.domain.SupReqLog" useGeneratedKeys="true" keyProperty="id">
         insert into t_sup_req_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -144,7 +144,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			sum(status_no) status_no,sum(status_err) status_err,
 			sum(times1) times1,sum(times3) times3,sum(times10) times10,sum(times_ge10) times_ge10
 		from (
-			select 
+			select
 				order_no,sup_code,mer_code,procduct_code product_code,cg_code,in_price,total_time,
 				case when status='1' then 1 else 0 end status_ok_fit,
 				case when status='3' then 1 else 0 end status_ok_unfit,

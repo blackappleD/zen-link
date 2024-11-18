@@ -13,7 +13,7 @@ public class ExcelTestHouse {
     @ExcelProperty("姓名")
     private String xm;
     @ColumnWidth(25)
-    @ExcelProperty("身份证")
+    @ExcelProperty("身份证号")
     private String personCardNum;
     @ColumnWidth(25)
     @ExcelProperty("code")

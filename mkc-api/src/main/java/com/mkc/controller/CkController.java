@@ -62,13 +62,13 @@ public class CkController extends BaseController {
         } catch (ApiServiceException e) {
             return Result.fail(e.getCode(),e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【行驶证核验】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【银行卡四要素】API 发生异常  reqJson {} ", reqJson,e);
             return Result.fail();
         }
     }
 
     /**
-     * 银行卡四要素
+     * 银行卡三要素
      */
     @PostMapping("/bankThree")
     public Result ckBankThree(HttpServletRequest request, @RequestBody BankReqVo params) {
@@ -91,13 +91,13 @@ public class CkController extends BaseController {
         } catch (ApiServiceException e) {
             return Result.fail(e.getCode(),e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【行驶证核验】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【银行卡三要素】API 发生异常  reqJson {} ", reqJson,e);
             return Result.fail();
         }
     }
 
     /**
-     * 银行卡四要素
+     * 银行卡二要素
      */
     @PostMapping("/bankTwo")
     public Result ckBankTwo(HttpServletRequest request, @RequestBody BankReqVo params) {
@@ -120,7 +120,7 @@ public class CkController extends BaseController {
         } catch (ApiServiceException e) {
             return Result.fail(e.getCode(),e.getMessage());
         } catch (Exception e) {
-            errMonitorMsg("【行驶证核验】API 发生异常  reqJson {} ", reqJson,e);
+            errMonitorMsg("【银行卡二要素】API 发生异常  reqJson {} ", reqJson,e);
             return Result.fail();
         }
     }

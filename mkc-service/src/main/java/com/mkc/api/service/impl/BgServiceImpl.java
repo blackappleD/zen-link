@@ -150,6 +150,11 @@ public class BgServiceImpl implements IBgService {
     }
 
     @Override
+    public Result queryHighSchoolEducation(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryHighSchoolEducation(params, supQueryBean));
+    }
+
+    @Override
     public Result queryMaritalStatus(MarriageInfoReqInfo params, MerReqLogVo merLog) {
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryMaritalStatus(params,supQueryBean));
     }
@@ -295,7 +300,7 @@ public class BgServiceImpl implements IBgService {
         merLog.setStatus(supResult.getState().getCode());
         merLog.setInPrice(inPrice);
         merLog.setFree(Objects.nonNull(supResult.getBilledTimes())? String.valueOf(supResult.getBilledTimes()) : supResult.getFree().getCode());
-
+        merLog.setLevel(supResult.getLevel());
         merLog.setRespTime(LocalDateTime.now());
         merLog.setRespJson(JSON.toJSONString(result));
         //放入队列异步落地

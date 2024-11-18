@@ -12,7 +12,7 @@ import lombok.Data;
 
 /**
  * 调用供应商日志对象 t_sup_req_log
- * 
+ *
  * @author atd
  * @date 2023-04-24
  */
@@ -64,6 +64,9 @@ public class SupReqLogBean implements Serializable
     @Excel(name = "产品")
     private String procductCode;
 
+    /** 产品 */
+    private transient String productCode;
+
     /** 成本价 */
     private BigDecimal inPrice;
 
@@ -95,5 +98,5 @@ public class SupReqLogBean implements Serializable
 
     private LocalDate startTime;
     private LocalDateTime endTime;
-    
+
 }

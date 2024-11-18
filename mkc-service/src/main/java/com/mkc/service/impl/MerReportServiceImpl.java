@@ -20,6 +20,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.utils.ApiUtils;
 import com.mkc.bean.MerReqLogBean;
+import com.mkc.common.enums.FreeState;
 import com.mkc.common.utils.DateUtils;
 import com.mkc.common.utils.ZipStrUtils;
 import com.mkc.domain.*;
@@ -27,6 +28,7 @@ import com.mkc.mapper.FxReqRecordMapper;
 import com.mkc.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -216,14 +218,9 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
             else {
 //                if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
                 try {
-                    JSONObject jsonObject = JSON.parseObject(record.getPersons());
-                    JSONArray personCardNumList = new JSONArray();
-                    JSONArray persons = jsonObject.getJSONArray("persons");
-                    for (int i = 0; i < persons.size(); i++) {
-                        personCardNumList.add(persons.getJSONObject(i).getString("cardNum"));
-                    }
+
                     JSONObject request = new JSONObject();
-                    request.put("personCardNumList", personCardNumList);
+                    request.put("personCardNumList", getCardsFromRecord(record));
                     request.put("reqOrderNo", record.getReqOrderNo());
                     String plainText = record.getReqOrderNo();
                     JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
@@ -241,6 +238,96 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         }
 
         return fxReqRecords;
+    }
+
+    @Override
+    public List<FxReqRecordExcel> listFxHouseReportV2(MerReport merReport) {
+        ArrayList<FxReqRecordExcel> fxReqRecordExcels = new ArrayList<>();
+        List<FxReqRecord> fxReqRecords = fxReqRecordMapper.listByRangeTime(merReport);
+        for (FxReqRecord record : fxReqRecords) {
+            //未核查成功,去查询结果
+            if (!Objects.equals(record.getUserFlag(), "1")) {
+                try {
+                    JSONObject request = new JSONObject();
+                    if (StringUtils.isNotBlank(record.getMerRequestData())) {
+                        request.put("personCardNumList", record.getMerRequestData());
+                    } else {
+                        request.put("personCardNumList", getCardsFromRecord(record));
+                    }
+                    request.put("reqOrderNo", record.getReqOrderNo());
+                    String plainText = record.getReqOrderNo();
+                    JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
+                    record.setUnknownInfo(post.toJSONString());
+                    JSONObject data = post.getJSONObject("data");
+                    //处理结果，计算计费次数和档次等
+                    checkHouseData(data, record);
+                } catch (Exception e) {
+                    log.info("listFxHouseReport 查询结果 queryApi【{}】", e.getMessage());
+                }
+                record.setRemark("查询结果");
+            }
+            FxReqRecordExcel fxReqRecordExcel = new FxReqRecordExcel();
+            BeanUtils.copyProperties(record, fxReqRecordExcel);
+            fxReqRecordExcels.add(fxReqRecordExcel);
+        }
+        return fxReqRecordExcels;
+    }
+
+    private JSONArray getCardsFromRecord(FxReqRecord record) {
+        JSONObject jsonObject = JSON.parseObject(record.getPersons());
+        JSONArray personCardNumList = new JSONArray();
+        JSONArray persons = jsonObject.getJSONArray("persons");
+        for (int i = 0; i < persons.size(); i++) {
+            personCardNumList.add(persons.getJSONObject(i).getString("cardNum"));
+        }
+        return personCardNumList;
+    }
+
+    public void checkHouseData(JSONObject returnData, FxReqRecord fxReqRecord) {
+        String originalUserFlag = fxReqRecord.getUserFlag();
+        if (returnData != null && "APPROVED".equals(returnData.getString("approvalStatus"))) {
+            JSONArray authResults = returnData.getJSONArray("authResults");
+            if (Objects.nonNull(authResults) && authResults.size() > 0) {
+                int count = 0;
+                StringBuilder level = new StringBuilder(StringUtils.EMPTY);
+                for (int i = 0; i < authResults.size(); i++) {
+                    int maxLevel = 4;
+                    JSONObject jsonObject = authResults.getJSONObject(i);
+                    if (Objects.equals(jsonObject.getString("authStateDesc"), "核查成功")) {
+                        fxReqRecord.setUserFlag("1");
+                        JSONArray resultList = jsonObject.getJSONArray("resultList");
+                        if (!CollectionUtils.isEmpty(resultList)) {
+                            //15天后计费每次
+                            if (fxReqRecord.getUpdateTime().getTime() - fxReqRecord.getCreateTime().getTime() > 1296000000) {
+                                count++;
+                            }
+                            //15天内计费仅计费本月发起申请的首次查询结果
+                            else if (Objects.equals(originalUserFlag, "0")
+                                    && Objects.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM, fxReqRecord.getCreateTime()), DateUtils.getDateMonth())) {
+                                count++;
+                            }
+                            for (int j = 0; j < resultList.size(); j++) {
+                                JSONObject perResult = resultList.getJSONObject(j);
+                                maxLevel = Math.min(getAreaLevelPrice(perResult.getString("certNo")), maxLevel);
+                            }
+                        }
+                    } else {
+                        fxReqRecord.setUserFlag("0");
+                    }
+                    if (StringUtils.isNotBlank(level)) {
+                        level.append(",");
+                    }
+                    if (maxLevel == 4) {
+                        level.append(0);
+                    } else {
+                        level.append(maxLevel);
+                    }
+                }
+                fxReqRecord.setFeeCount(count);
+                fxReqRecord.setLevel(String.valueOf(level));
+            }
+        }
+
     }
 
     @Override
@@ -314,7 +401,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
             merReport.setProductName(productName);
             merReport.setInPrice(BigDecimal.valueOf(value.stream().mapToDouble(FxReqRecord::getInPrice).sum()));
             merReport.setSellPrice(productSellService.selectProductSellByMer(merReport.getMerCode(), ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode()).getSellPrice());
-            merReport.setFeeTimes(value.stream().mapToInt(FxReqRecord::getBilledTimes).sum());
+            merReport.setFeeTimes(value.stream().mapToInt(FxReqRecord::getFeeCount).sum());
             merReport.setTotalPrice(merReport.getSellPrice().multiply(new BigDecimal(merReport.getFeeTimes().toString())));
             merReports.add(merReport);
         }
@@ -335,7 +422,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                 merReport.setProductName(productName);
                 merReport.setReqDate(dateValue.getKey());
                 merReport.setInPrice(BigDecimal.valueOf(dateValue.getValue().stream().mapToDouble(FxReqRecord::getInPrice).sum()));
-                merReport.setFeeTimes(dateValue.getValue().stream().mapToInt(FxReqRecord::getBilledTimes).sum());
+                merReport.setFeeTimes(dateValue.getValue().stream().mapToInt(FxReqRecord::getFeeCount).sum());
                 merReports.add(merReport);
             }
         }
@@ -372,7 +459,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
 //                        JSONArray persons = reqJson.getJSONArray("persons");
                             recordTmp.setUserFlag("0");
                             fxReqRecords.add(recordTmp);
-                        }else {
+                        } else {
                             Date date = Date.from(merReqLog.getReqTime().atZone(ZoneId.systemDefault()).toInstant());
                             String dateStr = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date);
                             record.setCreateTime(date);
@@ -466,7 +553,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         } else {
             isAllSuccess = false;
         }
-        record.setBilledTimes(billedTimes);
+        record.setFeeCount(billedTimes);
         return isAllSuccess;
     }
 
@@ -568,7 +655,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
             }
         }
         record.setInPrice(inPrice);
-        record.setBilledTimes(billedTimes);
+        record.setFeeCount(billedTimes);
         return isAllSuccess;
     }
 

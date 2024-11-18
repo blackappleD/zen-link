@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mkc.domain.FxReqRecord;
+import com.mkc.domain.FxReqRecordExcel;
 import com.mkc.domain.MerReport;
 import com.mkc.domain.MerReportExcel;
 
@@ -24,6 +25,8 @@ public interface IMerReportService extends IService<MerReport> {
 
     List<FxReqRecord> listFxHouseReport(MerReport merReport);
 
+
+    List<FxReqRecordExcel> listFxHouseReportV2(MerReport merReport);
     /**
      * 法信学历调用报告
      *

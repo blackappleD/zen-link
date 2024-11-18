@@ -28,6 +28,7 @@
         <result property="totalTime" column="total_time"/>
         <result property="createTime" column="create_time"/>
         <result property="remark" column="remark"/>
+        <result property="level" column="level"/>
         <result property="ipaddr" column="ipaddr"/>
     </resultMap>
 
@@ -54,6 +55,7 @@
                total_time,
                create_time,
                remark,
+               level,
                ipaddr
         from t_mer_req_log
     </sql>
@@ -167,10 +169,14 @@
         sum(actual_price) total_price,sum(in_price) in_price,sum(fee_times) fee_times,
         avg(total_time) avg_time,sum(status_ok_fit) status_ok_fit,sum(status_ok_unfit) status_ok_unfit,
         sum(status_no) status_no,sum(status_err) status_err,
-        sum(times1) times1,sum(times3) times3,sum(times10) times10,sum(times_ge10) times_ge10
+        sum(times1) times1,sum(times3) times3,sum(times10) times10,sum(times_ge10) times_ge10,
+        SUM(CASE WHEN split_level = '1' THEN 1 ELSE 0 END)  AS level_1,
+        SUM(CASE WHEN split_level = '2' THEN 1 ELSE 0 END) AS level_2,
+        SUM(CASE WHEN split_level = '3' THEN 1 ELSE 0 END) AS level_3
         from (
         select
         order_no,sup_code,mer_code,product_code,cg_code,in_price,sell_price,actual_price,free::int fee_times,total_time,
+        unnest(string_to_array(COALESCE(level, ' '), ',')) AS split_level,
         case when status='1' then 1 else 0 end status_ok_fit,
         case when status='3' then 1 else 0 end status_ok_unfit,
         case when status='2' then 1 else 0 end status_no,

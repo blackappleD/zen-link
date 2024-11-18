@@ -101,7 +101,7 @@ public class YrzxBgSupImpl implements IBgSupService {
                 supResult.setFree(FreeState.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
-                errMonitorMsg(log,url + " 接口 发生异常 orderNo {} URL {} , 报文: {} "
+                errMonitorMsg(log,url + " 经济能力评级接口 发生异常 orderNo {} URL {} , 报文: {} "
                         , bean.getOrderNo(),url, result);
                 return supResult;
             }
