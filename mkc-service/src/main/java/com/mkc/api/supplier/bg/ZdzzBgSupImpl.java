@@ -42,13 +42,15 @@ public class ZdzzBgSupImpl implements IBgSupService {
         String url = bean.getUrl() + "/api0e148e05297f41cbace8feddaa53d47d";
         bean.setUrl(url);
         String result = null;
+        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
         try {
             result = post(queryParams, bean);
-            return getSupResult(queryParams, result, bean);
+            return getSupResult(supResult, result, bean);
         } catch (Throwable e) {
             errMonitorMsg(log, " 【中电郑州】 婚姻稳定状况接口 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(), url, result, e);
-            return getErrorSupResult(queryParams, result, e);
+            setErrorSupResult(supResult, result, e);
+            return supResult;
         }
     }
 
@@ -62,13 +64,15 @@ public class ZdzzBgSupImpl implements IBgSupService {
         String url = bean.getUrl() + "/api7edb4e91482b452494c57352588af4cd";
         bean.setUrl(url);
         String result = null;
+        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
         try {
             result = post(queryParams, bean);
-            return getSupResult(queryParams, result, bean);
+            return getSupResult(supResult, result, bean);
         } catch (Throwable e) {
             errMonitorMsg(log, " 【中电郑州】 婚姻关系验证 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(), url, result, e);
-            return getErrorSupResult(queryParams, result, e);
+            setErrorSupResult(supResult, result, e);
+            return supResult;
         }
     }
 
@@ -80,13 +84,15 @@ public class ZdzzBgSupImpl implements IBgSupService {
         String url = bean.getUrl() + "/api499e49704c704dd59b0040a4fb023db4";
         bean.setUrl(url);
         String result = null;
+        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
         try {
             result = get(queryParams, bean);
-            return getSupResult(queryParams, result, bean);
+            return getSupResult(supResult, result, bean);
         } catch (Throwable e) {
             errMonitorMsg(log, " 【中电郑州】 婚姻状况查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), url, result, e);
-            return getErrorSupResult(queryParams, result, e);
+            setErrorSupResult(supResult, result, e);
+            return supResult;
         }
     }
 
@@ -98,13 +104,15 @@ public class ZdzzBgSupImpl implements IBgSupService {
         String url = bean.getUrl() + "/api172610733b074eb18087f119aeefcb30";
         bean.setUrl(url);
         String result = null;
+        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
         try {
             result = get(queryParams, bean);
-            return getSupResult(queryParams, result, bean);
+            return getSupResult(supResult, result, bean);
         } catch (Throwable e) {
             errMonitorMsg(log, " 【中电郑州】 婚姻关系验证 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(), url, result, e);
-            return getErrorSupResult(queryParams, result, e);
+            setErrorSupResult(supResult, result, e);
+            return supResult;
         }
     }
 
@@ -146,8 +154,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
                 .body();
     }
 
-    private SupResult<JSONObject> getSupResult(Map<String, Object> queryParams, String result, SuplierQueryBean bean) {
-        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
+    private SupResult<JSONObject> getSupResult(SupResult<JSONObject> supResult, String result, SuplierQueryBean bean) {
         supResult.setRespTime(LocalDateTime.now());
         supResult.setRespJson(result);
         //判断是否有响应结果 无就是请求异常或超时
@@ -170,7 +177,6 @@ public class ZdzzBgSupImpl implements IBgSupService {
             }
         } else {
             supResult.setFree(FreeState.NO);
-            supResult.setRespTime(LocalDateTime.now());
             supResult.setRemark("查询失败");
             supResult.setState(ReqState.ERROR);
             errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
@@ -182,12 +188,10 @@ public class ZdzzBgSupImpl implements IBgSupService {
 
 
 
-    private SupResult<JSONObject> getErrorSupResult(Map<String, Object> queryParams, String result, Throwable e) {
-        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
+    private void setErrorSupResult(SupResult<JSONObject> supResult, String result, Throwable e) {
         supResult.setState(ReqState.ERROR);
         supResult.setRespTime(LocalDateTime.now());
         supResult.setRespJson(result);
         supResult.setRemark("异常：" + e.getMessage());
-        return supResult;
     }
 }

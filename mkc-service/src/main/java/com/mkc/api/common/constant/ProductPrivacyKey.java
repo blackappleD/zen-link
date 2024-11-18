@@ -32,6 +32,8 @@ public class ProductPrivacyKey {
         merReqSet.add("certname");
         merReqSet.add("mobile");
         merReqSet.add("bankcard");
+        merReqSet.add("zjhm");
+        merReqSet.add("sfzh");
 
         supReqSet = new HashSet<>();
         supReqSet.add("passname");
@@ -43,6 +45,8 @@ public class ProductPrivacyKey {
         supReqSet.add("username");
         supReqSet.add("name");
         supReqSet.add("usercertno");
+        supReqSet.add("zjhm");
+        supReqSet.add("sfzh");
 
     }
 
