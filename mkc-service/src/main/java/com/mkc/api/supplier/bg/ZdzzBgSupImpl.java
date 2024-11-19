@@ -4,6 +4,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.IBgSupService;
@@ -15,7 +16,6 @@ import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeState;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
-import com.sun.javafx.collections.MappingChange;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -97,17 +97,17 @@ public class ZdzzBgSupImpl implements IBgSupService {
     }
 
     @Override
-    public SupResult<JSONObject> queryEducationInfo(EducationInfoReqVo vo, SuplierQueryBean bean) {
+    public SupResult<JSONArray> queryEducationInfo(EducationInfoReqVo vo, SuplierQueryBean bean) {
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put("xm", vo.getXm());
         queryParams.put("zjhm", vo.getZjhm());
         String url = bean.getUrl() + "/api172610733b074eb18087f119aeefcb30";
         bean.setUrl(url);
         String result = null;
-        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
+        SupResult<JSONArray> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
         try {
             result = get(queryParams, bean);
-            return getSupResult(supResult, result, bean);
+            return getSupResultArray(supResult, result, bean);
         } catch (Throwable e) {
             errMonitorMsg(log, " 【中电郑州】 婚姻关系验证 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
                     , bean.getOrderNo(), url, result, e);
@@ -145,13 +145,15 @@ public class ZdzzBgSupImpl implements IBgSupService {
         headers.put("app-key", appKey);
         headers.put("secret-key", secretKey);
 
-        return HttpUtil.createGet(bean.getUrl())
+        String body = HttpUtil.createGet(bean.getUrl())
                 .addHeaders(headers)
                 .form(queryParams)
                 .setReadTimeout(timeOut)
                 .setReadTimeout(timeOut)
                 .execute()
                 .body();
+        System.err.println(body);
+        return body;
     }
 
     private SupResult<JSONObject> getSupResult(SupResult<JSONObject> supResult, String result, SuplierQueryBean bean) {
@@ -186,9 +188,41 @@ public class ZdzzBgSupImpl implements IBgSupService {
         return supResult;
     }
 
+    private SupResult<JSONArray> getSupResultArray(SupResult<JSONArray> supResult, String result, SuplierQueryBean bean) {
+        supResult.setRespTime(LocalDateTime.now());
+        supResult.setRespJson(result);
+        //判断是否有响应结果 无就是请求异常或超时
+        if (StringUtils.isBlank(result)) {
+            supResult.setRemark("供应商没有响应结果");
+            supResult.setState(ReqState.ERROR);
+            return supResult;
+        }
+        JSONObject resultObject = JSON.parseObject(result);
+        String code = resultObject.getString("code");
+        //                200：成功（收费）
+        if (SUCCESS.equals(code)) {
+            supResult.setFree(FreeState.YES);
+            supResult.setRemark("查询成功");
+            supResult.setState(ReqState.SUCCESS);
+            JSONArray data = resultObject.getJSONArray("data");
+            if (data != null) {
+                supResult.setData(data);
+                return supResult;
+            }
+        } else {
+            supResult.setFree(FreeState.NO);
+            supResult.setRemark("查询失败");
+            supResult.setState(ReqState.ERROR);
+            errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
+                    , bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), bean.getUrl(), result);
+            return supResult;
+        }
+        return supResult;
+    }
 
 
-    private void setErrorSupResult(SupResult<JSONObject> supResult, String result, Throwable e) {
+
+    private void setErrorSupResult(SupResult supResult, String result, Throwable e) {
         supResult.setState(ReqState.ERROR);
         supResult.setRespTime(LocalDateTime.now());
         supResult.setRespJson(result);
