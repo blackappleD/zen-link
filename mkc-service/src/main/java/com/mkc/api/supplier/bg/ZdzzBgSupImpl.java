@@ -125,14 +125,16 @@ public class ZdzzBgSupImpl implements IBgSupService {
         Map<String, String> headers = new HashMap<>();
         headers.put("app-key", appKey);
         headers.put("secret-key", secretKey);
-
-        return HttpRequest.post(bean.getUrl())
-                .body(JSONUtil.toJsonStr(queryParams))
+        String requestJson = JSONUtil.toJsonStr(queryParams);
+        String body = HttpRequest.post(bean.getUrl())
+                .body(requestJson)
                 .addHeaders(headers)
                 .setReadTimeout(timeOut)
                 .setReadTimeout(timeOut)
                 .execute()
                 .body();
+        log.info("【中电郑州】 {} request=【{}】 response=【{}】", bean.getUrl(), requestJson, body);
+        return body;
     }
 
     private String get(Map<String, Object> queryParams, SuplierQueryBean bean) {
@@ -144,7 +146,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
         Map<String, String> headers = new HashMap<>();
         headers.put("app-key", appKey);
         headers.put("secret-key", secretKey);
-
+        String requestJson = JSONUtil.toJsonStr(queryParams);
         String body = HttpUtil.createGet(bean.getUrl())
                 .addHeaders(headers)
                 .form(queryParams)
@@ -152,7 +154,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
                 .setReadTimeout(timeOut)
                 .execute()
                 .body();
-        System.err.println(body);
+        log.info("【中电郑州】 {} request=【{}】 response=【{}】", bean.getUrl(), requestJson, body);
         return body;
     }
 
