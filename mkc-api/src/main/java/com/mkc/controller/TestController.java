@@ -1,7 +1,9 @@
 package com.mkc.controller;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -498,7 +501,7 @@ public class TestController {
             List<ExcelTestEduZjhm> readList = EasyExcel.read(excel.getInputStream())
                     .headRowNumber(1)
                     .head(ExcelTestEduZjhm.class)
-                    .sheet(1)
+                    .sheet(0)
                     .doReadSync();
 
             ArrayList<ExcelTestEduZjhm> resultList = new ArrayList<>();
@@ -563,13 +566,13 @@ public class TestController {
             for (ExcelTestLog read : readList) {
                 //{"certNo":"Is15DRSGsPb3OYLRGI1F2O9Xch7aa95Zli7EQ82ZRt4=","companyName":"比亚迪股份有限公司","creditCode":"440301501127941","legalPerson":"王传福","merCode":"ZD-BIGDATA","merSeq":"P202410151616150001","paramType":"0","sign":"0bcee3d48fe394e12cda44842d05ccb3"}
 
-                JSONObject jsonObject = JSON.parseObject(read.getZymc());
+                JSONObject jsonObject = JSON.parseObject(read.getQqcs());
                 jsonObject = ProductPrivacyKey.privacyDecryptMer(jsonObject);
-                read.setZymc(jsonObject.toJSONString());
+                read.setQqcs(jsonObject.toJSONString());
                 try {
-                    read.setCc(ZipStrUtils.gunzip(read.getCc()));
+                    read.setXycs(ZipStrUtils.gunzip(read.getXycs()));
                 } catch (Exception e) {
-                    read.setCc(read.getCc());
+                    read.setXycs(read.getXycs());
                 }
             }
             setExcelRespProp(response, DateUtils.dateTimeNow() + "日志");
@@ -599,8 +602,8 @@ public class TestController {
             for (ExcelTestLog read : readList) {
 
 //                if (StringUtils.isBlank(read.getMsg())) {
-                    JSONObject jsonObject = JSON.parseObject(read.getCc());
-                    read.setYxmc(jsonObject.getString("requestId"));
+                JSONObject jsonObject = JSON.parseObject(read.getQqcs());
+                read.setDdh(jsonObject.getString("requestId"));
 //                    String plaintext = read.getPlateNo();
 //                    JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/carInfo", jsonObject, plaintext);
 //                    read.setCode(post.getString("code"));
@@ -627,6 +630,130 @@ public class TestController {
                     .excelType(ExcelTypeEnum.XLSX)
                     .sheet("日志")
                     .doWrite(readList);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+    }
+
+    @PostMapping("/testParseMsg")
+    public void testParseMsg(MultipartFile excel, HttpServletResponse response) {
+        List<ExcelTestCar> excelTestCars = new ArrayList<>();
+        try {
+            List<ExcelTestLog> readList = EasyExcel.read(excel.getInputStream())
+                    .headRowNumber(1)
+                    .head(ExcelTestLog.class)
+                    .sheet(0)
+                    .doReadSync();
+            for (ExcelTestLog read : readList) {
+                String carNo = JSON.parseObject(read.getQqcs()).getString("carNo");
+                String msg = StringUtils.EMPTY;
+                try {
+                    msg = JSON.parseObject(ZipStrUtils.gunzip(read.getXycs())).getString("message");
+                } catch (Exception e) {
+                    msg = "重新请求";
+                }
+                ExcelTestCar excelTestCar = new ExcelTestCar();
+                excelTestCar.setPlateNo(carNo);
+                excelTestCar.setMsg(msg);
+                excelTestCars.add(excelTestCar);
+            }
+            setExcelRespProp(response, DateUtils.dateTimeNow() + "日志");
+            EasyExcel.write(response.getOutputStream())
+                    .head(ExcelTestLog.class)
+                    .excelType(ExcelTypeEnum.XLSX)
+                    .sheet("车五项异常")
+                    .doWrite(excelTestCars);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+    }
+
+    @PostMapping("/testParseCar")
+    public void testParseCar(MultipartFile excel, HttpServletResponse response) {
+        List<ExcelTestCar> excelTestCars = new ArrayList<>();
+        try {
+            for (int i = 0; i < 5; i++) {
+                List<ExcelTestCar> readList = EasyExcel.read(excel.getInputStream())
+                        .headRowNumber(1)
+                        .head(ExcelTestCar.class)
+                        .sheet(i)
+                        .doReadSync();
+                for (ExcelTestCar read : readList) {
+                    if (Objects.equals(read.getCode(), "200")) {
+                        if (Objects.equals(read.getBrandName(), "null") ||
+                                Objects.equals(read.getEngineNo(), "null") ||
+                                Objects.equals(read.getModelNo(), "null") ||
+                                Objects.equals(read.getInitialRegistrationDate(), "null") ||
+                                Objects.equals(read.getVin(), "null")) {
+                            read.setCode("404");
+                            read.setMsg("未匹配到相关数据");
+                            read.setBrandName(null);
+                            read.setEngineNo(null);
+                            read.setVin(null);
+                            read.setInitialRegistrationDate(null);
+                            read.setModelNo(null);
+                        }
+                    }
+                    else if (Objects.equals(read.getCode(), "500")) {
+                        JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
+                        String plaintext = read.getPlateNo();
+                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/carInfo", jsonObject, plaintext);
+                        read.setCode(post.getString("code"));
+                        read.setMsg(post.getString("msg"));
+                        try {
+                            JSONObject data = post.getJSONObject("data");
+                            if (Objects.nonNull(data)) {
+                                read.setEngineNo(data.getString("engineNo"));
+                                read.setBrandName(data.getString("brandName"));
+                                read.setVin(data.getString("vin"));
+                                read.setInitialRegistrationDate(data.getString("initialRegistrationDate"));
+                                read.setModelNo(data.getString("modelNo"));
+                            }
+                        } catch (Exception e) {
+                            read.setEngineNo(post.getString("data"));
+                            log.error(e.getMessage());
+                        }
+                    }
+                }
+                excelTestCars.addAll(readList);
+            }
+            setExcelRespProp(response, DateUtils.dateTimeNow() + "车五项最终结果");
+            EasyExcel.write(response.getOutputStream())
+                    .head(ExcelTestCar.class)
+                    .excelType(ExcelTypeEnum.XLSX)
+                    .sheet("车五项结果")
+                    .doWrite(excelTestCars);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/testParse")
+    public void testParse(MultipartFile excel, int sheetNum, HttpServletResponse response) {
+        try (OutputStream out = response.getOutputStream()) {
+            // 设置Excel响应属性并写出处理后的结果到Excel
+            setExcelRespProp(response, DateUtils.dateTimeNow() + "1120车五项待测试");
+            ExcelWriter excelWriter = EasyExcel.write(out).build();
+            List<ExcelTestCar> readList = EasyExcel.read(excel.getInputStream())
+                    .headRowNumber(1)
+                    .head(ExcelTestCar.class)
+                    .sheet(sheetNum - 1)
+                    .doReadSync();
+            // 按照每2000条数据划分任务
+            int totalSize = readList.size();
+            int batchSize = 20000;
+            for (int i = 0; i < totalSize; i += batchSize) {
+                int endIndex = Math.min(i + batchSize, totalSize);
+                List<ExcelTestCar> subList = readList.subList(i, endIndex);
+                WriteSheet writeSheet = EasyExcel.writerSheet(i + 1).head(ExcelTestCar.class).build();
+                excelWriter.write(subList, writeSheet);
+            }
+            excelWriter.finish();
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
             log.error(e.getMessage());

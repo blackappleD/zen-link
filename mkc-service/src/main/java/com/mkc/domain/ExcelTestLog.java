@@ -11,31 +11,31 @@ import lombok.Data;
 public class ExcelTestLog {
     @ColumnWidth(20)
     @ExcelProperty("订单号")
-    private String xm;
+    private String ddh;
     @ColumnWidth(20)
     @ExcelProperty("产品名称")
-    private String zjhm;
+    private String cpmc;
     @ColumnWidth(20)
     @ExcelProperty("商户名称")
-    private String code;
+    private String shmc;
     @ColumnWidth(20)
     @ExcelProperty("流水号")
-    private String yxmc;
+    private String lsh;
     @ColumnWidth(30)
     @ExcelProperty("请求参数")
-    private String zymc;
+    private String qqcs;
     @ColumnWidth(30)
     @ExcelProperty("响应参数")
-    private String cc;
+    private String xycs;
     @ColumnWidth(20)
     @ExcelProperty("查询状态")
-    private String rxrq;
+    private String cxzt;
     @ColumnWidth(20)
     @ExcelProperty("请求时间")
-    private String byrq;
+    private String qqsj;
     @ColumnWidth(20)
     @ExcelProperty("响应时间")
-    private String xxxs;
+    private String xxsj;
 
 
 }

@@ -28,13 +28,13 @@ public class ExcelTestCar {
     @ColumnWidth(12)
     @ExcelProperty("engineNo")
     private String engineNo;
-    @ColumnWidth(12)
+    @ColumnWidth(20)
     @ExcelProperty("brandName")
     private String brandName;
-    @ColumnWidth(12)
+    @ColumnWidth(20)
     @ExcelProperty("vin")
     private String vin;
-    @ColumnWidth(12)
+    @ColumnWidth(36)
     @ExcelProperty("initialRegistrationDate")
     private String initialRegistrationDate;
     @ColumnWidth(12)

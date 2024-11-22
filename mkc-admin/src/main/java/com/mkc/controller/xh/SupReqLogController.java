@@ -69,10 +69,10 @@ public class SupReqLogController extends BaseController {
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(SupReqLogBean supReqLog) {
-        startPage();
         if (StringUtils.isNotBlank(supReqLog.getProductCode())) {
             supReqLog.setProcductCode(supReqLog.getProductCode());
         }
+        startPage();
         List<SupReqLog> list = supReqLogService.selectSupReqLogList(supReqLog);
         return getDataTable(list);
     }
@@ -85,6 +85,9 @@ public class SupReqLogController extends BaseController {
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(SupReqLogBean supReqLog) {
+        if (StringUtils.isNotBlank(supReqLog.getProductCode())) {
+            supReqLog.setProcductCode(supReqLog.getProductCode());
+        }
         List<SupReqLog> list = supReqLogService.selectSupReqLogList(supReqLog);
         ExcelUtil<SupReqLog> util = new ExcelUtil<SupReqLog>(SupReqLog.class);
         return util.exportExcel(list, "调用供应商日志数据");
