@@ -42,11 +42,11 @@ public class CkController extends BaseController {
 	 * 银行卡四要素
 	 */
 	@PostMapping("/bankFour")
-	public Result ckBankFour(HttpServletRequest request, @RequestBody BankReqVo params) {
+	public Result ckBankFour(HttpServletRequest request, @RequestBody BankReqVo params) throws InterruptedException {
 
 		String reqJson = null;
+		long start = System.currentTimeMillis();
 		try {
-			long start = System.currentTimeMillis();
 			reqJson = JSON.toJSONString(params);
 
 			//检查商户参数完整性
@@ -66,8 +66,18 @@ public class CkController extends BaseController {
 			}
 			return result;
 		} catch (ApiServiceException e) {
+			long end = System.currentTimeMillis();
+			// 要求接口响应时间超过700ms
+			if (end - start <= 700) {
+				Thread.sleep(700 - (end - start));
+			}
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
+			long end = System.currentTimeMillis();
+			// 要求接口响应时间超过700ms
+			if (end - start <= 700) {
+				Thread.sleep(700 - (end - start));
+			}
 			errMonitorMsg("【银行卡四要素】API 发生异常  reqJson {} ", reqJson, e);
 			return Result.fail();
 		}
@@ -77,11 +87,11 @@ public class CkController extends BaseController {
 	 * 银行卡三要素
 	 */
 	@PostMapping("/bankThree")
-	public Result ckBankThree(HttpServletRequest request, @RequestBody BankReqVo params) {
+	public Result ckBankThree(HttpServletRequest request, @RequestBody BankReqVo params) throws InterruptedException {
 
 		String reqJson = null;
+		long start = System.currentTimeMillis();
 		try {
-			long start = System.currentTimeMillis();
 			reqJson = JSON.toJSONString(params);
 
 			//检查商户参数完整性
@@ -100,9 +110,19 @@ public class CkController extends BaseController {
 			}
 			return result;
 		} catch (ApiServiceException e) {
+			long end = System.currentTimeMillis();
+			// 要求接口响应时间超过700ms
+			if (end - start <= 700) {
+				Thread.sleep(700 - (end - start));
+			}
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
 			errMonitorMsg("【银行卡三要素】API 发生异常  reqJson {} ", reqJson, e);
+			long end = System.currentTimeMillis();
+			// 要求接口响应时间超过700ms
+			if (end - start <= 700) {
+				Thread.sleep(700 - (end - start));
+			}
 			return Result.fail();
 		}
 	}
@@ -111,11 +131,11 @@ public class CkController extends BaseController {
 	 * 银行卡二要素
 	 */
 	@PostMapping("/bankTwo")
-	public Result ckBankTwo(HttpServletRequest request, @RequestBody BankReqVo params) {
+	public Result ckBankTwo(HttpServletRequest request, @RequestBody BankReqVo params) throws InterruptedException {
 
 		String reqJson = null;
+		long start = System.currentTimeMillis();
 		try {
-			long start = System.currentTimeMillis();
 			reqJson = JSON.toJSONString(params);
 
 			//检查商户参数完整性
@@ -134,8 +154,18 @@ public class CkController extends BaseController {
 			}
 			return result;
 		} catch (ApiServiceException e) {
+			long end = System.currentTimeMillis();
+			// 要求接口响应时间超过700ms
+			if (end - start <= 700) {
+				Thread.sleep(700 - (end - start));
+			}
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
+			long end = System.currentTimeMillis();
+			// 要求接口响应时间超过700ms
+			if (end - start <= 700) {
+				Thread.sleep(700 - (end - start));
+			}
 			errMonitorMsg("【银行卡二要素】API 发生异常  reqJson {} ", reqJson, e);
 			return Result.fail();
 		}

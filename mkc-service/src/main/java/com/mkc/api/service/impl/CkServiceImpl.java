@@ -43,252 +43,250 @@ import java.util.function.BiFunction;
 @DS("business")
 public class CkServiceImpl implements ICkService {
 
-    //供应商前缀
-    private final static String SUP_PREFIX = "CK_";
-    @Autowired
-    private Map<String, ICkSupService> ckSupServiceMap;
+	//供应商前缀
+	private final static String SUP_PREFIX = "CK_";
+	@Autowired
+	private Map<String, ICkSupService> ckSupServiceMap;
 
-    @Autowired
-    private ISupplierRouteService supplierRouteService;
+	@Autowired
+	private ISupplierRouteService supplierRouteService;
 
-    @Autowired
-    private ISupplierProductService supplierProductService;
-
-
-    @Autowired
-    private ReqLogHandle reqLogHandle;
-
-    @Autowired
-    private IMailProcess mailProcess;
+	@Autowired
+	private ISupplierProductService supplierProductService;
 
 
-    @Override
-    public Result ckMobThree(MobThreeReqVo params, MerReqLogVo merLog) {
+	@Autowired
+	private ReqLogHandle reqLogHandle;
 
-        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
-                ckSupService.ckMobThree(params, supQueryBean));
-    }
-
-    @Override
-    public Result ckPopulationThree(PopulationThreeReqVo params, MerReqLogVo merLog) {
-
-        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
-                ckSupService.ckPopulationThree(params, supQueryBean));
-    }
-
-    @Override
-    public Result ckPersonCar(PersonCarReqVo params, MerReqLogVo merLog) {
-
-        return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
-                ckSupService.ckPersonCar(params, supQueryBean));
-    }
-
-    @Override
-    public Result ckWorkUnit(WorkUnitReqVo params, MerReqLogVo merLog) {
-
-        return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
-                ckSupService.ckWorkUnit(params, supQueryBean));
-    }
+	@Autowired
+	private IMailProcess mailProcess;
 
 
-    private Result ckCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
+	@Override
+	public Result ckMobThree(MobThreeReqVo params, MerReqLogVo merLog) {
 
-        SupResult supResult= ckCommonSup(merLog,vo,  function);
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckMobThree(params, supQueryBean));
+	}
 
-        return getRespResult(merLog, supResult);
+	@Override
+	public Result ckPopulationThree(PopulationThreeReqVo params, MerReqLogVo merLog) {
 
-    }
-    //将查询供应商方法迁移出来
-    @Override
-    public   SupResult ckCommonSup(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckPopulationThree(params, supQueryBean));
+	}
 
-        String merCode = merLog.getMerCode();
-        String productCode = merLog.getProductCode();
-        String orderNo = merLog.getOrderNo();
+	@Override
+	public Result ckPersonCar(PersonCarReqVo params, MerReqLogVo merLog) {
 
-        List<SupplierRoute> supplierRoutes = supplierRouteService.querySupRouteList(merCode, productCode);
-        //判断是否有可用的供应商
-        if (CollectionUtil.isEmpty(supplierRoutes)) {
-            log.error(ErrMonitorCode.BIZ_ERR + " 该商户的产品 没有配置可用的供应商   merCode: {} , productCode: {} , orderNo: {} ", merLog.getMerCode(), merLog.getProductCode(),orderNo);
-            return null;
-        }
-        SupResult supResult = null;
-        SuplierQueryBean supQueryBean = null;
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckPersonCar(params, supQueryBean));
+	}
 
-        BigDecimal inPrice = BigDecimal.ZERO;
+	@Override
+	public Result ckWorkUnit(WorkUnitReqVo params, MerReqLogVo merLog) {
 
-        for (SupplierRoute supplier : supplierRoutes) {
-            String supCode = supplier.getSupCode();
-            SuplierQueryBean newSupQueryBean = supplierProductService.selectSupProductBySupCode(supCode, productCode);
-            if (newSupQueryBean == null) {
-                log.info("CK 此产品在供应商和没有可用供应商产品   supCode: {}, productCode: {} , orderNo: {}", supCode, productCode, orderNo);
-                continue;
-            }
-            supQueryBean = newSupQueryBean;
-            supQueryBean.setOrderNo(merLog.getOrderNo());
-            String supProcessor = newSupQueryBean.getSupProcessor();
-
-            log.info("==== CK 开始查询   supCode: {}, productCode: {} , orderNo: {}", supCode, productCode, orderNo);
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckWorkUnit(params, supQueryBean));
+	}
 
 
-            ICkSupService ckSupService = ckSupServiceMap.get(SUP_PREFIX + supProcessor);
-            supResult = function.apply(ckSupService, supQueryBean);
+	private Result ckCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
 
-            if (supResult == null) {
-                supResult = new SupResult<>("", LocalDateTime.now());
-                supResult.setRemark("supResult is return null ; init");
+		SupResult supResult = ckCommonSup(merLog, vo, function);
 
-                String errMsg=" 【核验类】 查询供应商结果 NULL;   merCode {}, productCode {} ,supCode {} ,orderNo {}";
-                log.error(errMsg, merLog.getMerCode(), merLog.getProductCode(),supCode,orderNo);
-                //发送钉钉消息 通知
-                DdMonitorMsgUtil.sendDdSysErrMsg(errMsg, merLog.getMerCode(), merLog.getProductCode(),supCode,orderNo);
+		return getRespResult(merLog, supResult);
 
-                supResult.setState(ReqState.ERROR);
-                supResult.setRespTime(LocalDateTime.now());
-            }
-            supResult.setSupCode(supQueryBean.getSupCode());
-            supResult.setSupName(supQueryBean.getSupName());
+	}
 
-            //记录请求供应商调用记录
-            reqLogHandle.supReqLogHandle(supResult, merLog, supQueryBean);
+	//将查询供应商方法迁移出来
+	@Override
+	public SupResult ckCommonSup(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
 
-            //判断是否收费 收费的就需要累计 进价
-            if (supResult.isFree()) {
-                inPrice = inPrice.add(supQueryBean.getInPrice());
-            }
-            supResult.setInPrice(inPrice);
-            if (supResult.isQueryGet()) {
-                //调用供应商查询成功 直接跳出循环
-                break;
-            }
-            if(merLog.getRouteCon().contains(supResult.getState().getCode())){
-                log.info("【CK核验类】 查询供应商数据失败，走下一个供应商 supCode {} , orderNo {}", supCode, orderNo);
-                continue;
-            }
-            break;
+		String merCode = merLog.getMerCode();
+		String productCode = merLog.getProductCode();
+		String orderNo = merLog.getOrderNo();
 
-        }
+		List<SupplierRoute> supplierRoutes = supplierRouteService.querySupRouteList(merCode, productCode);
+		//判断是否有可用的供应商
+		if (CollectionUtil.isEmpty(supplierRoutes)) {
+			log.error(ErrMonitorCode.BIZ_ERR + " 该商户的产品 没有配置可用的供应商   merCode: {} , productCode: {} , orderNo: {} ", merLog.getMerCode(), merLog.getProductCode(), orderNo);
+			return null;
+		}
+		SupResult supResult = null;
+		SuplierQueryBean supQueryBean = null;
 
-        return supResult;
+		BigDecimal inPrice = BigDecimal.ZERO;
 
-    }
+		for (SupplierRoute supplier : supplierRoutes) {
+			String supCode = supplier.getSupCode();
+			SuplierQueryBean newSupQueryBean = supplierProductService.selectSupProductBySupCode(supCode, productCode);
+			if (newSupQueryBean == null) {
+				log.info("CK 此产品在供应商和没有可用供应商产品   supCode: {}, productCode: {} , orderNo: {}", supCode, productCode, orderNo);
+				continue;
+			}
+			supQueryBean = newSupQueryBean;
+			supQueryBean.setOrderNo(merLog.getOrderNo());
+			String supProcessor = newSupQueryBean.getSupProcessor();
 
-    @Override
-    public Result ckVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog) {
-
-        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
-                ckSupService.ckVehicleLicenseInfo(params, supQueryBean));
-    }
-
-    @Override
-    public Result ckBankFour(BankReqVo params, MerReqLogVo merLog) {
-
-        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
-                ckSupService.ckBankFour(params, supQueryBean));
-    }
-
-    @Override
-    public Result ckBankThree(BankReqVo params, MerReqLogVo merLog) {
-        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
-                ckSupService.ckBankThree(params, supQueryBean));
-    }
-
-    @Override
-    public Result ckBankTwo(BankReqVo params, MerReqLogVo merLog) {
-        return ckCommon(merLog, params,(ckSupService, supQueryBean) ->
-                ckSupService.ckBankTwo(params, supQueryBean));
-    }
+			log.info("==== CK 开始查询   supCode: {}, productCode: {} , orderNo: {}", supCode, productCode, orderNo);
 
 
-    /**
-     * 处理供应商返回结果 公用方法
-     *
-     * @param merLog       订单信息
-     * @param supResult    调用成功，或最后调用的供应商 调用结果
-     * @return
-     */
-    private Result getRespResult(MerReqLogVo merLog, SupResult supResult) {
+			ICkSupService ckSupService = ckSupServiceMap.get(SUP_PREFIX + supProcessor);
+			supResult = function.apply(ckSupService, supQueryBean);
 
-        if (supResult == null) {
-            return getFailResult(merLog);
-        }
+			if (supResult == null) {
+				supResult = new SupResult<>("", LocalDateTime.now());
+				supResult.setRemark("supResult is return null ; init");
 
-        BigDecimal inPrice=supResult.getInPrice();
-        Result result = null;  //响应时间
+				String errMsg = " 【核验类】 查询供应商结果 NULL;   merCode {}, productCode {} ,supCode {} ,orderNo {}";
+				log.error(errMsg, merLog.getMerCode(), merLog.getProductCode(), supCode, orderNo);
+				//发送钉钉消息 通知
+				DdMonitorMsgUtil.sendDdSysErrMsg(errMsg, merLog.getMerCode(), merLog.getProductCode(), supCode, orderNo);
 
-        //设置流水号
-        String orderNo = merLog.getOrderNo();
-        //判断是否 一致
-        if (supResult.isSuccess()) {
-           // result = Result.ok(supResult.getData(), orderNo, "认证信息一致");
-            result = Result.ok(supResult.getData(), orderNo);
-            //判断是否 不一致
-        } else if (supResult.isNot()) {
-            result = Result.not(supResult.getData(), orderNo);
-            //查无
-        } else if (supResult.isNoGet()) {
-            result = Result.no(supResult.getData(), FreeState.NO, orderNo);
-            //其它算查询失败活异常
-        } else {
-            //判断是否是自定义错误消息
-            if(supResult.getDefinedFailMsg()){
-                result = Result.fail(supResult.getData(),supResult.getRemark(),orderNo);
-            }else {
-                result = Result.fail(supResult.getData(), orderNo);
-            }
-        }
+				supResult.setState(ReqState.ERROR);
+				supResult.setRespTime(LocalDateTime.now());
+			}
+			supResult.setSupCode(supQueryBean.getSupCode());
+			supResult.setSupName(supQueryBean.getSupName());
 
-        merLog.setSupCode(supResult.getSupCode());
-        merLog.setSupName(supResult.getSupName());
-        merLog.setStatus(supResult.getState().getCode());
-        merLog.setInPrice(inPrice);
-        merLog.setFree(supResult.getFree().getCode());
+			//记录请求供应商调用记录
+			reqLogHandle.supReqLogHandle(supResult, merLog, supQueryBean);
 
-        merLog.setRespTime(LocalDateTime.now());
-        merLog.setRespJson(JSON.toJSONString(result));
-        //放入队列异步落地
-        reqLogHandle.merReqLogHandle(merLog, supResult);
+			//判断是否收费 收费的就需要累计 进价
+			if (supResult.isFree()) {
+				inPrice = inPrice.add(supQueryBean.getInPrice());
+			}
+			supResult.setInPrice(inPrice);
+			if (supResult.isQueryGet()) {
+				//调用供应商查询成功 直接跳出循环
+				break;
+			}
+			if (merLog.getRouteCon().contains(supResult.getState().getCode())) {
+				log.info("【CK核验类】 查询供应商数据失败，走下一个供应商 supCode {} , orderNo {}", supCode, orderNo);
+				continue;
+			}
+			break;
 
-        return result;
-    }
+		}
 
+		return supResult;
 
+	}
 
-    /**
-     * 查询失败
-     *
-     * @param merLog
-     * @return
-     */
-    private Result getFailResult(MerReqLogVo merLog) {
+	@Override
+	public Result ckVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog) {
 
-        //设置流水号
-        String orderNo = merLog.getOrderNo();
-        log.error(ErrMonitorCode.BIZ_ERR + " 该商户的产品 没有配置可用的供应商   merCode: {} , productCode: {} , orderNo: {} ", merLog.getMerCode(), merLog.getProductCode(),orderNo);
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckVehicleLicenseInfo(params, supQueryBean));
+	}
 
-        Result result = Result.fail(orderNo);
+	@Override
+	public Result ckBankFour(BankReqVo params, MerReqLogVo merLog) {
 
-        merLog.setInPrice(BigDecimal.ZERO);
-        merLog.setFree(FreeState.NO.getCode());
-        merLog.setRemark("没有配置 可查询 的 供应商 ");
-        merLog.setStatus(ReqState.ERROR.getCode());
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckBankFour(params, supQueryBean));
+	}
 
-        //响应时间
-        merLog.setRespTime(LocalDateTime.now());
-        merLog.setRespJson(JSON.toJSONString(result));
+	@Override
+	public Result ckBankThree(BankReqVo params, MerReqLogVo merLog) {
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckBankThree(params, supQueryBean));
+	}
 
-        SupResult supResult = new SupResult<>("", LocalDateTime.now());
-
-        //发送邮件预警
-        mailProcess.sendProductNotSup(merLog.getMerName(), merLog.getProductName());
-
-        //放入队列异步落地
-        reqLogHandle.merReqLogHandle(merLog, supResult);
-
-        return result;
-    }
+	@Override
+	public Result ckBankTwo(BankReqVo params, MerReqLogVo merLog) {
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckBankTwo(params, supQueryBean));
+	}
 
 
+	/**
+	 * 处理供应商返回结果 公用方法
+	 *
+	 * @param merLog    订单信息
+	 * @param supResult 调用成功，或最后调用的供应商 调用结果
+	 * @return
+	 */
+	private Result getRespResult(MerReqLogVo merLog, SupResult supResult) {
+
+		if (supResult == null) {
+			return getFailResult(merLog);
+		}
+
+		BigDecimal inPrice = supResult.getInPrice();
+		Result result = null;  //响应时间
+
+		//设置流水号
+		String orderNo = merLog.getOrderNo();
+		//判断是否 一致
+		if (supResult.isSuccess()) {
+			// result = Result.ok(supResult.getData(), orderNo, "认证信息一致");
+			result = Result.ok(supResult.getData(), orderNo);
+			//判断是否 不一致
+		} else if (supResult.isNot()) {
+			result = Result.not(supResult.getData(), orderNo);
+			//查无
+		} else if (supResult.isNoGet()) {
+			result = Result.no(supResult.getData(), FreeState.NO, orderNo);
+			//其它算查询失败活异常
+		} else {
+			//判断是否是自定义错误消息
+			if (supResult.getDefinedFailMsg()) {
+				result = Result.fail(supResult.getData(), supResult.getRemark(), orderNo);
+			} else {
+				result = Result.fail(supResult.getData(), orderNo);
+			}
+		}
+
+		merLog.setSupCode(supResult.getSupCode());
+		merLog.setSupName(supResult.getSupName());
+		merLog.setStatus(supResult.getState().getCode());
+		merLog.setInPrice(inPrice);
+		merLog.setFree(supResult.getFree().getCode());
+
+		merLog.setRespTime(LocalDateTime.now());
+		merLog.setRespJson(JSON.toJSONString(result));
+		//放入队列异步落地
+		reqLogHandle.merReqLogHandle(merLog, supResult);
+
+		return result;
+	}
+
+
+	/**
+	 * 查询失败
+	 *
+	 * @param merLog
+	 * @return
+	 */
+	private Result getFailResult(MerReqLogVo merLog) {
+
+		//设置流水号
+		String orderNo = merLog.getOrderNo();
+		log.error(ErrMonitorCode.BIZ_ERR + " 该商户的产品 没有配置可用的供应商   merCode: {} , productCode: {} , orderNo: {} ", merLog.getMerCode(), merLog.getProductCode(), orderNo);
+
+		Result result = Result.fail(orderNo);
+
+		merLog.setInPrice(BigDecimal.ZERO);
+		merLog.setFree(FreeState.NO.getCode());
+		merLog.setRemark("没有配置 可查询 的 供应商 ");
+		merLog.setStatus(ReqState.ERROR.getCode());
+
+		//响应时间
+		merLog.setRespTime(LocalDateTime.now());
+		merLog.setRespJson(JSON.toJSONString(result));
+
+		SupResult supResult = new SupResult<>("", LocalDateTime.now());
+
+		//发送邮件预警
+		mailProcess.sendProductNotSup(merLog.getMerName(), merLog.getProductName());
+
+		//放入队列异步落地
+		reqLogHandle.merReqLogHandle(merLog, supResult);
+
+		return result;
+	}
 
 
 }

@@ -23,14 +23,14 @@ public interface ICkSupService extends ISupService{
         return SupResult.err();
     }
     /**
-     * 银行卡四要素
+     * 银行卡三要素
      */
     default public SupResult ckBankThree(BankReqVo vo, SuplierQueryBean bean)
     {
         return SupResult.err();
     }
     /**
-     * 银行卡四要素
+     * 银行卡二要素
      */
     default public SupResult ckBankTwo(BankReqVo vo, SuplierQueryBean bean)
     {
