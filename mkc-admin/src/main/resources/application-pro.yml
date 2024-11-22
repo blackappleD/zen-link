@@ -15,6 +15,13 @@ mkc:
     workerId: 10001
     datacenterId: 20001
 
+springdoc:
+    api-docs:
+        # 生产环境关闭swagger文档
+        enabled: false
+    swagger-ui:
+        tags-sorter: alpha
+        operations-sorter: alpha
 # 数据源配置
 # spring配置
 spring:

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>com.mkc</groupId>
     <artifactId>mkc</artifactId>
     <version>0.0.1</version>
@@ -10,7 +10,7 @@
     <name>mkc</name>
     <url></url>
     <description>数据聚合营销云系统</description>
-    
+
     <properties>
         <mkc.version>0.0.1</mkc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,7 +35,7 @@
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
-        
+
             <!-- SpringBoot的依赖配置-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -44,14 +44,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <!-- 阿里数据库连接池 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
-            
+
             <!-- 验证码 -->
             <dependency>
                 <groupId>pro.fessional</groupId>

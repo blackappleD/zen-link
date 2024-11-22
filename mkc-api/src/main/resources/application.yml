@@ -8,10 +8,6 @@ server:
     # 应用的访问路径
     context-path: /
 
- 
-
-
-
 # Spring配置
 spring:
   application:

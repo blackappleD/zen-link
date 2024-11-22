@@ -1,6 +1,13 @@
 
 # 数据源配置
-
+# swagger文档配置
+springdoc:
+    api-docs:
+        # 生产环境关闭swagger文档
+        enabled: false
+    swagger-ui:
+        tags-sorter: alpha
+        operations-sorter: alpha
 # spring配置
 spring:
     datasource:

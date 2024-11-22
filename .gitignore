@@ -8,7 +8,7 @@
 target/
 build/
 bin/
-
+application-local.yml
 # IDE and editor files
 .idea/
 .vscode/
