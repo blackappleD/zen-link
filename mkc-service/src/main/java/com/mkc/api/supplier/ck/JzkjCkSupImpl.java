@@ -1,5 +1,6 @@
 package com.mkc.api.supplier.ck;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -66,6 +67,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			params.put("sign", sign);
 			supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
+			log.info(CharSequenceUtil.format("【银行三要素核验返回体】{}", result));
 			supResult.setRespJson(result);
 
 			//判断是否有响应结果 无就是请求异常或超时
@@ -92,19 +94,18 @@ public class JzkjCkSupImpl implements ICkSupService {
 				supResult.setFree(FreeState.NO);
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOGET);
-				return supResult;
+
 			} else if (NOT.equals(code)) {
 				supResult.setFree(FreeState.YES);
 				supResult.setRemark("不一致");
 				supResult.setState(ReqState.NOT);
-				return supResult;
+
 			} else {
 				supResult.setFree(FreeState.NO);
 				supResult.setRemark("查询失败");
-
 			}
+			return supResult;
 
-			return null;
 		} catch (Throwable e) {
 			errMonitorMsg(log, " 【上海敬众科技股份有限公司供应商】 【银联】x二要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
@@ -147,6 +148,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			params.put("sign", sign);
 			supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
+			log.info(CharSequenceUtil.format("【银行三要素核验返回体】{}", result));
 			supResult.setRespJson(result);
 
 			//判断是否有响应结果 无就是请求异常或超时
@@ -167,13 +169,13 @@ public class JzkjCkSupImpl implements ICkSupService {
 				JSONObject resultJson = resultObject.getJSONObject("data");
 				if (resultJson != null) {
 					supResult.setData(resultJson);
-					return supResult;
+
 				}
 			} else if (NOGET.equals(code)) {
 				supResult.setFree(FreeState.NO);
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOGET);
-				return supResult;
+
 			} else if (NOT.equals(code)) {
 				supResult.setFree(FreeState.YES);
 				supResult.setRemark("不一致");
@@ -182,10 +184,8 @@ public class JzkjCkSupImpl implements ICkSupService {
 			} else {
 				supResult.setFree(FreeState.NO);
 				supResult.setRemark("查询失败");
-
 			}
-
-			return null;
+			return supResult;
 		} catch (Throwable e) {
 			errMonitorMsg(log, " 【上海敬众科技股份有限公司供应商】 【银联】x三要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
@@ -229,6 +229,8 @@ public class JzkjCkSupImpl implements ICkSupService {
 			params.put("sign", sign);
 			supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
+
+			log.info(CharSequenceUtil.format("【银行三要素核验返回体】{}", result));
 			supResult.setRespJson(result);
 
 			//判断是否有响应结果 无就是请求异常或超时
