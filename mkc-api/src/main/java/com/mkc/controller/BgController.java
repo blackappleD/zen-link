@@ -390,6 +390,35 @@ public class BgController extends BaseController {
 
 
     /**
+     * 教育评估
+     */
+    @PostMapping("/eduAssessment")
+    public Result eduAssessment(HttpServletRequest request, @RequestBody EducationInfoReqVo params) {
+
+        String reqJson = null;
+        try {
+            reqJson = JSON.toJSONString(params);
+
+            //检查商户参数完整性
+            CkMerBean ckMerBean = ckEducationInfoParams(params);
+            ckMerBean.setProductCode(ProductCodeEum.BG_EDU_ASSESSMENT.getCode());
+
+            //检查商户参数有效性
+            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            merLog.setReqJson(reqJson);
+
+            Result result = bgService.queryEduAssessment(params, merLog);
+            return result;
+        } catch (ApiServiceException e) {
+            return Result.fail(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            errMonitorMsg("【教育评估】API 发生异常  reqJson {} ", reqJson, e);
+            return Result.fail();
+        }
+    }
+
+
+    /**
      * 全国高等学历信息查询
      */
     @PostMapping("/educationInfo")
@@ -869,11 +898,13 @@ public class BgController extends BaseController {
     public static void main(String[] args) {
         String persons = "[{\"name\":\"陈盱\",\"cardNum\":\"310110196912307039\"}]";
         String merCode = "BhCpTest";
+        String xm = "闵超";
+        String sfzh = "429005198710050913";
         //本地
-//        String pwd = "e0be01493778d77ecfd2004f54b41a09";
+        String pwd = "e0be01493778d77ecfd2004f54b41a09";
         //线上
-        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
-        String plaintext = merCode + persons;
+//        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
+        String plaintext = merCode + xm + sfzh;
         String signText = plaintext + pwd;
         String signMd5 = DigestUtils.md5DigestAsHex(signText.getBytes());
         System.err.println(signMd5);

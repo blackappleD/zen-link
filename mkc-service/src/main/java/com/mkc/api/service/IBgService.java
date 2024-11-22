@@ -159,4 +159,12 @@ public interface IBgService {
      * @return
      */
     Result queryHighSchoolEducation(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog);
+
+    /**
+     * 教育评估
+     * @param params
+     * @param merLog
+     * @return
+     */
+    Result queryEduAssessment(EducationInfoReqVo params, MerReqLogVo merLog);
 }

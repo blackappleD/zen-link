@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.IBgSupService;
+import com.mkc.api.supplier.utils.UrlUtils;
 import com.mkc.api.vo.bg.EconomicRateReqVo;
 import com.mkc.api.vo.bg.FinanceInfoReqVo;
 import com.mkc.api.vo.bg.FinanceInfoV3ReqVo;
@@ -67,7 +68,7 @@ public class YrzxBgSupImpl implements IBgSupService {
                     .append(params.getString("name")).append(params.getString("mobile"))
                     .append(params.getString("reqid")).append(appsecret);
             params.put("verify", Md5Utils.md5(verify.toString()).toUpperCase());
-            String reqUrl = getUrl(params, url);
+            String reqUrl = UrlUtils.getUrl(params, url);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             result = HttpUtil.get(reqUrl, timeOut);
             supResult.setRespTime(LocalDateTime.now());
@@ -147,7 +148,7 @@ public class YrzxBgSupImpl implements IBgSupService {
                     .append(params.getString("name")).append(params.getString("mobile"))
                     .append(params.getString("reqid")).append(appsecret);
             params.put("verify", Md5Utils.md5(verify.toString()).toUpperCase());
-            String reqUrl = getUrl(params, url);
+            String reqUrl = UrlUtils.getUrl(params, url);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             result = HttpUtil.get(reqUrl, timeOut);
             supResult.setRespTime(LocalDateTime.now());
@@ -227,7 +228,7 @@ public class YrzxBgSupImpl implements IBgSupService {
                     .append(params.getString("name")).append(params.getString("mobile"))
                     .append(params.getString("reqid")).append(appsecret);
             params.put("verify", Md5Utils.md5(verify.toString()).toUpperCase());
-            String reqUrl = getUrl(params, url);
+            String reqUrl = UrlUtils.getUrl(params, url);
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             result = HttpUtil.get(reqUrl, timeOut);
             supResult.setRespTime(LocalDateTime.now());
@@ -316,7 +317,9 @@ public class YrzxBgSupImpl implements IBgSupService {
                     .append(params.getString("mobile")).append(params.getString("name")).append(params.getString("job"))
                     .append(params.getString("reqid")).append(appsecret);
             params.put("verify", Md5Utils.md5(verify.toString()).toUpperCase());
-            String reqUrl = getUrl(params, url);
+
+            String reqUrl = UrlUtils.getUrl(params, url);
+
             supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
             result = HttpUtil.get(reqUrl, timeOut);
             supResult.setRespTime(LocalDateTime.now());
@@ -367,17 +370,5 @@ public class YrzxBgSupImpl implements IBgSupService {
             supResult.setRemark("异常：" + e.getMessage());
             return supResult;
         }
-    }
-
-    public static String getUrl(JSONObject params, String url) {
-        StringBuilder urlParam = new StringBuilder();
-
-        for (String key : params.keySet()) {
-            urlParam.append(key).append("=").append(params.getString(key)).append("&");
-        }
-        String urlP = urlParam.toString().substring(0, urlParam.toString().length() - 1);
-        StringBuilder sb = new StringBuilder();
-        sb.append(url).append("?").append(urlP);
-        return sb.toString();
     }
 }

@@ -40,6 +40,17 @@ public interface IBgSupService extends ISupService {
     }
 
     /**
+     * 高校学历核查实时
+     * @param vo
+     * @param bean
+     * @return
+     */
+    default public SupResult queryEduAssessment(EducationInfoReqVo vo, SuplierQueryBean bean)
+    {
+        return SupResult.err();
+    }
+
+    /**
      * 全国高等学历信息查询
      * @param vo
      * @param bean

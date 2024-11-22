@@ -155,6 +155,11 @@ public class BgServiceImpl implements IBgService {
     }
 
     @Override
+    public Result queryEduAssessment(EducationInfoReqVo params, MerReqLogVo merLog) {
+        return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryEduAssessment(params, supQueryBean));
+    }
+
+    @Override
     public Result queryMaritalStatus(MarriageInfoReqInfo params, MerReqLogVo merLog) {
         return bgCommon(merLog, params,(bgSupService, supQueryBean) ->bgSupService.queryMaritalStatus(params,supQueryBean));
     }
