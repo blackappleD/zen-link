@@ -901,10 +901,10 @@ public class BgController extends BaseController {
 		String merCode = "BhCpTest";
 		String xm = "闵超";
 		String sfzh = "429005198710050913";
-		//本地
-//		String pwd = "e0be01493778d77ecfd2004f54b41a09";
+//		本地
+		String pwd = "e0be01493778d77ecfd2004f54b41a09";
 		//线上
-        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
+//        String pwd = "1503a2208bc4cc8dec63d82948157fa9";
 //        String plaintext = merCode + xm + sfzh;
 		String bankCard = "6214835901683332";
 		String certName = "郑远芳";

@@ -67,6 +67,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			params.put("sign", sign);
 			supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
+			supResult.setRespTime(LocalDateTime.now());
 			log.info(CharSequenceUtil.format("【银行三要素核验返回体】{}", result));
 			supResult.setRespJson(result);
 
