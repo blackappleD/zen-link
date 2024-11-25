@@ -51,8 +51,7 @@ public class SddwBlockChainService {
 				.execute()) {
 			String responseBody = response.body();
 			log.info("【山大地纬_区块链认证信息查询】{}, Body:{}, responseBody:{}", BASE_URI + uri, body, responseBody);
-			Sm4Utils.decryptEcb(sm4SecretKey, responseBody);
-			return responseBody;
+			return Sm4Utils.decryptEcb(sm4SecretKey, responseBody);
 		}
 
 	}
