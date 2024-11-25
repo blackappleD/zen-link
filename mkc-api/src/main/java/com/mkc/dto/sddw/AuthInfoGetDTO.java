@@ -2,8 +2,6 @@ package com.mkc.dto.sddw;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * @author chentong
  * @version 1.0
@@ -11,7 +9,7 @@ import javax.validation.constraints.NotBlank;
  * @date 2024/11/25 15:16
  */
 @Data
-public class AuthInfoReqDTO {
+public class AuthInfoGetDTO {
 
 	// 否	第三方业务流水号，每一笔业务的唯一标识
 	private String flowId;

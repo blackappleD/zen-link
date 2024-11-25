@@ -1,18 +1,16 @@
 package com.mkc.service;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
-import com.mkc.dto.sddw.AuthInfoReqDTO;
+import com.mkc.dto.sddw.AuthInfoGetDTO;
+import com.mkc.dto.sddw.AuthInfoPostDTP;
+import com.mkc.dto.sddw.ProductDataGetDTO;
 import com.mkc.tool.Sm3Utils;
 import com.mkc.tool.Sm4Utils;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CORBA.PRIVATE_MEMBER;
-import org.omg.CORBA.TIMEOUT;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -38,9 +36,11 @@ public class SddwBlockChainService {
 
 
 	/**
+	 * 查询授权信息
+	 *
 	 * @return
 	 */
-	public String queryAuthInfo(AuthInfoReqDTO dto) {
+	public String queryAuthInfo(AuthInfoGetDTO dto) {
 		String timestamp = String.valueOf(System.currentTimeMillis());
 		String uri = "open/v3/api/auth/queryAuthInfo";
 		String sm4SecretKey = Sm4Utils.getSecretKey(APP_SECRET, timestamp);
@@ -49,9 +49,52 @@ public class SddwBlockChainService {
 				.body(body)
 				.headerMap(buildHeaders(MapUtil.newHashMap(), timestamp), true)
 				.execute()) {
-			String responseBody = response.body();
-			log.info("【山大地纬_区块链认证信息查询】{}, Body:{}, responseBody:{}", BASE_URI + uri, body, responseBody);
-			return Sm4Utils.decryptEcb(sm4SecretKey, responseBody);
+			String responseBody = Sm4Utils.decryptEcb(sm4SecretKey, response.body());
+			log.info("【山大地纬_查询授权信息】{}, Body:{}, responseBody:{}", BASE_URI + uri, body, responseBody);
+
+			return responseBody;
+		}
+
+	}
+
+	/**
+	 * 消息授权模式获取授权令牌
+	 *
+	 * @return
+	 */
+	public String insertAuthPerm(AuthInfoPostDTP dto) {
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		String uri = "open/v3/api/auth/getAuthIdBaseonMsg";
+		String sm4SecretKey = Sm4Utils.getSecretKey(APP_SECRET, timestamp);
+		String body = Sm4Utils.encryptEcb(sm4SecretKey, JSONUtil.toJsonStr(dto));
+		try (HttpResponse response = HttpUtil.createPost(BASE_URI + uri)
+				.body(body)
+				.headerMap(buildHeaders(MapUtil.newHashMap(), timestamp), true)
+				.execute()) {
+			String responseBody = Sm4Utils.decryptEcb(sm4SecretKey, response.body());
+			log.info("【山大地纬_消息授权模式获取授权令牌】{}, Body:{}, responseBody:{}", BASE_URI + uri, body, responseBody);
+			return responseBody;
+		}
+
+	}
+
+	/**
+	 * 查询已授权数据
+	 *
+	 * @return
+	 */
+	public String queryData(ProductDataGetDTO dto) {
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		String uri = "open/v3/api/assets/queryAuthDataBasedOnBusiness";
+		String sm4SecretKey = Sm4Utils.getSecretKey(APP_SECRET, timestamp);
+		String body = Sm4Utils.encryptEcb(sm4SecretKey, JSONUtil.toJsonStr(dto));
+		try (HttpResponse response = HttpUtil.createPost(BASE_URI + uri)
+				.body(body)
+				.headerMap(buildHeaders(MapUtil.newHashMap(), timestamp), true)
+				.execute()) {
+			String responseBody = Sm4Utils.decryptEcb(sm4SecretKey, response.body());
+			log.info("【山大地纬_查询已授权数据】{}, Body:{}, responseBody:{}", BASE_URI + uri, body, responseBody);
+			return responseBody;
 		}
 
 	}
