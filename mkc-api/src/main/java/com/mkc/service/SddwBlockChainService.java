@@ -43,12 +43,14 @@ public class SddwBlockChainService {
 	public String queryAuthInfo(AuthInfoReqDTO dto) {
 		String timestamp = String.valueOf(System.currentTimeMillis());
 		String uri = "open/v3/api/auth/queryAuthInfo";
-		log.info("【山大地纬_区块链认证信息查询】{}", BASE_URI + uri);
+		String body = Sm4Utils.encryptEcb(Sm4Utils.getSecretKey(APP_SECRET, timestamp), JSONUtil.toJsonStr(dto));
 		try (HttpResponse response = HttpUtil.createPost(BASE_URI + uri)
-				.body(Sm4Utils.encryptEcb(Sm4Utils.getSecretKey(APP_SECRET, timestamp), JSONUtil.toJsonStr(dto)))
+				.body(body)
 				.headerMap(buildHeaders(MapUtil.newHashMap(), timestamp), true)
 				.execute()) {
-			return response.body();
+			String responseBody = response.body();
+			log.info("【山大地纬_区块链认证信息查询】{}, Body:{}, responseBody:{}", BASE_URI + uri, body, responseBody);
+			return responseBody;
 		}
 
 	}
