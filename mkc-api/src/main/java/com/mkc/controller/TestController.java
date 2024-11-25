@@ -566,10 +566,10 @@ public class TestController {
             for (ExcelTestLog read : readList) {
                 //{"certNo":"Is15DRSGsPb3OYLRGI1F2O9Xch7aa95Zli7EQ82ZRt4=","companyName":"比亚迪股份有限公司","creditCode":"440301501127941","legalPerson":"王传福","merCode":"ZD-BIGDATA","merSeq":"P202410151616150001","paramType":"0","sign":"0bcee3d48fe394e12cda44842d05ccb3"}
 
-                JSONObject jsonObject = JSON.parseObject(read.getQqcs());
-                jsonObject = ProductPrivacyKey.privacyDecryptMer(jsonObject);
-                read.setQqcs(jsonObject.toJSONString());
                 try {
+                    JSONObject jsonObject = JSON.parseObject(read.getQqcs());
+                    jsonObject = ProductPrivacyKey.privacyDecryptMer(jsonObject);
+                    read.setQqcs(jsonObject.toJSONString());
                     read.setXycs(ZipStrUtils.gunzip(read.getXycs()));
                 } catch (Exception e) {
                     read.setXycs(read.getXycs());
@@ -695,8 +695,7 @@ public class TestController {
                             read.setInitialRegistrationDate(null);
                             read.setModelNo(null);
                         }
-                    }
-                    else if (Objects.equals(read.getCode(), "500")) {
+                    } else if (Objects.equals(read.getCode(), "500")) {
                         JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
                         String plaintext = read.getPlateNo();
                         JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/carInfo", jsonObject, plaintext);
