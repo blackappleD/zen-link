@@ -113,14 +113,20 @@ public final class Sm4Utils {
 	 * @throws Exception
 	 * @explain 解密模式：采用ECB
 	 */
-	public static String decryptEcb(String key, String cipherText) throws Exception {
-		// 用于接收解密后的字符串
-		byte[] keyData = key.getBytes(ENCODING);
-		byte[] cipherData = Base64.getDecoder().decode(cipherText);
-		// 解密
-		byte[] srcData = decryptEcbPadding(keyData, cipherData);
-		// byte[]-->String
-		return new String(srcData, ENCODING);
+	public static String decryptEcb(String key, String cipherText) {
+		try {
+
+			// 用于接收解密后的字符串
+			byte[] keyData = key.getBytes(ENCODING);
+			byte[] cipherData = Base64.getDecoder().decode(cipherText);
+			// 解密
+			byte[] srcData = decryptEcbPadding(keyData, cipherData);
+			// byte[]-->String
+			return new String(srcData, ENCODING);
+		} catch (Exception e) {
+			log.error("Sm4Utils解密失败：{}", e.getMessage());
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
