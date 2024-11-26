@@ -112,7 +112,7 @@ public class SddwBlockChainService {
 	private static Map<String, String> buildHeaders(Map<String, String> headers, String timestamp) {
 
 		String nonce = RandomUtil.randomString(32);
-		headers.put("appid", APP_ID);
+		headers.put("appId", APP_ID);
 		headers.put("nonce", nonce);
 		headers.put("timestamp", timestamp);
 		headers.put("signature", Sm3Utils.getSign(APP_ID, APP_SECRET, timestamp, nonce));
