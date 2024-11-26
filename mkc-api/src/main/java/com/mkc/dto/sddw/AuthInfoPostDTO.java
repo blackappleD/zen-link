@@ -11,7 +11,7 @@ import java.util.Map;
  * @date 2024/11/25 17:37
  */
 @Data
-public class AuthInfoPostDTP {
+public class AuthInfoPostDTO {
 
 	// 否	第三方业务流水号，每一笔业务的唯一标识
 	private String flowId;
@@ -24,6 +24,8 @@ public class AuthInfoPostDTP {
 
 	//否	证件号码（使用方）
 	private String useIdNumber;
+
+	private String userName;
 
 	//否	证件类型 (见字典项说明6.1)（资产拥有方）
 	private String idType;
