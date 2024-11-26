@@ -31,7 +31,7 @@ public class AuthInfoPostDTP {
 	//否	证件号码（资产拥有方）
 	private String idNumber;
 
-	private String photo;
+	private String phone;
 
 	private Map<String, String> extraParam;
 

@@ -36,7 +36,8 @@ public class SddwBlockChainService {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(System.currentTimeMillis());
+		System.out.println(Sm4Utils.decryptEcb(Sm4Utils.getSecretKey(APP_SECRET, "1732582942393"), "KlyEcTLRoZi3z2nMQXi/6A=="));
+
 	}
 
 	/**

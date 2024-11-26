@@ -6,6 +6,7 @@ import com.mkc.dto.sddw.ProductDataGetDTO;
 import com.mkc.service.SddwBlockChainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,19 +28,19 @@ public class BlockChainController {
 	private SddwBlockChainService sddwBlockChainService;
 
 	@PostMapping("/query_auth_info")
-	public String queryAuthInfo(@Valid AuthInfoGetDTO dto) {
+	public String queryAuthInfo(@Valid @RequestBody AuthInfoGetDTO dto) {
 
 		return sddwBlockChainService.queryAuthInfo(dto);
 	}
 
 	@PostMapping("/apply_auth_info")
-	public String applyAuthInfo(@Valid AuthInfoPostDTP dto) {
+	public String applyAuthInfo(@Valid @RequestBody AuthInfoPostDTP dto) {
 
 		return sddwBlockChainService.insertAuthPerm(dto);
 	}
 
 	@PostMapping("/query_data")
-	public String test(@Valid ProductDataGetDTO dto) {
+	public String test(@Valid @RequestBody ProductDataGetDTO dto) {
 
 		return sddwBlockChainService.queryData(dto);
 	}
