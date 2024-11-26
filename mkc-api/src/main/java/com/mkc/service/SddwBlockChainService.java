@@ -35,7 +35,7 @@ public class SddwBlockChainService {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(Sm4Utils.decryptEcb(Sm4Utils.getSecretKey(APP_SECRET, "1732589279251"), "0HY4YoilGXHnFWekev4rWHxQb7BzaqJkxXxZt6QaiRLZNV6iyuoWRPGvrptufM2AmIdBAHMVwL/FYHolECLfXsi2irSzhTJv886n9+L80YlYZQZ75iSylMcvbPqAWagQgJZ76FBsjy6I4ul7C4SdWXW3Dhqv7moHDjDGADz0axKk9T09yQEIBsCmx2yZuoWZccv7SV2CNvr9SgLucrr9F/QWOLyPaG74A4EJ/w6VE3BsacONimUTYzREeiufjrotFATQddIIoUfS7gl5gNM3F45gyHgx46/e2+isiGrzbelMiLavTU6j/CDCIa508gc8"));
+		System.out.println(Sm4Utils.decryptEcb(Sm4Utils.getSecretKey(APP_SECRET, "1732589697638"), "G/cWaxuccsMz5fvuNZFi12+QwggcvgHNIz39K3CdyJvbdKyUHe4vDSBtHXrAWi5RuBCQXi+au0Bn3Z8JofRzPAUjLd4Bz9b+myhY19sYFTl8VziaJ4N4TYiuzBBO7FXNdfYEvrSvxlUe6NOJ11yODtKbRy7j1/8ru4ARYxI7uRabu3G8AqFrH6gAZOYI8xE3OICWJo4N9Ub5BUvp0it7HyXo1NWpJdPFxvl3m1kwxT8MHohSzp/L53tFnxRJwxi30r8lA7VgzQFsEIdm9t+cKJlPpCOTSv1ott4k70H3B9Wdb//s1ck1FFfuQDltmGjT30xkCkQWjc/U2xheRHKFUAcxYcP0QgHNjJCLRPZWJqM="));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class SddwBlockChainService {
 	private static Map<String, String> buildHeaders(Map<String, String> headers, String timestamp) {
 
 		String nonce = RandomUtil.randomString(32);
-		headers.put("appId", APP_ID);
+		headers.put("appid", APP_ID);
 		headers.put("nonce", nonce);
 		headers.put("timestamp", timestamp);
 		headers.put("signature", Sm3Utils.getSign(APP_ID, APP_SECRET, timestamp, nonce));
