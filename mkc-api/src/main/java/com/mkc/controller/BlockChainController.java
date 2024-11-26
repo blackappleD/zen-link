@@ -1,7 +1,7 @@
 package com.mkc.controller;
 
 import com.mkc.dto.sddw.AuthInfoGetDTO;
-import com.mkc.dto.sddw.AuthInfoPostDTP;
+import com.mkc.dto.sddw.AuthInfoPostDTO;
 import com.mkc.dto.sddw.ProductDataGetDTO;
 import com.mkc.service.SddwBlockChainService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +34,9 @@ public class BlockChainController {
 	}
 
 	@PostMapping("/apply_auth_info")
-	public String applyAuthInfo(@Valid @RequestBody AuthInfoPostDTP dto) {
+	public String applyAuthInfo(@Valid @RequestBody AuthInfoPostDTO dto) {
 
-		return sddwBlockChainService.insertAuthPerm(dto);
+		return sddwBlockChainService.applyAuthPerm(dto);
 	}
 
 	@PostMapping("/query_data")
