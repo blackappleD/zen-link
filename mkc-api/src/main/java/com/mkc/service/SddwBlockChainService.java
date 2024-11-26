@@ -50,6 +50,7 @@ public class SddwBlockChainService {
 		String body = Sm4Utils.encryptEcb(sm4SecretKey, JSONUtil.toJsonStr(dto));
 		try (HttpResponse response = HttpUtil.createPost(BASE_URI + uri)
 				.body(body)
+				.contentType("application/json")
 				.headerMap(buildHeaders(MapUtil.newHashMap(), timestamp), true)
 				.execute()) {
 			String responseBody = Sm4Utils.decryptEcb(sm4SecretKey, response.body());
