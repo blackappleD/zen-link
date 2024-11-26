@@ -4,7 +4,10 @@ import com.mkc.common.utils.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
+import org.springframework.util.DigestUtils;
+import sun.misc.BASE64Encoder;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.UUID;
@@ -25,6 +28,7 @@ public class Sm3Utils {
 		String nonce = UUID.randomUUID().toString().replaceAll("-", "");//第三方生成的随机数，32位字符串。字符串数字，字母均可
 		String timestamp = String.valueOf(Instant.now().toEpochMilli());
 		System.out.println(getSign(appId, appSecret, timestamp, nonce));
+		System.out.println(getSign2(appId, appSecret, timestamp, nonce));
 	}
 
 
@@ -68,6 +72,19 @@ public class Sm3Utils {
 			log.error("SmUtils: 生成签名失败, {}", e.getMessage());
 			throw new RuntimeException();
 		}
+	}
+
+	private static String getSign2(String appId, String appSecret, String timestamp, String nonce) {
+		// 此处生成签名  
+		String stringToSign = appId + timestamp + nonce + appSecret;
+		String md5f = DigestUtils.md5DigestAsHex(stringToSign.getBytes());
+		String s = md5f.substring(2, 8);
+		md5f = s + md5f;
+		String md5s = DigestUtils.md5DigestAsHex(md5f.getBytes());
+
+		//进行BASE64编码
+		BASE64Encoder base64Encoder = new BASE64Encoder();
+		return base64Encoder.encode(md5s.getBytes(StandardCharsets.UTF_8));
 	}
 
 }

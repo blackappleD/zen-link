@@ -13,6 +13,7 @@ import com.mkc.tool.Sm4Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Map;
 
 /**
@@ -34,6 +35,9 @@ public class SddwBlockChainService {
 
 	}
 
+	public static void main(String[] args) {
+		System.out.println(System.currentTimeMillis());
+	}
 
 	/**
 	 * 查询授权信息
@@ -64,6 +68,7 @@ public class SddwBlockChainService {
 	 */
 	public String insertAuthPerm(AuthInfoPostDTP dto) {
 		String timestamp = String.valueOf(System.currentTimeMillis());
+		log.info("【山大地纬_消息授权模式获取授权令牌】timestamp:{}", timestamp);
 		String uri = "open/v3/api/auth/getAuthIdBaseonMsg";
 		String sm4SecretKey = Sm4Utils.getSecretKey(APP_SECRET, timestamp);
 		String body = Sm4Utils.encryptEcb(sm4SecretKey, JSONUtil.toJsonStr(dto));
