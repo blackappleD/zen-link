@@ -50,7 +50,6 @@ public class SddwBlockChainService {
 		String body = Sm4Utils.encryptEcb(sm4SecretKey, JSONUtil.toJsonStr(dto));
 		try (HttpResponse response = HttpUtil.createPost(BASE_URI + uri)
 				.body(body)
-				.contentType("application/json")
 				.headerMap(buildHeaders(MapUtil.newHashMap(), timestamp), true)
 				.execute()) {
 			String responseBody = Sm4Utils.decryptEcb(sm4SecretKey, response.body());
@@ -77,7 +76,7 @@ public class SddwBlockChainService {
 				.body(body)
 				.headerMap(buildHeaders(MapUtil.newHashMap(), timestamp), true)
 				.execute()) {
-		String responseBody = Sm4Utils.decryptEcb(sm4SecretKey, response.body());
+			String responseBody = Sm4Utils.decryptEcb(sm4SecretKey, response.body());
 			log.info("【消息授权模式获取授权令牌】{}, Body:{}, responseBody:{}", BASE_URI + uri, body, responseBody);
 			return responseBody;
 		}
@@ -118,6 +117,7 @@ public class SddwBlockChainService {
 		headers.put("timestamp", timestamp);
 		headers.put("signature", Sm3Utils.getSign(APP_ID, APP_SECRET, timestamp, nonce));
 		headers.put("secret-method", "dsm-1");
+		headers.put("Content-Type", "application/json");
 
 		return headers;
 	}
