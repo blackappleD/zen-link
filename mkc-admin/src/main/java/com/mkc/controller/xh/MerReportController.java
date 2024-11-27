@@ -137,48 +137,42 @@ public class MerReportController extends BaseController {
 		return getDataTable(list);
 	}
 
-	/**
-	 * 查询商户日志统计列表
-	 */
-	@RequiresPermissions("xh:merReport:list")
-	@Log(title = "商户调用日志", businessType = BusinessType.EXPORT)
-	@ResponseBody
-	@PostMapping("/fxHouseReportV1")
-	public AjaxResult fxHouseReportV1(MerReport merReport, HttpServletResponse response) {
-//		ExcelUtil<FxReqRecord> util = new ExcelUtil<FxReqRecord>(FxReqRecord.class);
-		List<FxReqRecord> fxReqRecords = merReportService.listFxHouseReport(merReport);
-		List<MerReportExcel> merReports = merReportService.listReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
-		List<MerReportExcel> merDateReports = merReportService.listDateReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
-		HashMap<String, Object> map = new HashMap<>();
-		map.put("不动产总账", merReports);
-		map.put("不动产对账单", merDateReports);
-		map.put("不动产详情", fxReqRecords);
-//		return util.exportExcel(fxReqRecords, "", merReports, "", "");
-		return ExcelMultipleSheetsUtil.excelMultipleSheets(map, "不动产账单" + DateUtil.format(new Date(), "yyyyMMddHHmmss"));
-//		util.exportExcel(response,fxReqRecords, "法信不动产");
-//		return util.exportExcel(fxReqRecords, "法信不动产");
-	}
+    /**
+     * 导出FX不动产对账单V1
+     */
+    @RequiresPermissions("xh:merReport:list")
+    @Log(title = "商户调用日志", businessType = BusinessType.EXPORT)
+    @ResponseBody
+    @PostMapping("/fxHouseReportV1")
+    public AjaxResult fxHouseReportV1(MerReport merReport) {
+    	List<FxReqRecord> fxReqRecords = merReportService.listFxHouseReport(merReport);
+        List<MerReportExcel> merReports = merReportService.listReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
+        List<MerReportExcel> merDateReports = merReportService.listDateReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("不动产总账", merReports);
+        map.put("不动产对账单", merDateReports);
+        map.put("不动产详情", fxReqRecords);
+        return ExcelMultipleSheetsUtil.excelMultipleSheets(map, "不动产账单" + DateUtil.format(new Date(), "yyyyMMddHHmmss"));
+    }
 
-	/**
-	 * 查询商户日志统计列表
-	 */
-	@RequiresPermissions("xh:merReport:list")
-	@Log(title = "商户调用日志", businessType = BusinessType.EXPORT)
-	@ResponseBody
-	@PostMapping("/fxHouseReportV2")
-	public AjaxResult fxHouseReportV2(MerReport merReport) {
-		merReport.setProductCode(ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode());
-		List<FxReqRecordExcel> fxReqRecords = merReportService.listFxHouseReportV2(merReport);
-		merReport.setStatClm("reqDate");
-		List<MerReport> merDateReports = queryAll(merReport);
-		merReport.setStatClm("merName");
-		List<MerReport> merReports = queryAll(merReport);
-		HashMap<String, Object> map = new HashMap<>();
-		map.put("不动产对账单", merReports);
-		map.put("不动产明细", merDateReports);
-		map.put("不动产详情", fxReqRecords);
-		return ExcelMultipleSheetsUtil.excelMultipleSheets(map, "不动产账单" + DateUtil.format(new Date(), "yyyyMMddHHmmss"));
-	}
+    /**
+     * 导出FX不动产对账单V2
+     */
+    @RequiresPermissions("xh:merReport:list")
+    @Log(title = "商户调用日志", businessType = BusinessType.EXPORT)
+    @ResponseBody
+    @PostMapping("/fxHouseReportV2")
+    public AjaxResult fxHouseReportV2(MerReport merReport) {
+        merReport.setProductCode(ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode());
+        List<FxReqRecord> fxReqRecords = merReportService.listFxHouseReportV2(merReport);
+        List<MerReportExcel> merReports = merReportService.listReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
+        List<MerReportExcel> merDateReports = merReportService.listDateReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("不动产对账单", merReports);
+        map.put("不动产明细", merDateReports);
+        map.put("不动产详情", fxReqRecords);
+        return ExcelMultipleSheetsUtil.excelMultipleSheets(map, "不动产账单" + DateUtil.format(new Date(), "yyyyMMddHHmmss"));
+    }
 
 	/**
 	 * 查询商户日志统计列表

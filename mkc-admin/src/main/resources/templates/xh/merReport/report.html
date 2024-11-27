@@ -83,13 +83,13 @@
                     <i class="fa fa-download"></i> 导出
                 </a>
                 <a class="btn btn-primary" onclick="$.table.fxHouseReportV1()" shiro:hasPermission="xh:merReport:export">
-                    <i class="fa fa-download"></i> 导出FX不动产账单(旧)
+                    <i class="fa fa-download"></i> 导出FX不动产账单
                 </a>
-                <a class="btn btn-primary" onclick="$.table.fxHouseReportV2()" shiro:hasPermission="xh:merReport:export">
-                    <i class="fa fa-download"></i> 导出FX不动产账单(新)
-                </a>
+<!--                <a class="btn btn-primary" onclick="$.table.fxHouseReportV2()" shiro:hasPermission="xh:merReport:export">-->
+<!--                    <i class="fa fa-download"></i> 导出FX不动产账单(新)-->
+<!--                </a>-->
                 <a class="btn btn-primary" onclick="$.table.fxEduReport()" shiro:hasPermission="xh:merReport:export">
-                    <i class="fa fa-download"></i> 导出FX学历账单(旧)
+                    <i class="fa fa-download"></i> 导出FX学历账单
                 </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
@@ -297,15 +297,15 @@
                 },
                 {
                     field: 'level1',
-                    title: '档次1'
+                    title: '一类'
                 },
                 {
                     field: 'level2',
-                    title: '档次2'
+                    title: '二类'
                 },
                 {
                     field: 'level3',
-                    title: '档次3'
+                    title: '三类'
                 }]
             };
             $.table.init(options);

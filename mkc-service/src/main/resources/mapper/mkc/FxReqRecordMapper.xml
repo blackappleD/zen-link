@@ -114,12 +114,6 @@
         t_fx_req_record.remark, t_mer_info.mer_name
         from t_fx_req_record
             LEFT JOIN t_mer_info ON t_fx_req_record.mer_code = t_mer_info.mer_code
-<!--        <where>-->
-<!--            (t_fx_req_record.create_time::timestamptz AT TIME ZONE 'UTC' >= '2024-10-01 00:00:00'::timestamptz-->
-<!--            and t_fx_req_record.create_time::timestamptz AT TIME ZONE 'UTC' <![CDATA[ <= ]]> '2024-10-31 23:59:59'::timestamptz) or-->
-<!--            (t_fx_req_record.update_time::timestamptz AT TIME ZONE 'UTC' >= '2024-10-01 00:00:00'::timestamptz-->
-<!--            and t_fx_req_record.update_time::timestamptz AT TIME ZONE 'UTC' <![CDATA[ <= ]]> '2024-10-31 23:59:59'::timestamptz)-->
-<!--        </where>-->
         <where>
             <if test="merCode != null  and merCode != ''">and t_fx_req_record.mer_code = #{merCode}</if>
             <if test="startTime != null ">and t_fx_req_record.create_time >= #{startTime}</if>

@@ -10,6 +10,7 @@ import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.vo.bg.*;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.HouseLevelEnum;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.DateUtils;
 import com.mkc.domain.FxReqRecord;
@@ -142,7 +143,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                                         }
                                         for (int j = 0; j < resultList.size(); j++) {
                                             JSONObject perResult = resultList.getJSONObject(j);
-                                            maxLevel = Math.min(getAreaLevelPrice(perResult.getString("certNo")), maxLevel);
+                                            maxLevel = Math.min(HouseLevelEnum.getAreaLevel(perResult.getString("certNo")).getlevel(), maxLevel);
                                         }
                                     }
                                 } else {
@@ -158,7 +159,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                                 }
                             }
                             supResult.setBilledTimes(count);
-                            fxReqRecord.setFeeCount(count);
+                            fxReqRecord.setFeeCount(fxReqRecord.getFeeCount() + count);
                             supResult.setLevel(String.valueOf(level));
                             fxReqRecord.setLevel(String.valueOf(level));
                             fxReqRecord.setUserFlag(resultUserFlag);
@@ -747,23 +748,6 @@ public class FXGZYBgSupImpl implements IBgSupService {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         byte[] encodedKey = Base64.decodeBase64(encodedKeyStr);
         return keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
-    }
-
-
-    private static final List<String> FIRST_CLASS_AREAS = Arrays.asList("京", "沪", "申", "广", "粤");
-    private static final List<String> THIRD_CLASS_AREAS = Arrays.asList("陕", "秦", "甘", "陇", "蒙", "琼", "宁", "新", "川", "蜀", "吉", "贵", "黔", "赣");
-
-    private static int getAreaLevelPrice(String realEstateCertNo) {
-        if (StringUtils.isBlank(realEstateCertNo)) {
-            return 2;
-        }
-        if (FIRST_CLASS_AREAS.stream().anyMatch(realEstateCertNo::contains)) {
-            return 1;
-        } else if (THIRD_CLASS_AREAS.stream().anyMatch(realEstateCertNo::contains)) {
-            return 3;
-        } else {
-            return 2;
-        }
     }
 
 

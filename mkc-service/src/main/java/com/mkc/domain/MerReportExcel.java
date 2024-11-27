@@ -25,21 +25,33 @@ public class MerReportExcel {
 	@Excel(name = "产品名称")
 	private String productName;
 
-	/** 总成本价 */
-	@Excel(name = "总成本价")
-	private BigDecimal inPrice = BigDecimal.valueOf(0);
+//	/** 总成本价 */
+//	@Excel(name = "总成本价")
+//	private BigDecimal inPrice = BigDecimal.valueOf(0);
 
-	/** 单价 */
-	@Excel(name = "单价")
-	private BigDecimal sellPrice;
+//	/** 单价 */
+//	@Excel(name = "单价")
+//	private BigDecimal sellPrice;
 
 	/** 收费次数 */
-	@Excel(name = "收费次数")
+	@Excel(name = "计费次数")
 	private Integer feeTimes;
 
-	/** 总价 */
-	@Excel(name = "总价")
-	private BigDecimal totalPrice;
+	/** 收费次数 */
+	@Excel(name = "一类")
+	private Integer level1;
+
+	/** 收费次数 */
+	@Excel(name = "二类")
+	private Integer level2;
+
+	/** 收费次数 */
+	@Excel(name = "三类")
+	private Integer level3;
+
+//	/** 总价 */
+//	@Excel(name = "总价")
+//	private BigDecimal totalPrice;
 
 	/** 调用日期 */
 	@Excel(name = "调用日期", width = 30)

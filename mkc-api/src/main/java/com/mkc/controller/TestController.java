@@ -68,12 +68,12 @@ public class TestController {
      * 车五项
      */
     @PostMapping("/testCar")
-    public void testCar(MultipartFile excel, int sheetNum, HttpServletResponse response) {
+    public void testCar(MultipartFile excel, int sheetNo, HttpServletResponse response) {
         try {
             List<ExcelTestCar> readList = EasyExcel.read(excel.getInputStream())
                     .headRowNumber(1)
                     .head(ExcelTestCar.class)
-                    .sheet(sheetNum - 1)
+                    .sheet(sheetNo - 1)
                     .doReadSync();
 
             for (ExcelTestCar read : readList) {
@@ -101,7 +101,7 @@ public class TestController {
             EasyExcel.write(response.getOutputStream())
                     .head(ExcelTestCar.class)
                     .excelType(ExcelTypeEnum.XLSX)
-                    .sheet("车五项测试结果" + sheetNum)
+                    .sheet("车五项测试结果" + sheetNo)
                     .doWrite(readList);
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,12 +113,12 @@ public class TestController {
      * 高等学历-法信
      */
     @PostMapping("/testHouse")
-    public void testHouse(@RequestBody MultipartFile excel, HttpServletResponse response) {
+    public void testHouse(@RequestBody MultipartFile excel, Integer sheetNo, HttpServletResponse response) {
         try {
             List<ExcelTestHouse> readList = EasyExcel.read(excel.getInputStream())
                     .headRowNumber(1)
                     .head(ExcelTestHouse.class)
-                    .sheet(0)
+                    .sheet(sheetNo - 1)
                     .doReadSync();
             ArrayList<ExcelTestHouse> writeList = new ArrayList<>();
             for (ExcelTestHouse read : readList) {
@@ -193,12 +193,12 @@ public class TestController {
      * 社保经济能力评级V3
      */
     @PostMapping("/testV3")
-    public void testEconomicRate(MultipartFile excel, int sheetNum, HttpServletResponse response) {
+    public void testEconomicRate(MultipartFile excel, int sheetNo, HttpServletResponse response) {
         try {
             List<ExcelTestV> readList = EasyExcel.read(excel.getInputStream())
                     .headRowNumber(1)
                     .head(ExcelTestV.class)
-                    .sheet(sheetNum - 1)
+                    .sheet(sheetNo - 1)
                     .doReadSync();
 
             for (ExcelTestV read : readList) {
@@ -221,7 +221,7 @@ public class TestController {
             EasyExcel.write(response.getOutputStream())
                     .head(ExcelTestV.class)
                     .excelType(ExcelTypeEnum.XLSX)
-                    .sheet("经济能力评级V3测试结果" + sheetNum)
+                    .sheet("经济能力评级V3测试结果" + sheetNo)
                     .doWrite(readList);
         } catch (IOException e) {
             e.printStackTrace();
@@ -233,12 +233,12 @@ public class TestController {
      * 社保经济能力评级V7
      */
     @PostMapping("/testV7")
-    public void testV7(MultipartFile excel, int sheetNum, HttpServletResponse response) {
+    public void testV7(MultipartFile excel, int sheetNo, HttpServletResponse response) {
         try {
             List<ExcelTestV> readList = EasyExcel.read(excel.getInputStream())
                     .headRowNumber(1)
                     .head(ExcelTestV.class)
-                    .sheet(sheetNum - 1)
+                    .sheet(sheetNo - 1)
                     .doReadSync();
 
             for (ExcelTestV read : readList) {
@@ -261,7 +261,7 @@ public class TestController {
             EasyExcel.write(response.getOutputStream())
                     .head(ExcelTestV.class)
                     .excelType(ExcelTypeEnum.XLSX)
-                    .sheet("经济能力评级V7测试结果" + sheetNum)
+                    .sheet("经济能力评级V7测试结果" + sheetNo)
                     .doWrite(readList);
         } catch (IOException e) {
             e.printStackTrace();
@@ -732,7 +732,7 @@ public class TestController {
 
 
     @PostMapping("/testParse")
-    public void testParse(MultipartFile excel, int sheetNum, HttpServletResponse response) {
+    public void testParse(MultipartFile excel, int sheetNo, HttpServletResponse response) {
         try (OutputStream out = response.getOutputStream()) {
             // 设置Excel响应属性并写出处理后的结果到Excel
             setExcelRespProp(response, DateUtils.dateTimeNow() + "1120车五项待测试");
@@ -740,7 +740,7 @@ public class TestController {
             List<ExcelTestCar> readList = EasyExcel.read(excel.getInputStream())
                     .headRowNumber(1)
                     .head(ExcelTestCar.class)
-                    .sheet(sheetNum - 1)
+                    .sheet(sheetNo - 1)
                     .doReadSync();
             // 按照每2000条数据划分任务
             int totalSize = readList.size();
@@ -760,13 +760,13 @@ public class TestController {
     }
 
     @PostMapping("/testCarMany")
-    public void testCarMany(MultipartFile excel, int sheetNum, HttpServletResponse response) {
+    public void testCarMany(MultipartFile excel, int sheetNo, HttpServletResponse response) {
         try {
             // 读取Excel数据
             List<ExcelTestCar> readList = EasyExcel.read(excel.getInputStream())
                     .headRowNumber(1)
                     .head(ExcelTestCar.class)
-                    .sheet(sheetNum - 1)
+                    .sheet(sheetNo - 1)
                     .doReadSync();
 
             // 创建线程池，根据实际情况可调整线程数量
@@ -805,7 +805,7 @@ public class TestController {
             EasyExcel.write(response.getOutputStream())
                     .head(ExcelTestCar.class)
                     .excelType(ExcelTypeEnum.XLSX)
-                    .sheet("车五项测试结果" + sheetNum)
+                    .sheet("车五项测试结果" + sheetNo)
                     .doWrite(processedList);
         } catch (IOException e) {
             e.printStackTrace();

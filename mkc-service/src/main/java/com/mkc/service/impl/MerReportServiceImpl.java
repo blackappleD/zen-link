@@ -1,12 +1,10 @@
 package com.mkc.service.impl;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -17,10 +15,9 @@ import java.util.stream.Collectors;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.utils.ApiUtils;
 import com.mkc.bean.MerReqLogBean;
-import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.HouseLevelEnum;
 import com.mkc.common.utils.DateUtils;
 import com.mkc.common.utils.ZipStrUtils;
 import com.mkc.domain.*;
@@ -28,7 +25,6 @@ import com.mkc.mapper.FxReqRecordMapper;
 import com.mkc.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,68 +115,6 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         return merReportMapper.selectMerReport(merReport);
     }
 
-
-    @Override
-    public List<FxReqRecord> listFxReport(MerReport merReport) {
-        List<FxReqRecord> fxReqRecords = fxReqRecordMapper.listByRangeTime(merReport);
-        for (FxReqRecord record : fxReqRecords) {
-            record.setCreateTimeStr(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, record.getCreateTime()));
-            record.setUpdateTimeStr(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, record.getUpdateTime()));
-            String merResultData = record.getMerResultData();
-            if (StringUtils.isNotBlank(merResultData)) {
-                JSONObject jsonObject = JSON.parseObject(merResultData);
-                if (!checkHouseSuccess(jsonObject, record, merReport)) {
-                    //没核查成功的，且超过10天，去查结果
-                    if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
-//                        JSONObject request = new JSONObject();
-//                        request.put("reqOrderNo", record.getReqOrderNo());
-//                        request.put("personCardNumList", JSON.parseArray(record.getMerRequestData()));
-//                        String plainText = record.getReqOrderNo();
-//                        try {
-//                            JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
-//                            JSONObject data = post.getJSONObject("data");
-//                            record.setUnknownInfo(data.toJSONString());
-//                            checkHouseSuccess(data, record, merReport);
-//                        } catch (Exception e) {
-//                            log.info(request.toJSONString() + "【{}】", e.getMessage());
-//                        }
-                        record.setRemark("超过10天，查询结果");
-                    } else {
-                        record.setRemark("未超过10天");
-                    }
-                }
-            }
-            //未查询结果，去查结果
-            else {
-                if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
-//                    JSONObject request = new JSONObject();
-//                    request.put("reqOrderNo", record.getReqOrderNo());
-//                    JSONArray jsonArray = JSON.parseArray(record.getPersons());
-//                    ArrayList<String> strings = new ArrayList<>();
-//                    for (int i = 0; i < jsonArray.size(); i++) {
-//                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                        strings.add(jsonObject.getString("cardNum"));
-//                    }
-//                    request.put("personCardNumList", strings);
-//                    System.err.println(request);
-//                    String plainText = record.getReqOrderNo();
-//                    try {
-//                        JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", request, plainText);
-//                        JSONObject data = post.getJSONObject("data");
-//                        record.setUnknownInfo(data.toJSONString());
-//                        checkHouseSuccess(data, record, merReport);
-//                    } catch (Exception e) {
-//                        log.info(request.toJSONString() + "【{}】", e.getMessage());
-//                    }
-                    record.setRemark("超过10天，查询结果");
-                } else {
-                    record.setRemark("未超过10天");
-                }
-            }
-        }
-        return fxReqRecords;
-    }
-
     @Override
     public List<FxReqRecord> listFxHouseReport(MerReport merReport) {
         MerReqLogBean merReqLogBean = new MerReqLogBean();
@@ -236,13 +170,12 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
 //                }
             }
         }
-
+        fxReqRecords.sort(Comparator.comparing(FxReqRecord::getCreateTime));
         return fxReqRecords;
     }
 
     @Override
-    public List<FxReqRecordExcel> listFxHouseReportV2(MerReport merReport) {
-        ArrayList<FxReqRecordExcel> fxReqRecordExcels = new ArrayList<>();
+    public List<FxReqRecord> listFxHouseReportV2(MerReport merReport) {
         List<FxReqRecord> fxReqRecords = fxReqRecordMapper.listByRangeTime(merReport);
         for (FxReqRecord record : fxReqRecords) {
             //未核查成功,去查询结果
@@ -266,11 +199,8 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                 }
                 record.setRemark("查询结果");
             }
-            FxReqRecordExcel fxReqRecordExcel = new FxReqRecordExcel();
-            BeanUtils.copyProperties(record, fxReqRecordExcel);
-            fxReqRecordExcels.add(fxReqRecordExcel);
         }
-        return fxReqRecordExcels;
+        return fxReqRecords;
     }
 
     private JSONArray getCardsFromRecord(FxReqRecord record) {
@@ -284,17 +214,20 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
     }
 
     public void checkHouseData(JSONObject returnData, FxReqRecord fxReqRecord) {
-        String originalUserFlag = fxReqRecord.getUserFlag();
         if (returnData != null && "APPROVED".equals(returnData.getString("approvalStatus"))) {
             JSONArray authResults = returnData.getJSONArray("authResults");
             if (Objects.nonNull(authResults) && authResults.size() > 0) {
+                //初始化是否查得最终结果
+                String resultUserFlag = "1";
+                //初始化计费次数
                 int count = 0;
+                //初始化档次
                 StringBuilder level = new StringBuilder(StringUtils.EMPTY);
+
                 for (int i = 0; i < authResults.size(); i++) {
                     int maxLevel = 4;
                     JSONObject jsonObject = authResults.getJSONObject(i);
                     if (Objects.equals(jsonObject.getString("authStateDesc"), "核查成功")) {
-                        fxReqRecord.setUserFlag("1");
                         JSONArray resultList = jsonObject.getJSONArray("resultList");
                         if (!CollectionUtils.isEmpty(resultList)) {
                             //15天后计费每次
@@ -302,17 +235,17 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                                 count++;
                             }
                             //15天内计费仅计费本月发起申请的首次查询结果
-                            else if (Objects.equals(originalUserFlag, "0")
+                            else if (Objects.equals(fxReqRecord.getUserFlag(), "0")
                                     && Objects.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM, fxReqRecord.getCreateTime()), DateUtils.getDateMonth())) {
                                 count++;
                             }
                             for (int j = 0; j < resultList.size(); j++) {
                                 JSONObject perResult = resultList.getJSONObject(j);
-                                maxLevel = Math.min(getAreaLevelPrice(perResult.getString("certNo")), maxLevel);
+                                maxLevel = Math.min(HouseLevelEnum.getAreaLevel(perResult.getString("certNo")).getlevel(), maxLevel);
                             }
                         }
                     } else {
-                        fxReqRecord.setUserFlag("0");
+                        resultUserFlag = "0";
                     }
                     if (StringUtils.isNotBlank(level)) {
                         level.append(",");
@@ -323,21 +256,23 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                         level.append(maxLevel);
                     }
                 }
-                fxReqRecord.setFeeCount(count);
+                fxReqRecord.setFeeCount(fxReqRecord.getFeeCount() + count);
                 fxReqRecord.setLevel(String.valueOf(level));
+                fxReqRecord.setUserFlag(resultUserFlag);
             }
         }
-
     }
 
     @Override
     public List<FxReqRecord> listFxEduReport(MerReport merReport) {
+        //查询商户调用日志
         MerReqLogBean merReqLogBean = new MerReqLogBean();
         merReqLogBean.setStartTime(merReport.getStartTime());
         merReqLogBean.setEndTime(merReport.getEndTime().atTime(23, 59, 59));
         merReqLogBean.setProductCode("BG_HIGH_SCHOOL_EDUCATION_001");
         merReqLogBean.setMerCode(merReport.getMerCode());
         List<MerReqLog> merReqLogs = merReqLogMapper.selectListOrderByReqTime(merReqLogBean);
+        //将商户调用日志记录转化为不动产订单列表
         ArrayList<FxReqRecord> fxReqRecords = getFxReqRecords(merReqLogs);
         for (FxReqRecord record : fxReqRecords) {
             String merResultData = record.getMerResultData();
@@ -364,12 +299,11 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                     }
                 }
             }
-            //未查询结果，去查结果
+            //未有查询结果，去查结果
             else {
                 if (DateUtils.getNowDate().getTime() - record.getCreateTime().getTime() >= 864000000) {
                     JSONObject request = new JSONObject();
                     request.put("reqOrderNo", record.getReqOrderNo());
-                    System.err.println(request);
                     String plainText = record.getReqOrderNo();
                     try {
                         JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/highSchoolEduResultInfo", request, plainText);
@@ -389,6 +323,13 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         return fxReqRecords;
     }
 
+    /**
+     * 总账
+     *
+     * @param fxReqRecords
+     * @param productName
+     * @return
+     */
     @Override
     public List<MerReportExcel> listReport(List<FxReqRecord> fxReqRecords, String productName) {
         List<MerReportExcel> merReports = new ArrayList<>();
@@ -399,15 +340,23 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
             merReport.setMerCode(collect.getKey());
             merReport.setMerName(value.get(0).getMerName());
             merReport.setProductName(productName);
-            merReport.setInPrice(BigDecimal.valueOf(value.stream().mapToDouble(FxReqRecord::getInPrice).sum()));
-            merReport.setSellPrice(productSellService.selectProductSellByMer(merReport.getMerCode(), ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode()).getSellPrice());
+//            merReport.setInPrice(BigDecimal.valueOf(value.stream().mapToDouble(FxReqRecord::getInPrice).sum()));
+//            merReport.setSellPrice(productSellService.selectProductSellByMer(merReport.getMerCode(), ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode()).getSellPrice());
             merReport.setFeeTimes(value.stream().mapToInt(FxReqRecord::getFeeCount).sum());
-            merReport.setTotalPrice(merReport.getSellPrice().multiply(new BigDecimal(merReport.getFeeTimes().toString())));
+//            merReport.setTotalPrice(merReport.getSellPrice().multiply(new BigDecimal(merReport.getFeeTimes().toString())));
+            setLevel(value, merReport);
             merReports.add(merReport);
         }
         return merReports;
     }
 
+    /**
+     * 明细，根据调用日期分类
+     *
+     * @param fxReqRecords
+     * @param productName
+     * @return
+     */
     @Override
     public List<MerReportExcel> listDateReport(List<FxReqRecord> fxReqRecords, String productName) {
         List<MerReportExcel> merReports = new ArrayList<>();
@@ -421,8 +370,9 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                 merReport.setMerName(dateValue.getValue().get(0).getMerName());
                 merReport.setProductName(productName);
                 merReport.setReqDate(dateValue.getKey());
-                merReport.setInPrice(BigDecimal.valueOf(dateValue.getValue().stream().mapToDouble(FxReqRecord::getInPrice).sum()));
+//                merReport.setInPrice(BigDecimal.valueOf(dateValue.getValue().stream().mapToDouble(FxReqRecord::getInPrice).sum()));
                 merReport.setFeeTimes(dateValue.getValue().stream().mapToInt(FxReqRecord::getFeeCount).sum());
+                setLevel(dateValue.getValue(), merReport);
                 merReports.add(merReport);
             }
         }
@@ -430,6 +380,42 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         return merReports;
     }
 
+    /**
+     * 计算分类不动产档次
+     *
+     * @param value
+     * @param merReport
+     */
+    private void setLevel(List<FxReqRecord> value, MerReportExcel merReport) {
+        int level1 = 0;
+        int level2 = 0;
+        int level3 = 0;
+        for (FxReqRecord record : value) {
+            if (StringUtils.isNotBlank(record.getLevel())) {
+                String[] levels = record.getLevel().split(",");
+                for (String level : levels) {
+                    if (Objects.equals(level, HouseLevelEnum.A.getlevel().toString())) {
+                        level1++;
+                    } else if (Objects.equals(level, HouseLevelEnum.B.getlevel().toString())) {
+                        level2++;
+                    } else if (Objects.equals(level, HouseLevelEnum.C.getlevel().toString())) {
+                        level3++;
+                    }
+                }
+            }
+        }
+
+        merReport.setLevel1(level1);
+        merReport.setLevel2(level2);
+        merReport.setLevel3(level3);
+    }
+
+    /**
+     * 将商户调用日志转化为不动产订单列表
+     *
+     * @param merReqLogs
+     * @return
+     */
     private ArrayList<FxReqRecord> getFxReqRecords(List<MerReqLog> merReqLogs) {
         ArrayList<FxReqRecord> fxReqRecords = new ArrayList<>();
         for (MerReqLog merReqLog : merReqLogs) {
@@ -455,6 +441,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                             recordTmp.setUpdateTimeStr(dateStr);
                             recordTmp.setMerCode(merReqLog.getMerCode());
                             recordTmp.setPersons(merReqLog.getReqJson());
+                            recordTmp.setMerName(merReqLog.getMerName());
 //                        JSONObject reqJson = JSON.parseObject(merReqLog.getReqJson());
 //                        JSONArray persons = reqJson.getJSONArray("persons");
                             recordTmp.setUserFlag("0");
@@ -491,6 +478,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                             recordTmp.setMerRequestData(merReqLog.getReqJson());
                             recordTmp.setMerResultData(ZipStrUtils.gunzip(merReqLog.getRespJson()));
                             recordTmp.setUserFlag("1");
+                            recordTmp.setMerName(merReqLog.getMerName());
                             fxReqRecords.add(recordTmp);
                         }
                     }
@@ -502,6 +490,14 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         return fxReqRecords;
     }
 
+    /**
+     * 分析该条学历订单
+     *
+     * @param data
+     * @param record
+     * @param merReport
+     * @return
+     */
     private boolean checkEduSuccess(JSONObject data, FxReqRecord record, MerReport merReport) {
         String status = data.getString("status");
         int billedTimes = 0;
@@ -557,9 +553,17 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         return isAllSuccess;
     }
 
-
+    /**
+     * 分析该条不动产订单
+     *
+     * @param data
+     * @param record
+     * @param merReport
+     * @return
+     */
     private boolean checkHouseSuccess(JSONObject data, FxReqRecord record, MerReport merReport) {
         JSONArray authResults = data.getJSONArray("authResults");
+        StringBuilder level = new StringBuilder(StringUtils.EMPTY);
         int inPrice = 0;
         int billedTimes = 0;
         boolean isAllSuccess = true;
@@ -584,7 +588,6 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         }
         //超过15天，获本月取调用日志
         if (record.getUpdateTime().getTime() - record.getCreateTime().getTime() > 1296000000) {
-            System.err.println(record.getCreateTime());
             MerReqLogBean merReqLogBean = new MerReqLogBean();
             merReqLogBean.setStartTime(merReport.getStartTime());
             merReqLogBean.setEndTime(merReport.getEndTime().atTime(23, 59, 59));
@@ -595,45 +598,52 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
         }
         if (Objects.nonNull(authResults)) {
             for (int i = 0; i < authResults.size(); i++) {
+                StringBuilder levelTmp = new StringBuilder(StringUtils.EMPTY);
                 JSONObject authResult = authResults.getJSONObject(i);
                 if (Objects.equals(authResult.getString("authStateDesc"), "核查成功")) {
                     String cardNum = authResult.getString("cardNum");
                     JSONArray resultList = authResult.getJSONArray("resultList");
-                    record.setIsGet(resultList.size() > 0);
+                    record.setIsGet(Objects.nonNull(record.getIsGet()) && record.getIsGet() || resultList.size() > 0);
                     //根据最新结果计算进价
                     int resultInPrice = 0;
                     for (int j = 0; j < resultList.size(); j++) {
                         JSONObject result = resultList.getJSONObject(j);
                         String certNo = result.getString("certNo");
-                        int areaLevelPrice = getAreaLevelPrice(certNo);
+                        int areaLevelPrice = HouseLevelEnum.getAreaLevel(certNo).getprice();
                         resultInPrice = Math.max(areaLevelPrice, resultInPrice);
 
                     }
                     inPrice += resultInPrice;
+                    if (resultInPrice > 0) {
+                        levelTmp.append(HouseLevelEnum.getLevelByPrice(resultInPrice)).append(",");
+                    }
                     //本月调用日志不为空（超过15天）。15天内的所有核查成功算一笔，15天外的每次算一笔。
                     if (!CollectionUtils.isEmpty(merReqLogs)) {
                         int count = 0;
                         for (MerReqLog merReqLog : merReqLogs) {
                             try {
-                                String logRes = ZipStrUtils.gunzip(merReqLog.getRespJson());
-                                JSONObject resJson = JSON.parseObject(logRes);
-                                JSONObject redData = resJson.getJSONObject("data");
-                                JSONArray resAuthResults = redData.getJSONArray("authResults");
-                                for (int j = 0; j < resAuthResults.size(); j++) {
-                                    JSONObject resAuthResult = resAuthResults.getJSONObject(j);
-                                    if (Objects.equals(cardNum, resAuthResult.getString("cardNum"))) {
-                                        if (Objects.equals(authResult.getString("authStateDesc"), "核查成功")) {
-                                            JSONArray authResultList = authResult.getJSONArray("resultList");
-                                            if (Objects.nonNull(authResultList) && authResultList.size() > 0) {
-                                                ZonedDateTime zonedDateTime = merReqLog.getCreateTime().atZone(ZoneId.systemDefault());
-                                                long logCreateTime = zonedDateTime.toInstant().toEpochMilli();
-                                                if (zonedDateTime.toInstant().toEpochMilli() - record.getCreateTime().getTime() <= 1296000000) {
-                                                    //只算本月提交申请的且第一次查询
-                                                    if (count == 0 && logCreateTime > java.sql.Date.valueOf(merReport.getStartTime()).getTime()) {
+                                JSONObject logJson = JSON.parseObject(ZipStrUtils.gunzip(merReqLog.getRespJson()));
+                                JSONArray logAuthResults = logJson.getJSONObject("data").getJSONArray("authResults");
+                                for (int j = 0; j < logAuthResults.size(); j++) {
+                                    JSONObject logAuthResult = logAuthResults.getJSONObject(j);
+                                    if (Objects.equals(cardNum, logAuthResult.getString("cardNum"))) {
+                                        if (Objects.equals(logAuthResult.getString("authStateDesc"), "核查成功")) {
+                                            JSONArray logResultList = logAuthResult.getJSONArray("resultList");
+                                            if (Objects.nonNull(logResultList) && logResultList.size() > 0) {
+                                                //调用时间
+                                                long createTimeStamp = merReqLog.getCreateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                                                //15天内（调用时间-提交时间）
+                                                if (createTimeStamp - record.getCreateTime().getTime() <= 1296000000) {
+                                                    //只算本月提交申请的且第一次查询（提交时间>本月第一天）
+                                                    if (count == 0 && record.getCreateTime().getTime() > java.sql.Date.valueOf(merReport.getStartTime()).getTime()) {
                                                         count++;
+                                                        level.append(levelTmp);
                                                     }
-                                                } else {
+                                                }
+                                                //15天外
+                                                else {
                                                     count++;
+                                                    level.append(levelTmp);
                                                 }
                                             }
                                         }
@@ -648,6 +658,7 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
                     //没有调用日志，根据结果算笔数。
                     else {
                         billedTimes += (resultList.size() > 0 ? 1 : 0);
+                        level.append(levelTmp);
                     }
                 } else {
                     isAllSuccess = false;
@@ -655,33 +666,9 @@ public class MerReportServiceImpl extends ServiceImpl<MerReportMapper, MerReport
             }
         }
         record.setInPrice(inPrice);
+        record.setLevel(StringUtils.isNotBlank(level) ? level.substring(0, level.length() - 1) : null);
         record.setFeeCount(billedTimes);
         return isAllSuccess;
-    }
-
-
-    private static final List<String> FIRST_CLASS_AREAS = Arrays.asList("京", "沪", "申", "广", "粤");
-    private static final List<String> THIRD_CLASS_AREAS = Arrays.asList("陕", "秦", "甘", "陇", "蒙", "琼", "宁", "新", "川", "蜀", "吉", "贵", "黔", "赣");
-
-    /**
-     * 一类地区（北京、上海、广州、深圳）
-     * 二类地区（除一三类以外的区域）
-     * 三类地区（陕西、甘肃、内蒙、海南、宁夏、新疆、四川、吉林、陕西、贵州、江西）
-     *
-     * @param realEstateCertNo
-     * @return
-     */
-    public static int getAreaLevelPrice(String realEstateCertNo) {
-        if (StringUtils.isBlank(realEstateCertNo)) {
-            return 8;
-        }
-        if (FIRST_CLASS_AREAS.stream().anyMatch(realEstateCertNo::contains)) {
-            return 10;
-        } else if (THIRD_CLASS_AREAS.stream().anyMatch(realEstateCertNo::contains)) {
-            return 5;
-        } else {
-            return 8;
-        }
     }
 
 }
