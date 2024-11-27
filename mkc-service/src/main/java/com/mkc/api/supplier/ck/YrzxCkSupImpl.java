@@ -11,7 +11,7 @@ import com.mkc.api.vo.ck.PersonCarReqVo;
 import com.mkc.api.vo.ck.VehicleLicenseReqVo;
 import com.mkc.api.vo.ck.WorkUnitReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.PayStatus;
 import com.mkc.common.enums.ReqState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -77,7 +77,7 @@ public class YrzxCkSupImpl implements ICkSupService {
             JSONObject resultObject = JSON.parseObject(result);
             String code = resultObject.getString("code");
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -86,7 +86,7 @@ public class YrzxCkSupImpl implements ICkSupService {
                     supResult.setData(resultJson);
                     return supResult;
                 } else {
-                    supResult.setFree(FreeState.NO);
+                    supResult.setFree(PayStatus.NO);
                     supResult.setRemark("查询失败");
                     supResult.setState(ReqState.ERROR);
                     errMonitorMsg(log, "  行驶证核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -149,7 +149,7 @@ public class YrzxCkSupImpl implements ICkSupService {
             JSONObject resultObject = JSON.parseObject(result);
             String code = resultObject.getString("code");
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -158,7 +158,7 @@ public class YrzxCkSupImpl implements ICkSupService {
                     supResult.setData(resultJson);
                     return supResult;
                 } else {
-                    supResult.setFree(FreeState.NO);
+                    supResult.setFree(PayStatus.NO);
                     supResult.setRemark("查询失败");
                     supResult.setState(ReqState.ERROR);
                     errMonitorMsg(log, "  工作单位核验 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -220,7 +220,7 @@ public class YrzxCkSupImpl implements ICkSupService {
             String code = resultObject.getString("code");
 
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -231,13 +231,13 @@ public class YrzxCkSupImpl implements ICkSupService {
                 }
 
             } else if (EMPTY.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 supResult.setData(resultObject.getJSONObject("msg"));
                 return supResult;
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log, "  人车核验信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "

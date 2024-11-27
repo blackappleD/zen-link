@@ -9,7 +9,7 @@ import com.mkc.api.supplier.ISfSupService;
 import com.mkc.api.vo.sf.DishonestExecutiveReqVo;
 import com.mkc.api.vo.sf.RestrictedConsumerReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.PayStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +74,7 @@ public class JzKjSfSupImpl implements ISfSupService {
 
             if (SUCCESS.equals(code)) {
 
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -85,12 +85,12 @@ public class JzKjSfSupImpl implements ISfSupService {
                 }
             } else if (NO.equals(code)) {
 
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 return supResult;
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  【司法】失信被执行人 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -161,7 +161,7 @@ public class JzKjSfSupImpl implements ISfSupService {
 
             if (SUCCESS.equals(code)) {
 
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -172,12 +172,12 @@ public class JzKjSfSupImpl implements ISfSupService {
                 }
             } else if (NO.equals(code)) {
 
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 return supResult;
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  【司法】限制高消费被执行人接口 接口 发生异常 orderNo {} URL {} , 报文: {} "

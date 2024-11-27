@@ -2,7 +2,6 @@ package com.mkc.api.supplier.bg;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.http.Method;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
@@ -12,7 +11,7 @@ import com.mkc.api.vo.bg.CarInfoReqVo;
 import com.mkc.api.vo.bg.PersonCarDetailReqVo;
 import com.mkc.api.vo.bg.VehicleLicenseReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.PayStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +85,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
 
             if (SUCCESS.equals(code)) {
 
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -101,12 +100,12 @@ public class WzBigDataBgSupImpl implements IBgSupService {
 
             } else if (NO.equals(code)) {
 
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 return supResult;
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  行驶证信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -182,7 +181,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
 
             if (SUCCESS.equals(code)) {
 
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -197,12 +196,12 @@ public class WzBigDataBgSupImpl implements IBgSupService {
 
             } else if (NO.equals(code)) {
 
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 return supResult;
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  人车核验详版查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -279,7 +278,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
 
             if (SUCCESS.equals(code)) {
 
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -293,7 +292,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
                 }
 
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  车五项信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "

@@ -8,7 +8,7 @@ import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.vo.bg.CarInfoReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.PayStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,7 @@ public class BJLYBgSupImpl implements IBgSupService {
 
             //0000：成功（收费）
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -78,11 +78,11 @@ public class BJLYBgSupImpl implements IBgSupService {
                     return supResult;
                 }
             } else if (NOGET.equals(code)) {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 String message = resultObject.getString("message");
                 supResult.setRemark(StringUtils.isNotBlank(message) ? message : "查询失败");
                 supResult.setState(ReqState.ERROR);

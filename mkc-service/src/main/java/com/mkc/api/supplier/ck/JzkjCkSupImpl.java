@@ -9,7 +9,7 @@ import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.vo.ck.BankReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.PayStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +83,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			//                0：成功（收费）
 			//                405：查无（不收费）
 			if (SUCCESS.equals(code)) {
-				supResult.setFree(FreeState.YES);
+				supResult.setFree(PayStatus.YES);
 				supResult.setRemark("查询成功");
 				supResult.setState(ReqState.SUCCESS);
 				JSONObject resultJson = resultObject.getJSONObject("data");
@@ -92,17 +92,17 @@ public class JzkjCkSupImpl implements ICkSupService {
 					return supResult;
 				}
 			} else if (NOGET.equals(code)) {
-				supResult.setFree(FreeState.NO);
+				supResult.setFree(PayStatus.NO);
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOGET);
 
 			} else if (NOT.equals(code)) {
-				supResult.setFree(FreeState.YES);
+				supResult.setFree(PayStatus.YES);
 				supResult.setRemark("不一致");
 				supResult.setState(ReqState.NOT);
 
 			} else {
-				supResult.setFree(FreeState.NO);
+				supResult.setFree(PayStatus.NO);
 				supResult.setRemark("查询失败");
 			}
 			return supResult;
@@ -164,7 +164,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			//                0：成功（收费）
 			//                405：查无（不收费）
 			if (SUCCESS.equals(code)) {
-				supResult.setFree(FreeState.YES);
+				supResult.setFree(PayStatus.YES);
 				supResult.setRemark("查询成功");
 				supResult.setState(ReqState.SUCCESS);
 				JSONObject resultJson = resultObject.getJSONObject("data");
@@ -173,17 +173,17 @@ public class JzkjCkSupImpl implements ICkSupService {
 
 				}
 			} else if (NOGET.equals(code)) {
-				supResult.setFree(FreeState.NO);
+				supResult.setFree(PayStatus.NO);
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOGET);
 
 			} else if (NOT.equals(code)) {
-				supResult.setFree(FreeState.YES);
+				supResult.setFree(PayStatus.YES);
 				supResult.setRemark("不一致");
 				supResult.setState(ReqState.NOT);
 				return supResult;
 			} else {
-				supResult.setFree(FreeState.NO);
+				supResult.setFree(PayStatus.NO);
 				supResult.setRemark("查询失败");
 			}
 			return supResult;
@@ -246,7 +246,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			//                0：成功（收费）
 			//                405：查无（不收费）
 			if (SUCCESS.equals(code)) {
-				supResult.setFree(FreeState.YES);
+				supResult.setFree(PayStatus.YES);
 				supResult.setRemark("查询成功");
 				supResult.setState(ReqState.SUCCESS);
 				JSONObject resultJson = resultObject.getJSONObject("data");
@@ -255,17 +255,17 @@ public class JzkjCkSupImpl implements ICkSupService {
 					return supResult;
 				}
 			} else if (NOGET.equals(code)) {
-				supResult.setFree(FreeState.NO);
+				supResult.setFree(PayStatus.NO);
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOGET);
 				return supResult;
 			} else if (NOT.equals(code)) {
-				supResult.setFree(FreeState.YES);
+				supResult.setFree(PayStatus.YES);
 				supResult.setRemark("不一致");
 				supResult.setState(ReqState.NOT);
 				return supResult;
 			} else {
-				supResult.setFree(FreeState.NO);
+				supResult.setFree(PayStatus.NO);
 				supResult.setRemark("查询失败");
 
 			}

@@ -10,12 +10,11 @@ import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.ICkService;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.supplier.ISupService;
 import com.mkc.api.vo.BaseVo;
 import com.mkc.api.vo.ck.*;
 import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.PayStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.domain.SupplierRoute;
 import com.mkc.process.IMailProcess;
@@ -228,7 +227,7 @@ public class CkServiceImpl implements ICkService {
 			result = Result.not(supResult.getData(), orderNo);
 			//查无
 		} else if (supResult.isNoGet()) {
-			result = Result.no(supResult.getData(), FreeState.NO, orderNo);
+			result = Result.no(supResult.getData(), PayStatus.NO, orderNo);
 			//其它算查询失败活异常
 		} else {
 			//判断是否是自定义错误消息
@@ -269,7 +268,7 @@ public class CkServiceImpl implements ICkService {
 		Result result = Result.fail(orderNo);
 
 		merLog.setInPrice(BigDecimal.ZERO);
-		merLog.setFree(FreeState.NO.getCode());
+		merLog.setFree(PayStatus.NO.getCode());
 		merLog.setRemark("没有配置 可查询 的 供应商 ");
 		merLog.setStatus(ReqState.ERROR.getCode());
 

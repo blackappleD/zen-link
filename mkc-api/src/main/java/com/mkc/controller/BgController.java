@@ -796,10 +796,7 @@ public class BgController extends BaseController {
 			MerReqLogVo merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-
-			Result result = bgService.queryCarInfo(params, merLog);
-
-			return result;
+			return bgService.queryCarInfo(params, merLog);
 		} catch (ApiServiceException e) {
 
 			return Result.fail(e.getCode(), e.getMessage());
@@ -1210,15 +1207,15 @@ public class BgController extends BaseController {
 
 		List<String> types = params.getTypes();
 		List<PersonInfoReqVo> persons = params.getPersons();
-		if (types == null || types.size() == 0) {
+		if (types == null || types.isEmpty()) {
 			log.error("缺少参数 types {} , merCode： {}", types, merCode);
 			throw new ApiServiceException(ApiReturnCode.ERR_001);
 		}
-		if (persons == null || persons.size() == 0) {
+		if (persons == null || persons.isEmpty()) {
 			log.error("缺少参数 persons {} , merCode： {}", persons, merCode);
 			throw new ApiServiceException(ApiReturnCode.ERR_001);
 		}
-		if (params.getFiles() == null || params.getFiles().size() == 0) {
+		if (params.getFiles() == null || params.getFiles().isEmpty()) {
 			log.error("缺少参数 files {}, merCode： {}", params.getFiles(), merCode);
 			throw new ApiServiceException(ApiReturnCode.ERR_001);
 		}

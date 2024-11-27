@@ -12,7 +12,7 @@ import com.mkc.api.vo.bg.FinanceInfoReqVo;
 import com.mkc.api.vo.bg.FinanceInfoV3ReqVo;
 import com.mkc.api.vo.bg.SureScoreInfoReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.FreeState;
+import com.mkc.common.enums.PayStatus;
 import com.mkc.common.enums.ReqState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -82,7 +82,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             String code = resultObject.getString("code");
 
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -93,13 +93,13 @@ public class YrzxBgSupImpl implements IBgSupService {
                 }
 
             } else if (EMPTY.equals(code)) {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,url + " 经济能力评级接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -162,7 +162,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             String code = resultObject.getString("code");
 
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -173,13 +173,13 @@ public class YrzxBgSupImpl implements IBgSupService {
                 }
 
             } else if (EMPTY.equals(code)) {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  经济能力2W查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -242,7 +242,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             String code = resultObject.getString("code");
 
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -253,13 +253,13 @@ public class YrzxBgSupImpl implements IBgSupService {
                 }
 
             } else if (EMPTY.equals(code)) {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             }  else if (ERROR_CODE1.equals(code)) {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark(resultObject.getString("msg"));
                 supResult.setDefinedFailMsg(true);
                 supResult.setState(ReqState.ERROR);
@@ -267,7 +267,7 @@ public class YrzxBgSupImpl implements IBgSupService {
                         , bean.getOrderNo(),url, result);
                 return supResult;
             }  else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -333,7 +333,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             String code = resultObject.getString("code");
 
             if (SUCCESS.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -344,13 +344,13 @@ public class YrzxBgSupImpl implements IBgSupService {
                 }
 
             } else if (EMPTY.equals(code)) {
-                supResult.setFree(FreeState.YES);
+                supResult.setFree(PayStatus.YES);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             } else {
-                supResult.setFree(FreeState.NO);
+                supResult.setFree(PayStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  确信分查询 接口 发生异常 orderNo {} URL {} , 报文: {} "

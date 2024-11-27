@@ -6,22 +6,18 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
-import com.alibaba.excel.util.ListUtils;
 import com.mkc.common.utils.ZipStrUtils;
-import com.mkc.domain.ExcelTestLog;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +30,13 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@Profile({"dev", "local", "test", "pre"})
 @RequestMapping("/test2")
 public class TestController2 {
 
-	@PostMapping("/cwx")
-	public void test(@RequestParam("file") MultipartFile file) {
+	// 车五项，查得数据中缺项数据统计
+	@PostMapping("/cwx/data_right")
+	public void dataRight(@RequestParam("file") MultipartFile file) {
 
 		List<ExcelCell> dataList = new ArrayList<>();
 		int yes = 0;
@@ -66,6 +64,38 @@ public class TestController2 {
 		System.out.println(CharSequenceUtil.format("yes = {}, no = {}", yes, no));
 
 	}
+
+	/**
+	 * 车五项异常请求中查询的请求数统计
+	 *
+	 * @param file
+	 */
+	@PostMapping("/cwx/exception")
+	public void exception(@RequestParam("file") MultipartFile file) {
+
+		List<ExcelCell> dataList = new ArrayList<>();
+		int none = 0;
+		try (ExcelReader excelReader = EasyExcel.read(file.getInputStream()).build()) {
+
+			ReadSheet readSheet1 =
+					EasyExcel.readSheet(0).head(ExcelCell.class).registerReadListener(new DemoDataListener(dataList)).build();
+			ReadSheet readSheet2 =
+					EasyExcel.readSheet(1).head(ExcelCell.class).registerReadListener(new DemoDataListener(dataList)).build();
+			excelReader.read(readSheet1, readSheet2);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		for (ExcelCell data : dataList) {
+			ExcelDTO response = JSONUtil.toBean(data.getJson(), ExcelDTO.class);
+			if ("1910020001".equals(response.getCode())) {
+				none++;
+			}
+
+		}
+
+		System.out.println(CharSequenceUtil.format("not found = {}", none));
+	}
+
 
 	@Data
 	public static class ExcelCell {
