@@ -744,7 +744,6 @@ public class BgController extends BaseController {
 
 	}
 
-
 	/**
 	 * 不动产信息核查
 	 */
