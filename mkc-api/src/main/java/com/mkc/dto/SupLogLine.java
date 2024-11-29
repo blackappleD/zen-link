@@ -33,4 +33,7 @@ public class SupLogLine {
 
 	@ExcelProperty("产品")
 	private String productCode;
+
+	@ExcelProperty("查询状态")
+	private String status;
 }

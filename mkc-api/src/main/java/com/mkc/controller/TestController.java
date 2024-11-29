@@ -52,6 +52,7 @@ public class TestController {
 	@Autowired
 	private IMerInfoService merchantService;
 
+
 	/**
 	 * 车五项
 	 */
@@ -100,7 +101,6 @@ public class TestController {
 					latch.countDown();
 				});
 			}
-			latch.await();
 			log.info(readList.size() + "条样例测试完毕！");
 
 			setExcelRespProp(response, DateUtils.dateTimeNow() + "车五项测试结果");
@@ -109,7 +109,7 @@ public class TestController {
 					.excelType(ExcelTypeEnum.XLSX)
 					.sheet("车五项测试结果" + sheetNo)
 					.doWrite(readList);
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			log.error(e.getMessage());
 		}

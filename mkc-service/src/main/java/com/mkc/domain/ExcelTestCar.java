@@ -4,6 +4,8 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * 车五项信息查询
  *
@@ -13,6 +15,18 @@ import lombok.Data;
 
 @Data
 public class ExcelTestCar {
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ExcelTestCar item = (ExcelTestCar) o;
+		return Objects.equals(plateNo, item.plateNo);
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(plateNo);
+	}
 
 	@ColumnWidth(12)
 	@ExcelProperty("车牌号码")
@@ -40,7 +54,6 @@ public class ExcelTestCar {
 	@ColumnWidth(12)
 	@ExcelProperty("modelNo")
 	private String modelNo;
-
 	@ExcelProperty("是否缺项")
 	private String missParam;
 }
