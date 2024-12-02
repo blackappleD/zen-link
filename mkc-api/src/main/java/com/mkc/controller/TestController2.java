@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +61,6 @@ public class TestController2 {
 	/**
 	 * 全国高等学历信息查询 /educationInfo 日志分析
 	 */
-	@PostConstruct
 	public void educationInfo() {
 
 		Map<String, Statistic> map = new HashMap<>();
