@@ -9,7 +9,7 @@ import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.supplier.utils.UrlUtils;
 import com.mkc.api.vo.bg.EducationInfoReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -67,7 +67,7 @@ public class XyBgSupImpl implements IBgSupService {
             JSONObject resultObject = JSON.parseObject(result);
             String code = resultObject.getString("code");
             if (SUCCESS.equals(code)) {
-                supResult.setFree(PayStatus.YES);
+                supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
                 JSONObject data = resultObject.getJSONObject("data");
@@ -75,7 +75,7 @@ public class XyBgSupImpl implements IBgSupService {
                     supResult.setData(data);
                 }
             } else {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  学历评估 接口 发生异常 orderNo {} URL {} , 报文: {} "

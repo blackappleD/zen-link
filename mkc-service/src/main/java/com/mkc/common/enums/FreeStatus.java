@@ -9,7 +9,7 @@ import lombok.Getter;
  * @date 2023/5/18 17:01
  */
 @Getter
-public enum PayStatus {
+public enum FreeStatus {
 
 	/**
 	 * 收费
@@ -24,7 +24,7 @@ public enum PayStatus {
 	;
 
 
-	PayStatus(String code, String msg) {
+	FreeStatus(String code, String msg) {
 		this.code = code;
 		this.msg = msg;
 	}

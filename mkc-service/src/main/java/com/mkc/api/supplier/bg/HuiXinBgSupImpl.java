@@ -9,7 +9,7 @@ import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.supplier.utils.AESUtil;
 import com.mkc.api.vo.bg.DrivingLicenseReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -73,7 +73,7 @@ public class HuiXinBgSupImpl implements IBgSupService {
             JSONObject resultObject = JSON.parseObject(result);
             String code = resultObject.getString("code");
             if (SUCCESS.equals(code)) {
-                supResult.setFree(PayStatus.YES);
+                supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
 
@@ -83,12 +83,12 @@ public class HuiXinBgSupImpl implements IBgSupService {
                     return supResult;
                 }
             } else if (NO.equals(code)) {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 return supResult;
             } else {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log,"  行驶身份核验 接口 发生异常 orderNo {} URL {} , 报文: {} "

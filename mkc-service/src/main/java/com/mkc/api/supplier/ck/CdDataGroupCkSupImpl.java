@@ -8,7 +8,7 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.vo.ck.PopulationThreeReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -75,9 +75,9 @@ public class CdDataGroupCkSupImpl implements ICkSupService {
             String code = resultObject.getString("code");
             String status = resultObject.getString("status");
             if (NO_FEE.equals(status)) {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
             } else {
-                supResult.setFree(PayStatus.YES);
+                supResult.setFree(FreeStatus.YES);
             }
             if (SUCCESS.equals(code)) {
                 supResult.setRemark("查询成功");

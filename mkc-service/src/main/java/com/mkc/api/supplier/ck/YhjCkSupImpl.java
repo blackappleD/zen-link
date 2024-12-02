@@ -10,7 +10,7 @@ import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.vo.ck.*;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -96,24 +96,24 @@ public class YhjCkSupImpl implements ICkSupService {
 
             if (SUCCESS.equals(code)) {
 
-                supResult.setFree(PayStatus.YES);
+                supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("认证信息一致");
                 supResult.setState(ReqState.SUCCESS);
 
             } else if (NOT.equals(code)) {
 
-                supResult.setFree(PayStatus.YES);
+                supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("认证信息不一致");
                 supResult.setState(ReqState.NOT);
 
             } else if (NO.equals(code)) {
 
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 return supResult;
             } else {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.NOGET);
                 return supResult;

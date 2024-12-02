@@ -11,7 +11,7 @@ import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.vo.bg.EnterpriseFourElementsReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +81,7 @@ public class AntBgSupImpl implements IBgSupService {
             JSONObject resultObject = JSON.parseObject(result);
             boolean success = resultObject.getBoolean("success");
             if (success) {
-                supResult.setFree(PayStatus.YES);
+                supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
                 JSONObject data = resultObject.getJSONObject("data");
@@ -91,13 +91,13 @@ public class AntBgSupImpl implements IBgSupService {
                 }
             } else {
                 if (ERROR_CODE1.equals(resultObject.getString("errorCode"))) {
-                    supResult.setFree(PayStatus.NO);
+                    supResult.setFree(FreeStatus.NO);
                     supResult.setDefinedFailMsg(true);
                     supResult.setState(ReqState.ERROR);
                     supResult.setRemark(resultObject.getString("message"));
                     return supResult;
                 } else {
-                    supResult.setFree(PayStatus.NO);
+                    supResult.setFree(FreeStatus.NO);
                     supResult.setRemark("查询失败");
                     supResult.setState(ReqState.ERROR);
                     errMonitorMsg(log,"  企业四要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "

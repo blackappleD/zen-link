@@ -14,7 +14,6 @@ mkc:
     addressEnabled: true
     workerId: 10001
     datacenterId: 20001
-
 springdoc:
     api-docs:
         # 生产环境关闭swagger文档

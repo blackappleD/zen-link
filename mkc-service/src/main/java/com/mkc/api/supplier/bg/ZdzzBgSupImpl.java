@@ -13,7 +13,7 @@ import com.mkc.api.vo.bg.MaritalRelationshipReqVo;
 import com.mkc.api.vo.bg.MaritalStabilityReqVo;
 import com.mkc.api.vo.bg.MarriageInfoReqInfo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -171,7 +171,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
         String code = resultObject.getString("code");
         //                200：成功（收费）
         if (SUCCESS.equals(code)) {
-            supResult.setFree(PayStatus.YES);
+            supResult.setFree(FreeStatus.YES);
             supResult.setRemark("查询成功");
             supResult.setState(ReqState.SUCCESS);
             JSONObject data = resultObject.getJSONObject("data");
@@ -180,7 +180,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
                 return supResult;
             }
         } else {
-            supResult.setFree(PayStatus.NO);
+            supResult.setFree(FreeStatus.NO);
             supResult.setRemark("查询失败");
             supResult.setState(ReqState.ERROR);
             errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
@@ -203,7 +203,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
         String code = resultObject.getString("code");
         //                200：成功（收费）
         if (SUCCESS.equals(code)) {
-            supResult.setFree(PayStatus.YES);
+            supResult.setFree(FreeStatus.YES);
             supResult.setRemark("查询成功");
             supResult.setState(ReqState.SUCCESS);
             JSONArray data = resultObject.getJSONArray("data");
@@ -212,7 +212,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
                 return supResult;
             }
         } else {
-            supResult.setFree(PayStatus.NO);
+            supResult.setFree(FreeStatus.NO);
             supResult.setRemark("查询失败");
             supResult.setState(ReqState.ERROR);
             errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "

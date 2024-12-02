@@ -2,7 +2,7 @@ package com.mkc.api.common.constant.bean;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.enums.YysCode;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import lombok.Data;
 
@@ -58,7 +58,7 @@ public class SupResult<T> implements Serializable
     private LocalDateTime respTime;
 
 
-    private PayStatus free= PayStatus.NO;
+    private FreeStatus free= FreeStatus.NO;
 
     private Integer billedTimes;
 
@@ -159,7 +159,7 @@ public class SupResult<T> implements Serializable
      */
     public  boolean isFree()
     {
-        return PayStatus.YES.equals(this.getFree());
+        return FreeStatus.YES.equals(this.getFree());
     }
 
 

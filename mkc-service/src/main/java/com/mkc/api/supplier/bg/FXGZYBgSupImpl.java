@@ -9,7 +9,7 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.vo.bg.*;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.HouseLevelEnum;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.DateUtils;
@@ -85,7 +85,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             JSONObject resultObject = JSON.parseObject(result);
             String code = resultObject.getString("code");
             if (SUCCESS.equals(code)) {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
                 JSONObject resultJson = resultObject;
@@ -133,13 +133,13 @@ public class FXGZYBgSupImpl implements IBgSupService {
                                         //15天后计费每次
                                         if (fxReqRecord.getUpdateTime().getTime() - fxReqRecord.getCreateTime().getTime() > 1296000000) {
                                             count++;
-                                            supResult.setFree(PayStatus.YES);
+                                            supResult.setFree(FreeStatus.YES);
                                         }
                                         //15天内计费仅计费本月发起申请的首次查询结果
                                         else if (Objects.equals(fxReqRecord.getUserFlag(), "0")
                                                 && Objects.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM, fxReqRecord.getCreateTime()), DateUtils.getDateMonth())) {
                                             count++;
-                                            supResult.setFree(PayStatus.YES);
+                                            supResult.setFree(FreeStatus.YES);
                                         }
                                         for (int j = 0; j < resultList.size(); j++) {
                                             JSONObject perResult = resultList.getJSONObject(j);
@@ -176,12 +176,12 @@ public class FXGZYBgSupImpl implements IBgSupService {
                     return supResult;
                 }
             } else if (NO.equals(code)) {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 return supResult;
             } else {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log, "  不动产信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -263,7 +263,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                     reqVo.setType(types.get(i++));
                     materialReqVoList.add(reqVo);
                 } else {
-                    supResult.setFree(PayStatus.NO);
+                    supResult.setFree(FreeStatus.NO);
                     supResult.setRemark("上传文件失败");
                     supResult.setState(ReqState.ERROR);
                     supResult.setData(resultObject);
@@ -292,7 +292,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             String code = resultObject.getString("code");
             //返回结果是成功
             if (SUCCESS.equals(code)) {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询成功");
                 supResult.setState(ReqState.SUCCESS);
                 JSONObject data = resultObject.getJSONObject("data");
@@ -308,7 +308,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                     return supResult;
                 }
             } else {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log, "  不动产信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -368,7 +368,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             // 校验返回的签名
             boolean isValid = doVerifyReturnSign(resultJson, bean.getSignKey());
             if (!isValid) {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("签名校验失败");
                 supResult.setState(ReqState.ERROR);
                 return supResult;
@@ -387,11 +387,11 @@ public class FXGZYBgSupImpl implements IBgSupService {
             }
             if (SUCCESS.equals(resultJson.get("code"))) {
                 supResult.setData(JSONObject.parseObject(decryptResult));
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setState(ReqState.SUCCESS);
                 supResult.setRemark("查询成功");
             } else {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log, " 高校学历核查结果接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -453,7 +453,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             // 校验返回的签名
             boolean isValid = doVerifyReturnSign(resultJson, bean.getSignKey());
             if (!isValid) {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("签名校验失败");
                 supResult.setState(ReqState.ERROR);
                 return supResult;
@@ -474,11 +474,11 @@ public class FXGZYBgSupImpl implements IBgSupService {
             }
             if (SUCCESS.equals(resultJson.get("code"))) {
                 supResult.setData(JSONObject.parseObject(decryptResult));
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setState(ReqState.SUCCESS);
                 supResult.setRemark("查询成功");
             } else {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log, " 高校学历核查接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -543,7 +543,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             // 校验返回的签名
             boolean isValid = doVerifyReturnSign(resultJson, bean.getSignKey());
             if (!isValid) {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("签名校验失败");
                 supResult.setState(ReqState.ERROR);
                 return supResult;
@@ -564,11 +564,11 @@ public class FXGZYBgSupImpl implements IBgSupService {
             }
             if (SUCCESS.equals(resultJson.get("code"))) {
                 supResult.setData(JSONObject.parseObject(decryptResult));
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setState(ReqState.SUCCESS);
                 supResult.setRemark("查询成功");
             } else {
-                supResult.setFree(PayStatus.NO);
+                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log, " 高校学历核查实时接口查询 接口 发生异常 orderNo {} URL {} , 报文: {} "

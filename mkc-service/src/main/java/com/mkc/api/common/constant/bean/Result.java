@@ -2,7 +2,7 @@ package com.mkc.api.common.constant.bean;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mkc.api.common.constant.ApiReturnCode;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ public class Result<T> implements Serializable {
 
 	private String seqNo;
 
-	private String free = PayStatus.NO.getCode();
+	private String free = FreeStatus.NO.getCode();
 
 	private String msg;
 
@@ -45,27 +45,27 @@ public class Result<T> implements Serializable {
 	//==============查询成功
 
 	public static <T> Result<T> ok() {
-		return restResult(null, ApiReturnCode.SUCCESS, PayStatus.YES);
+		return restResult(null, ApiReturnCode.SUCCESS, FreeStatus.YES);
 	}
 
 	public static <T> Result<T> ok(T data) {
 
-		return restResult(data, ApiReturnCode.SUCCESS, PayStatus.YES);
+		return restResult(data, ApiReturnCode.SUCCESS, FreeStatus.YES);
 	}
 
-	public static <T> Result<T> ok(T data, PayStatus payStatus, String seqNo) {
+	public static <T> Result<T> ok(T data, FreeStatus freeStatus, String seqNo) {
 
-		return restResult(data, ApiReturnCode.SUCCESS, Objects.nonNull(payStatus) ? payStatus : PayStatus.YES, seqNo);
+		return restResult(data, ApiReturnCode.SUCCESS, Objects.nonNull(freeStatus) ? freeStatus : FreeStatus.YES, seqNo);
 	}
 
 	public static <T> Result<T> ok(T data, String seqNo, String msg) {
 
-		return restResult(data, ApiReturnCode.SUCCESS.getCode(), msg, PayStatus.YES, seqNo);
+		return restResult(data, ApiReturnCode.SUCCESS.getCode(), msg, FreeStatus.YES, seqNo);
 	}
 
 	public static <T> Result<T> ok(T data, String seqNo) {
 
-		return restResult(data, ApiReturnCode.SUCCESS, PayStatus.YES, seqNo);
+		return restResult(data, ApiReturnCode.SUCCESS, FreeStatus.YES, seqNo);
 	}
 
 
@@ -78,7 +78,7 @@ public class Result<T> implements Serializable {
 	 * @return
 	 */
 	public static <T> Result<T> not() {
-		return restResult(null, ApiReturnCode.NOT, PayStatus.YES);
+		return restResult(null, ApiReturnCode.NOT, FreeStatus.YES);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class Result<T> implements Serializable {
 	 */
 	public static <T> Result<T> not(T data) {
 
-		return restResult(data, ApiReturnCode.NOT, PayStatus.YES);
+		return restResult(data, ApiReturnCode.NOT, FreeStatus.YES);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class Result<T> implements Serializable {
 	 */
 	public static <T> Result<T> not(T data, String seqNo) {
 
-		return restResult(data, ApiReturnCode.NOT, PayStatus.YES, seqNo);
+		return restResult(data, ApiReturnCode.NOT, FreeStatus.YES, seqNo);
 	}
 
 
@@ -113,8 +113,8 @@ public class Result<T> implements Serializable {
 	 * @param <T>
 	 * @return
 	 */
-	public static <T> Result<T> no(PayStatus payStatus, String seqNo) {
-		return restResult(null, ApiReturnCode.NO, payStatus, seqNo);
+	public static <T> Result<T> no(FreeStatus freeStatus, String seqNo) {
+		return restResult(null, ApiReturnCode.NO, freeStatus, seqNo);
 	}
 
 	/**
@@ -123,9 +123,9 @@ public class Result<T> implements Serializable {
 	 * @param <T>
 	 * @return
 	 */
-	public static <T> Result<T> no(T data, PayStatus payStatus, String seqNo) {
+	public static <T> Result<T> no(T data, FreeStatus freeStatus, String seqNo) {
 
-		return restResult(data, ApiReturnCode.NO, payStatus, seqNo);
+		return restResult(data, ApiReturnCode.NO, freeStatus, seqNo);
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class Result<T> implements Serializable {
 	 */
 
 	public static <T> Result<T> fail() {
-		return restResult(null, ApiReturnCode.FAIL, PayStatus.NO);
+		return restResult(null, ApiReturnCode.FAIL, FreeStatus.NO);
 	}
 
 	/**
@@ -151,11 +151,11 @@ public class Result<T> implements Serializable {
 	 */
 
 	public static <T> Result<T> fail(ApiReturnCode code) {
-		return restResult(null, code, PayStatus.NO);
+		return restResult(null, code, FreeStatus.NO);
 	}
 
 	public static <T> Result<T> fail(String seqNo) {
-		return restResult(null, ApiReturnCode.FAIL, PayStatus.NO, seqNo);
+		return restResult(null, ApiReturnCode.FAIL, FreeStatus.NO, seqNo);
 	}
 
 //    public static <T> Result<T> fail(T data) {
@@ -164,26 +164,26 @@ public class Result<T> implements Serializable {
 
 	public static <T> Result<T> fail(T data, String seqNo) {
 
-		return restResult(data, ApiReturnCode.FAIL, PayStatus.NO, seqNo);
+		return restResult(data, ApiReturnCode.FAIL, FreeStatus.NO, seqNo);
 	}
 
 	public static <T> Result<T> fail(String code, String msg) {
 
-		return restResult(null, code, msg, PayStatus.NO);
+		return restResult(null, code, msg, FreeStatus.NO);
 	}
 
 	public static <T> Result<T> fail(String code, String msg, String seqNo) {
 
-		return restResult(null, code, msg, PayStatus.NO, seqNo);
+		return restResult(null, code, msg, FreeStatus.NO, seqNo);
 	}
 
 	public static <T> Result<T> fail(T data, String msg, String seqNo) {
 
-		return restResult(null, ApiReturnCode.FAIL.getCode(), msg, PayStatus.NO, seqNo);
+		return restResult(null, ApiReturnCode.FAIL.getCode(), msg, FreeStatus.NO, seqNo);
 	}
 
 
-	private static <T> Result<T> restResult(T data, ApiReturnCode returnCode, PayStatus free) {
+	private static <T> Result<T> restResult(T data, ApiReturnCode returnCode, FreeStatus free) {
 		Result<T> apiResult = new Result<>();
 		apiResult.setCode(returnCode.getCode());
 		apiResult.setMsg(returnCode.getMsg());
@@ -193,7 +193,7 @@ public class Result<T> implements Serializable {
 	}
 
 
-	private static <T> Result<T> restResult(T data, ApiReturnCode returnCode, PayStatus free, String seqNo) {
+	private static <T> Result<T> restResult(T data, ApiReturnCode returnCode, FreeStatus free, String seqNo) {
 		Result<T> apiResult = new Result<>();
 		apiResult.setCode(returnCode.getCode());
 		apiResult.setMsg(returnCode.getMsg());
@@ -203,7 +203,7 @@ public class Result<T> implements Serializable {
 		return apiResult;
 	}
 
-	private static <T> Result<T> restResult(T data, String code, String msg, PayStatus free) {
+	private static <T> Result<T> restResult(T data, String code, String msg, FreeStatus free) {
 		Result<T> apiResult = new Result<>();
 		apiResult.setCode(code);
 		apiResult.setData(data);
@@ -212,7 +212,7 @@ public class Result<T> implements Serializable {
 		return apiResult;
 	}
 
-	private static <T> Result<T> restResult(T data, String code, String msg, PayStatus free, String seqNo) {
+	private static <T> Result<T> restResult(T data, String code, String msg, FreeStatus free, String seqNo) {
 		Result<T> apiResult = new Result<>();
 		apiResult.setCode(code);
 		apiResult.setData(data);

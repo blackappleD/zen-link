@@ -15,7 +15,7 @@ import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.api.vo.sf.DishonestExecutiveReqVo;
 import com.mkc.api.vo.sf.RestrictedConsumerReqVo;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.enums.PayStatus;
+import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.domain.SupplierRoute;
 import com.mkc.process.IMailProcess;
@@ -170,7 +170,7 @@ public class SfServiceImpl implements ISfService {
             result = Result.not(supResult.getData(), orderNo);
             //查无
         } else if (supResult.isNoGet()) {
-            result = Result.no(supResult.getData(), PayStatus.NO, orderNo);
+            result = Result.no(supResult.getData(), FreeStatus.NO, orderNo);
             //其它算查询失败活异常
         } else {
             //判断是否是自定义错误消息
@@ -209,7 +209,7 @@ public class SfServiceImpl implements ISfService {
         Result result = Result.fail(orderNo);
 
         merLog.setInPrice(BigDecimal.ZERO);
-        merLog.setFree(PayStatus.NO.getCode());
+        merLog.setFree(FreeStatus.NO.getCode());
         merLog.setRemark("没有配置 可查询 的 供应商 ");
         merLog.setStatus(ReqState.ERROR.getCode());
 
