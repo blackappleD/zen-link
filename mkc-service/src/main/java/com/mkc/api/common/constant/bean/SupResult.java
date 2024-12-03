@@ -45,6 +45,7 @@ public class SupResult<T> implements Serializable {
 	 * 备注信息
 	 */
 	private String remark;
+
 	/**
 	 * 自定义错误消息
 	 */

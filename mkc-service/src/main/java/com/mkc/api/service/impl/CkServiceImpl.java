@@ -20,6 +20,7 @@ import com.mkc.domain.SupplierRoute;
 import com.mkc.process.IMailProcess;
 import com.mkc.service.ISupplierProductService;
 import com.mkc.service.ISupplierRouteService;
+import com.mkc.util.ErrorConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -136,7 +137,7 @@ public class CkServiceImpl implements ICkService {
 
 			if (supResult == null) {
 				supResult = new SupResult<>("", LocalDateTime.now());
-				supResult.setRemark("supResult is return null ; init");
+				supResult.setRemark(ErrorConstants.SUP_NO_RESPONSE);
 
 				String errMsg = " 【核验类】 查询供应商结果 NULL;   merCode {}, productCode {} ,supCode {} ,orderNo {}";
 				log.error(errMsg, merLog.getMerCode(), merLog.getProductCode(), supCode, orderNo);
