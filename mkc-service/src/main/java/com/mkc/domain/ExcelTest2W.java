@@ -19,6 +19,9 @@ public class ExcelTest2W {
     @ColumnWidth(20)
     @ExcelProperty("手机号")
     private String mobile = "18888888888";
+    @ColumnWidth(20)
+    @ExcelProperty("日期")
+    private String date;
     @ExcelProperty("code")
     private String code;
     @ColumnWidth(15)

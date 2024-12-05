@@ -11,11 +11,11 @@
 
 
 	<!-- 日志级别 -->
-	<property name="logLevel" value="INFO"></property>
+	<property name="logLevel" value="INFO"/>
 	<!-- 最大保存时间 -->
 	<property name="maxHistory" value="60"/>
 	<!-- 异步缓冲队列的深度,该值会影响性能.默认值为256 -->
-	<property name="queueSize" value="512"></property>
+	<property name="queueSize" value="512"/>
 
 
 	<!--输出到控制台-->

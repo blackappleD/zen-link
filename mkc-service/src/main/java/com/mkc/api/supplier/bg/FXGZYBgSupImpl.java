@@ -135,7 +135,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                                             count++;
                                             supResult.setFree(FreeStatus.YES);
                                         }
-                                        //15天内计费仅计费本月发起申请的首次查询结果
+                                            //15天内计费仅计费本月发起申请的首次查询结果
                                         else if (Objects.equals(fxReqRecord.getUserFlag(), "0")
                                                 && Objects.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM, fxReqRecord.getCreateTime()), DateUtils.getDateMonth())) {
                                             count++;

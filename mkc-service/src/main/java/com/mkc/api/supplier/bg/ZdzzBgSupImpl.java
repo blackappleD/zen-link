@@ -31,203 +31,207 @@ import java.util.Map;
 @Slf4j
 public class ZdzzBgSupImpl implements IBgSupService {
 
-    private final static String SUCCESS = "200";
+	private final static String SUCCESS = "200";
 
-    @Override
-    public SupResult<JSONObject> queryMaritalStability(MaritalStabilityReqVo vo, SuplierQueryBean bean) {
-        Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("xm", vo.getXm());
-        queryParams.put("sfzh", vo.getSfzh());
-        queryParams.put("yearNum", vo.getYearNum());
-        String url = bean.getUrl() + "/api0e148e05297f41cbace8feddaa53d47d";
-        bean.setUrl(url);
-        String result = null;
-        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
-        try {
-            result = post(queryParams, bean);
-            return getSupResult(supResult, result, bean);
-        } catch (Throwable e) {
-            errMonitorMsg(log, " 【中电郑州】 婚姻稳定状况接口 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(), url, result, e);
-            setErrorSupResult(supResult, result, e);
-            return supResult;
-        }
-    }
+	@Override
+	public SupResult<JSONObject> queryMaritalStability(MaritalStabilityReqVo vo, SuplierQueryBean bean) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("xm", vo.getXm());
+		queryParams.put("sfzh", vo.getSfzh());
+		queryParams.put("yearNum", vo.getYearNum());
+		String url = bean.getUrl() + "/api0e148e05297f41cbace8feddaa53d47d";
+		bean.setUrl(url);
+		String result = null;
+		SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
+		try {
+			result = post(queryParams, bean);
+			return getSupResult(supResult, result, bean);
+		} catch (Throwable e) {
+			errMonitorMsg(log, " 【中电郑州】 婚姻稳定状况接口 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+					, bean.getOrderNo(), url, result, e);
+			setErrorSupResult(supResult, result, e);
+			return supResult;
+		}
+	}
 
-    @Override
-    public SupResult<JSONObject> queryMaritalRelationship(MaritalRelationshipReqVo vo, SuplierQueryBean bean) {
-        Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("manIdcard", vo.getManIdcard());
-        queryParams.put("manName", vo.getManName());
-        queryParams.put("womanIdcard", vo.getWomanIdcard());
-        queryParams.put("womanName", vo.getWomanName());
-        String url = bean.getUrl() + "/api7edb4e91482b452494c57352588af4cd";
-        bean.setUrl(url);
-        String result = null;
-        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
-        try {
-            result = post(queryParams, bean);
-            return getSupResult(supResult, result, bean);
-        } catch (Throwable e) {
-            errMonitorMsg(log, " 【中电郑州】 婚姻关系验证 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(), url, result, e);
-            setErrorSupResult(supResult, result, e);
-            return supResult;
-        }
-    }
+	@Override
+	public SupResult<JSONObject> queryMaritalRelationship(MaritalRelationshipReqVo vo, SuplierQueryBean bean) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("manIdcard", vo.getManIdcard());
+		queryParams.put("manName", vo.getManName());
+		queryParams.put("womanIdcard", vo.getWomanIdcard());
+		queryParams.put("womanName", vo.getWomanName());
+		String url = bean.getUrl() + "/api7edb4e91482b452494c57352588af4cd";
+		bean.setUrl(url);
+		String result = null;
+		SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
+		try {
+			result = post(queryParams, bean);
+			return getSupResult(supResult, result, bean);
+		} catch (Throwable e) {
+			errMonitorMsg(log, " 【中电郑州】 婚姻关系验证 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+					, bean.getOrderNo(), url, result, e);
+			setErrorSupResult(supResult, result, e);
+			return supResult;
+		}
+	}
 
-    @Override
-    public SupResult<JSONObject> queryMaritalStatus(MarriageInfoReqInfo vo, SuplierQueryBean bean) {
-        Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("xm", vo.getXm());
-        queryParams.put("sfzh", vo.getSfzh());
-        String url = bean.getUrl() + "/api499e49704c704dd59b0040a4fb023db4";
-        bean.setUrl(url);
-        String result = null;
-        SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
-        try {
-            result = get(queryParams, bean);
-            return getSupResult(supResult, result, bean);
-        } catch (Throwable e) {
-            errMonitorMsg(log, " 【中电郑州】 婚姻状况查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), url, result, e);
-            setErrorSupResult(supResult, result, e);
-            return supResult;
-        }
-    }
+	@Override
+	public SupResult<JSONObject> queryMaritalStatus(MarriageInfoReqInfo vo, SuplierQueryBean bean) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("xm", vo.getXm());
+		queryParams.put("sfzh", vo.getSfzh());
+		String url = bean.getUrl() + "/api499e49704c704dd59b0040a4fb023db4";
+		bean.setUrl(url);
+		String result = null;
+		SupResult<JSONObject> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
+		try {
+			result = get(queryParams, bean);
+			return getSupResult(supResult, result, bean);
+		} catch (Throwable e) {
+			errMonitorMsg(log, " 【中电郑州】 婚姻状况查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+					, bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), url, result, e);
+			setErrorSupResult(supResult, result, e);
+			return supResult;
+		}
+	}
 
-    @Override
-    public SupResult<JSONArray> queryEducationInfo(EducationInfoReqVo vo, SuplierQueryBean bean) {
-        Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("xm", vo.getXm());
-        queryParams.put("zjhm", vo.getZjhm());
-        String url = bean.getUrl() + "/api172610733b074eb18087f119aeefcb30";
-        bean.setUrl(url);
-        String result = null;
-        SupResult<JSONArray> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
-        try {
-            result = get(queryParams, bean);
-            return getSupResultArray(supResult, result, bean);
-        } catch (Throwable e) {
-            errMonitorMsg(log, " 【中电郑州】 婚姻关系验证 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
-                    , bean.getOrderNo(), url, result, e);
-            setErrorSupResult(supResult, result, e);
-            return supResult;
-        }
-    }
-
-
-    private String post(Map<String, Object> queryParams, SuplierQueryBean bean) {
-        Integer timeOut = bean.getTimeOut();
-        String appKey = JSONObject.parseObject(bean.getSignKey()).getString(bean.getSupProductCode());
-        String secretKey = JSONObject.parseObject(bean.getSignPwd()).getString(bean.getSupProductCode());
-
-        Map<String, String> headers = new HashMap<>();
-        headers.put("app-key", appKey);
-        headers.put("secret-key", secretKey);
-        String requestJson = JSONUtil.toJsonStr(queryParams);
-        String body = HttpRequest.post(bean.getUrl())
-                .body(requestJson)
-                .addHeaders(headers)
-                .setReadTimeout(timeOut)
-                .setReadTimeout(timeOut)
-                .execute()
-                .body();
-        log.info("【中电郑州】 {} request=【{}】 response=【{}】", bean.getUrl(), requestJson, body);
-        return body;
-    }
-
-    private String get(Map<String, Object> queryParams, SuplierQueryBean bean) {
-
-        Integer timeOut = bean.getTimeOut();
-        String appKey = JSONObject.parseObject(bean.getSignKey()).getString(bean.getSupProductCode());
-        String secretKey = JSONObject.parseObject(bean.getSignPwd()).getString(bean.getSupProductCode());
-
-        Map<String, String> headers = new HashMap<>();
-        headers.put("app-key", appKey);
-        headers.put("secret-key", secretKey);
-        String requestJson = JSONUtil.toJsonStr(queryParams);
-        String body = HttpUtil.createGet(bean.getUrl())
-                .addHeaders(headers)
-                .form(queryParams)
-                .setReadTimeout(timeOut)
-                .setReadTimeout(timeOut)
-                .execute()
-                .body();
-        log.info("【中电郑州】 {} request=【{}】 response=【{}】", bean.getUrl(), requestJson, body);
-        return body;
-    }
-
-    private SupResult<JSONObject> getSupResult(SupResult<JSONObject> supResult, String result, SuplierQueryBean bean) {
-        supResult.setRespTime(LocalDateTime.now());
-        supResult.setRespJson(result);
-        //判断是否有响应结果 无就是请求异常或超时
-        if (StringUtils.isBlank(result)) {
-            supResult.setRemark("供应商没有响应结果");
-            supResult.setState(ReqState.ERROR);
-            return supResult;
-        }
-        JSONObject resultObject = JSON.parseObject(result);
-        String code = resultObject.getString("code");
-        //                200：成功（收费）
-        if (SUCCESS.equals(code)) {
-            supResult.setFree(FreeStatus.YES);
-            supResult.setRemark("查询成功");
-            supResult.setState(ReqState.SUCCESS);
-            JSONObject data = resultObject.getJSONObject("data");
-            if (data != null) {
-                supResult.setData(data);
-                return supResult;
-            }
-        } else {
-            supResult.setFree(FreeStatus.NO);
-            supResult.setRemark("查询失败");
-            supResult.setState(ReqState.ERROR);
-            errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
-                    , bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), bean.getUrl(), result);
-            return supResult;
-        }
-        return supResult;
-    }
-
-    private SupResult<JSONArray> getSupResultArray(SupResult<JSONArray> supResult, String result, SuplierQueryBean bean) {
-        supResult.setRespTime(LocalDateTime.now());
-        supResult.setRespJson(result);
-        //判断是否有响应结果 无就是请求异常或超时
-        if (StringUtils.isBlank(result)) {
-            supResult.setRemark("供应商没有响应结果");
-            supResult.setState(ReqState.ERROR);
-            return supResult;
-        }
-        JSONObject resultObject = JSON.parseObject(result);
-        String code = resultObject.getString("code");
-        //                200：成功（收费）
-        if (SUCCESS.equals(code)) {
-            supResult.setFree(FreeStatus.YES);
-            supResult.setRemark("查询成功");
-            supResult.setState(ReqState.SUCCESS);
-            JSONArray data = resultObject.getJSONArray("data");
-            if (data != null) {
-                supResult.setData(data);
-                return supResult;
-            }
-        } else {
-            supResult.setFree(FreeStatus.NO);
-            supResult.setRemark("查询失败");
-            supResult.setState(ReqState.ERROR);
-            errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
-                    , bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), bean.getUrl(), result);
-            return supResult;
-        }
-        return supResult;
-    }
+	@Override
+	public SupResult<JSONArray> queryEducationInfo(EducationInfoReqVo vo, SuplierQueryBean bean) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("xm", vo.getXm());
+		queryParams.put("zjhm", vo.getZjhm());
+		String url = bean.getUrl() + "/api172610733b074eb18087f119aeefcb30";
+		bean.setUrl(url);
+		String result = null;
+		SupResult<JSONArray> supResult = new SupResult<>(JSONUtil.toJsonStr(queryParams), LocalDateTime.now());
+		try {
+			result = get(queryParams, bean);
+			return getSupResultArray(supResult, result, bean);
+		} catch (Throwable e) {
+			errMonitorMsg(log, " 【中电郑州】 婚姻关系验证 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+					, bean.getOrderNo(), url, result, e);
+			setErrorSupResult(supResult, result, e);
+			return supResult;
+		}
+	}
 
 
+	private String post(Map<String, Object> queryParams, SuplierQueryBean bean) {
+		Integer timeOut = bean.getTimeOut();
+		String appKey = JSONObject.parseObject(bean.getSignKey()).getString(bean.getSupProductCode());
+		String secretKey = JSONObject.parseObject(bean.getSignPwd()).getString(bean.getSupProductCode());
 
-    private void setErrorSupResult(SupResult supResult, String result, Throwable e) {
-        supResult.setState(ReqState.ERROR);
-        supResult.setRespTime(LocalDateTime.now());
-        supResult.setRespJson(result);
-        supResult.setRemark("异常：" + e.getMessage());
-    }
+		Map<String, String> headers = new HashMap<>();
+		headers.put("app-key", appKey);
+		headers.put("secret-key", secretKey);
+		String requestJson = JSONUtil.toJsonStr(queryParams);
+		String body = HttpRequest.post(bean.getUrl())
+				.body(requestJson)
+				.addHeaders(headers)
+				.setReadTimeout(timeOut)
+				.setReadTimeout(timeOut)
+				.execute()
+				.body();
+		log.info("【中电郑州】 {} request=【{}】 response=【{}】", bean.getUrl(), requestJson, body);
+		return body;
+	}
+
+	private String get(Map<String, Object> queryParams, SuplierQueryBean bean) {
+
+		Integer timeOut = bean.getTimeOut();
+		String appKey = JSONObject.parseObject(bean.getSignKey()).getString(bean.getSupProductCode());
+		String secretKey = JSONObject.parseObject(bean.getSignPwd()).getString(bean.getSupProductCode());
+
+		Map<String, String> headers = new HashMap<>();
+		headers.put("app-key", appKey);
+		headers.put("secret-key", secretKey);
+		String requestJson = JSONUtil.toJsonStr(queryParams);
+		String body = HttpUtil.createGet(bean.getUrl())
+				.addHeaders(headers)
+				.form(queryParams)
+				.setReadTimeout(timeOut)
+				.setReadTimeout(timeOut)
+				.execute()
+				.body();
+		log.info("【中电郑州】 {} request=【{}】 response=【{}】", bean.getUrl(), requestJson, body);
+		return body;
+	}
+
+	private SupResult<JSONObject> getSupResult(SupResult<JSONObject> supResult, String result, SuplierQueryBean bean) {
+		supResult.setRespTime(LocalDateTime.now());
+		supResult.setRespJson(result);
+		//判断是否有响应结果 无就是请求异常或超时
+		if (StringUtils.isBlank(result)) {
+			supResult.setRemark("供应商没有响应结果");
+			supResult.setState(ReqState.ERROR);
+			return supResult;
+		}
+		JSONObject resultObject = JSON.parseObject(result);
+		String code = resultObject.getString("code");
+		String message = resultObject.getString("message");
+		//                200：成功（收费）
+		if (SUCCESS.equals(code)) {
+			supResult.setFree(FreeStatus.YES);
+			supResult.setRemark("查询成功");
+			supResult.setState(ReqState.SUCCESS);
+			JSONObject data = resultObject.getJSONObject("data");
+			if (data != null) {
+				supResult.setData(data);
+				return supResult;
+			}
+		} else {
+			if ("调用超限".equals(message)) {
+				supResult.setRemark("调用超限");
+			} else {
+				supResult.setRemark("查询失败");
+			}
+			supResult.setFree(FreeStatus.NO);
+			supResult.setState(ReqState.ERROR);
+			errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
+					, bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), bean.getUrl(), result);
+			return supResult;
+		}
+		return supResult;
+	}
+
+	private SupResult<JSONArray> getSupResultArray(SupResult<JSONArray> supResult, String result, SuplierQueryBean bean) {
+		supResult.setRespTime(LocalDateTime.now());
+		supResult.setRespJson(result);
+		//判断是否有响应结果 无就是请求异常或超时
+		if (StringUtils.isBlank(result)) {
+			supResult.setRemark("供应商没有响应结果");
+			supResult.setState(ReqState.ERROR);
+			return supResult;
+		}
+		JSONObject resultObject = JSON.parseObject(result);
+		String code = resultObject.getString("code");
+		//                200：成功（收费）
+		if (SUCCESS.equals(code)) {
+			supResult.setFree(FreeStatus.YES);
+			supResult.setRemark("查询成功");
+			supResult.setState(ReqState.SUCCESS);
+			JSONArray data = resultObject.getJSONArray("data");
+			if (data != null) {
+				supResult.setData(data);
+				return supResult;
+			}
+		} else {
+			supResult.setFree(FreeStatus.NO);
+			supResult.setRemark("查询失败");
+			supResult.setState(ReqState.ERROR);
+			errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
+					, bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), bean.getUrl(), result);
+			return supResult;
+		}
+		return supResult;
+	}
+
+
+	private void setErrorSupResult(SupResult supResult, String result, Throwable e) {
+		supResult.setState(ReqState.ERROR);
+		supResult.setRespTime(LocalDateTime.now());
+		supResult.setRespJson(result);
+		supResult.setRemark("异常：" + e.getMessage());
+	}
 }

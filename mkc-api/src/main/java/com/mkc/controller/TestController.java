@@ -13,6 +13,7 @@ import com.mkc.api.common.constant.ProductPrivacyKey;
 import com.mkc.api.common.utils.ApiUtils;
 import com.mkc.common.utils.DateUtils;
 import com.mkc.common.utils.StringUtils;
+import com.mkc.common.utils.Tuple2;
 import com.mkc.common.utils.ZipStrUtils;
 import com.mkc.domain.*;
 import com.mkc.dto.SupLogLine;
@@ -36,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author tqlei
@@ -52,6 +54,22 @@ public class TestController {
 	@Autowired
 	private IMerInfoService merchantService;
 
+	private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(48, 48,
+			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
+
+	public static class Sleep10sResubmitHandler implements RejectedExecutionHandler {
+
+		@Override
+		public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+
+			try {
+				Thread.sleep(5000);
+				executor.submit(r);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
 	/**
 	 * 车五项
@@ -291,34 +309,51 @@ public class TestController {
 					.sheet(0)
 					.doReadSync();
 
+			AtomicInteger success = new AtomicInteger(0);
+			AtomicInteger fail = new AtomicInteger(0);
+			CountDownLatch countDownLatch = new CountDownLatch(readList.size());
+			long start = System.currentTimeMillis();
 			for (ExcelTest2W read : readList) {
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("idCard", read.getIdCard());
-				jsonObject.put("name", read.getName());
-				jsonObject.put("mobile", read.getMobile());
-				String plainText = read.getIdCard() + read.getName() + read.getMobile();
-				JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/financeInfo", jsonObject, plainText);
-				read.setCode(post.getString("code"));
-				try {
-					JSONObject data = post.getJSONObject("data");
-					if (Objects.nonNull(data)) {
-						read.setRange(data.getString("range"));
-						read.setHistory(data.getString("history"));
-						read.setStability(data.getString("stability"));
+				threadPoolExecutor.submit(() -> {
+					JSONObject jsonObject = new JSONObject();
+					jsonObject.put("idCard", read.getIdCard());
+					jsonObject.put("name", read.getName());
+					jsonObject.put("mobile", read.getMobile());
+					String plainText = read.getIdCard() + read.getName() + read.getMobile();
+					Tuple2<Integer, JSONObject> result = ApiUtils.queryApiWithStatus("http://api.zjbhsk.com/bg/financeInfo", jsonObject, plainText);
+					Integer status = result.getV1();
+					JSONObject post = result.getV2();
+					if (status == 200) {
+						success.incrementAndGet();
+					} else {
+						fail.incrementAndGet();
 					}
-				} catch (Exception e) {
-					read.setRange(post.getString("data"));
-					log.error(e.getMessage());
-				}
+					read.setCode(post.getString("code"));
+					try {
+						JSONObject data = post.getJSONObject("data");
+						if (Objects.nonNull(data)) {
+							read.setRange(data.getString("range"));
+							read.setHistory(data.getString("history"));
+							read.setStability(data.getString("stability"));
+						}
+					} catch (Exception e) {
+						read.setRange(post.getString("data"));
+						log.error(e.getMessage());
+					}
+					countDownLatch.countDown();
+				});
 			}
-			log.info(readList.size() + "条样例测试完毕！");
+			countDownLatch.await();
+			threadPoolExecutor.shutdown();
+			log.info(CharSequenceUtil.format("{}条样例测试完毕！总耗时{}ms, {}条成功, {}条失败"),
+					readList.size(), System.currentTimeMillis() - start, success.get(), fail.get());
 			setExcelRespProp(response, DateUtils.dateTimeNow() + "社保经济能力2W测试结果");
 			EasyExcel.write(response.getOutputStream())
 					.head(ExcelTest2W.class)
 					.excelType(ExcelTypeEnum.XLSX)
 					.sheet("社保经济能力2W测试结果")
 					.doWrite(readList);
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 			log.error(e.getMessage());
 		}
