@@ -181,11 +181,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
 				return supResult;
 			}
 		} else {
-			if ("调用超限".equals(message)) {
-				supResult.setRemark("调用超限");
-			} else {
-				supResult.setRemark("查询失败");
-			}
+			supResult.setRemark(message);
 			supResult.setFree(FreeStatus.NO);
 			supResult.setState(ReqState.ERROR);
 			errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
