@@ -95,7 +95,7 @@ spring:
 # 日志配置
 logging:
     file:
-        path: /opt/app/log
+        path: /opt/mkc/api/log
 
 monitor:
     mer:

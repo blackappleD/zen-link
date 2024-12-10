@@ -137,4 +137,4 @@ monitor:
 
 logging:
     file:
-        path: /opt/app/log
+        path: /opt/mkc/admin/log
