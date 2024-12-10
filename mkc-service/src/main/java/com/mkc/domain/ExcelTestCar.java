@@ -2,7 +2,10 @@ package com.mkc.domain;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
@@ -14,14 +17,17 @@ import java.util.Objects;
  */
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ExcelTestCar {
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		ExcelTestCar item = (ExcelTestCar) o;
-		return Objects.equals(plateNo, item.plateNo);
+		ExcelTestCar that = (ExcelTestCar) o;
+		return Objects.equals(this.plateNo, that.plateNo);
 	}
 	@Override
 	public int hashCode() {

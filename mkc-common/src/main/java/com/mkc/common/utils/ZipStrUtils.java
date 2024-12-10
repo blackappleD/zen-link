@@ -90,11 +90,9 @@ public class ZipStrUtils {
 				} catch (IOException ignored) {
 				}
 			}
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException ignored) {
-				}
+			try {
+				out.close();
+			} catch (IOException ignored) {
 			}
 		}
 

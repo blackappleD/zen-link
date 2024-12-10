@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * @author tqlei
@@ -54,14 +55,15 @@ public class TestController {
 	@Autowired
 	private IMerInfoService merchantService;
 
-	private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(48, 48,
+	private final ThreadPoolExecutor carThreadPoolExecutor = new ThreadPoolExecutor(10, 10,
+			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
+	private final ThreadPoolExecutor towWThreadPoolExecutor = new ThreadPoolExecutor(10, 10,
 			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
 
 	public static class Sleep10sResubmitHandler implements RejectedExecutionHandler {
 
 		@Override
 		public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-
 			try {
 				Thread.sleep(5000);
 				executor.submit(r);
@@ -76,18 +78,24 @@ public class TestController {
 	 */
 	@PostMapping("/testCar")
 	public void testCar(MultipartFile excel, int sheetNo, HttpServletResponse response) {
-		int taskSize = 27000;
-		ExecutorService executor = new ThreadPoolExecutor(3, 3, 5L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(taskSize));
-		CountDownLatch latch = new CountDownLatch(taskSize);
 		try {
 			List<ExcelTestCar> readList = EasyExcel.read(excel.getInputStream())
 					.headRowNumber(1)
 					.head(ExcelTestCar.class)
 					.sheet(sheetNo - 1)
 					.doReadSync();
+			List<ExcelTestCar> list = readList.stream()
+					.filter(cell -> {
+						if (cell.getPlateNo().contains("粤")) {
+							return !CharSequenceUtil.containsAny(cell.getPlateNo(), "港", "澳", "领", "学", "外", "警", ".");
+						}
+						return true;
+					})
+					.collect(Collectors.toList());
 
-			for (ExcelTestCar read : readList) {
-				executor.submit(() -> {
+			CountDownLatch latch = new CountDownLatch(list.size());
+			for (ExcelTestCar read : list) {
+				carThreadPoolExecutor.submit(() -> {
 					JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
 					String plaintext = read.getPlateNo();
 					JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/carInfo", jsonObject, plaintext);
@@ -119,15 +127,15 @@ public class TestController {
 					latch.countDown();
 				});
 			}
-			log.info(readList.size() + "条样例测试完毕！");
-
+			latch.await();
+			log.info(list.size() + "条样例测试完毕！");
 			setExcelRespProp(response, DateUtils.dateTimeNow() + "车五项测试结果");
 			EasyExcel.write(response.getOutputStream())
 					.head(ExcelTestCar.class)
 					.excelType(ExcelTypeEnum.XLSX)
 					.sheet("车五项测试结果" + sheetNo)
-					.doWrite(readList);
-		} catch (IOException e) {
+					.doWrite(list);
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 			log.error(e.getMessage());
 		}
@@ -314,7 +322,7 @@ public class TestController {
 			CountDownLatch countDownLatch = new CountDownLatch(readList.size());
 			long start = System.currentTimeMillis();
 			for (ExcelTest2W read : readList) {
-				threadPoolExecutor.submit(() -> {
+				towWThreadPoolExecutor.submit(() -> {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("idCard", read.getIdCard());
 					jsonObject.put("name", read.getName());
@@ -344,7 +352,6 @@ public class TestController {
 				});
 			}
 			countDownLatch.await();
-			threadPoolExecutor.shutdown();
 			log.info(CharSequenceUtil.format("{}条样例测试完毕！总耗时{}ms, {}条成功, {}条失败"),
 					readList.size(), System.currentTimeMillis() - start, success.get(), fail.get());
 			setExcelRespProp(response, DateUtils.dateTimeNow() + "社保经济能力2W测试结果");

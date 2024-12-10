@@ -15,12 +15,13 @@ import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +78,7 @@ public class ExcelMultipleSheetsUtil {
             // 写出文件
 
             String filename = ExcelUtil.encodingFilename(fileName);
-            out = new FileOutputStream(ExcelUtil.getAbsoluteFile(filename));
+            out = Files.newOutputStream(Paths.get(ExcelUtil.getAbsoluteFile(filename)));
             workbook.write(out);
             return AjaxResult.success(filename);
         } catch (Exception e) {

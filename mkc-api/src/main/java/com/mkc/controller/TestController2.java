@@ -29,10 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -43,19 +41,21 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@Profile({"dev", "local", "test", "pre"})
+@Profile({"local"})
 @RequestMapping("/test2")
 public class TestController2 {
 
 	private static final String DOWNLOAD_FILEPATH = "C:/Users/achen/Downloads/";
 
 	public static <T> List<T> readExcel(String filePath, Class<T> clazz) {
+
 		return EasyExcel.read(new File(filePath))
 				.headRowNumber(1)
 				.head(clazz)
-				.sheet(0)
-				.doReadSync();
+				.doReadAllSync();
+
 	}
+
 
 
 	/**
@@ -103,6 +103,15 @@ public class TestController2 {
 						date, statistic.getTotal(), statistic.getException(), statistic.getFindYes(), statistic.findNo)));
 	}
 
+	@Data
+	private static class EducationExport {
+		@ExcelProperty("姓名")
+		private String name;
+		@ExcelProperty("身份证号")
+		private String idNo;
+		@ExcelProperty("手机号")
+		private String mobile;
+	}
 
 	@Data
 	private static class Statistic {
@@ -299,6 +308,88 @@ public class TestController2 {
 		}
 		System.out.println(CharSequenceUtil.format("yes = {}, no = {}", yes, no));
 
+	}
+
+	//	@PostConstruct
+	public void testCarMerLogStatistic() {
+
+		List<MerLogLine> readList = readExcel("C:/Users/achen/Downloads/1733706003507商户调用日志数据.xlsx", MerLogLine.class);
+
+		Map<String, ExcelTestCar> plateNoMap = readExcel("D:\\跑数\\车五项\\12.06\\jr车五项样本(1206).xlsx", ExcelTestCar.class)
+				.stream()
+				.distinct()
+				.collect(Collectors.toMap(ExcelTestCar::getPlateNo, Function.identity()));
+
+		List<MerResDTO> collect = readList.stream()
+				.map(line -> {
+					try {
+						String gunzip = ZipStrUtils.gunzip(line.getResJson());
+						MerResDTO bean = JSONUtil.toBean(gunzip, MerResDTO.class);
+						bean.getData().setPlateNo(JsonPath.read(line.getReqJson(), "$.plateNo"));
+						return bean;
+					} catch (Exception e) {
+						MerResDTO bean = JSONUtil.toBean(line.getResJson(), MerResDTO.class);
+						if (Objects.isNull(bean.getData())) {
+							bean.setData(new MerResDTO.Result());
+						}
+						bean.getData().setPlateNo(JsonPath.read(line.getReqJson(), "$.plateNo"));
+						return bean;
+					}
+				}).collect(Collectors.toList());
+		collect.forEach(
+				res -> {
+					MerResDTO.Result data = res.getData();
+					if (plateNoMap.containsKey(data.getPlateNo())) {
+						ExcelTestCar car = plateNoMap.get(data.getPlateNo());
+						car.setCode(res.getCode());
+						car.setMsg(res.getCode().equals("200") ? "成功" : res.getCode().equals("404") ? "查无" : "异常");
+						car.setEngineNo(data.getEngineNo());
+						car.setBrandName(data.getBrandName());
+						car.setVin(data.getVin());
+						car.setInitialRegistrationDate(data.getInitialRegistrationDate());
+						car.setModelNo(data.getModelNo());
+						car.setMissParam(CharSequenceUtil.isAllNotBlank(data.getVin(), data.getModelNo(), data.getBrandName(), data.getEngineNo(), data.getInitialRegistrationDate()) ? "否" : "是");
+					}
+				});
+
+		List<ExcelTestCar> notQuery = plateNoMap.values().stream().filter(o -> CharSequenceUtil.isBlank(o.getCode()))
+				.map(o -> {
+					ExcelTestCar car = new ExcelTestCar();
+					car.setPlateNo(o.getPlateNo());
+					return car;
+				}).collect(Collectors.toList());
+
+		EasyExcel.write(new File("D:\\跑数\\车五项\\12.06\\1206车五项跑数结果.xlsx"))
+				.head(ExcelTestCar.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("调用日志")
+				.doWrite(plateNoMap.values());
+
+		EasyExcel.write(new File("D:\\跑数\\车五项\\12.06\\1206车五项漏查.xlsx"))
+				.head(ExcelTestCar.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("调用日志")
+				.doWrite(notQuery);
+
+	}
+
+	@Data
+	public static class MerResDTO {
+		private String code;
+		private Result data;
+		private String free;
+		private String msg;
+		private String seqNo;
+
+		@Data
+		public static class Result {
+			private String plateNo;
+			private String engineNo;
+			private String brandName;
+			private String vin;
+			private String initialRegistrationDate;
+			private String modelNo;
+		}
 	}
 
 	/**

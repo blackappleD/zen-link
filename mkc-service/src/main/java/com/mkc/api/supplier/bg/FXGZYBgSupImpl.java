@@ -129,6 +129,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                                 JSONObject jsonObject = authResults.getJSONObject(i);
                                 if (Objects.equals(jsonObject.getString("authStateDesc"), "核查成功")) {
                                     JSONArray resultList = jsonObject.getJSONArray("resultList");
+                                    // resultList不为空才计费
                                     if (!CollectionUtils.isEmpty(resultList)) {
                                         //15天后计费每次
                                         if (fxReqRecord.getUpdateTime().getTime() - fxReqRecord.getCreateTime().getTime() > 1296000000) {

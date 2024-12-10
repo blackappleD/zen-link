@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mkc.common.annotation.Excel;
 import com.mkc.common.core.domain.BaseEntity;
 import lombok.Data;
@@ -68,7 +67,7 @@ public class FxReqRecord extends BaseEntity {
     private transient String unknownInfo;
     @Excel(name = "是否查得")
     private transient Boolean isGet;
-    @Excel(name = "进价")
+    @Excel(name = "售价")
     private transient Integer inPrice = 0;
     @Excel(name = "计费笔数")
     private Integer feeCount = 0;
