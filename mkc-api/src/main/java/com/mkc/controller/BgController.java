@@ -722,6 +722,9 @@ public class BgController extends BaseController {
 		houseInfoReqVo.setSign(sign);
 		String reqJson = null;
 		try {
+			if (!persons.startsWith("[")) {
+				persons = "[" + persons + "]";
+			}
 			List<PersonInfoReqVo> personInfoReqVos = JSONUtil.toList(persons, PersonInfoReqVo.class);
 			houseInfoReqVo.setPersons(personInfoReqVos);
 			reqJson = JSONUtil.toJsonStr(houseInfoReqVo);
