@@ -7,6 +7,8 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
 import java.io.File;
@@ -20,6 +22,8 @@ import java.util.Map;
  * @description: description
  * @date 2024/12/6 14:43
  */
+@Profile("local")
+@Component
 public class RequestDemo {
 
 	/**
@@ -28,7 +32,7 @@ public class RequestDemo {
 	public void maritalStatusRequest() {
 		String url = "http://localhost:8080/maritalstatus";
 		// sign加签方式参考接口文档
-		MaritalReqDTO dto = new MaritalReqDTO("xxx", "xxx", "xxx", "xxx", "xxx");
+		MaritalReqDTO dto = new MaritalReqDTO("xxx", "xxx", "xxx", "xxx", "xxx", "xxx");
 
 		try (HttpResponse execute = HttpRequest.post(url)
 				.body(JSONUtil.toJsonStr(dto))
@@ -45,6 +49,7 @@ public class RequestDemo {
 		private String sign;
 		private String xm;
 		private String sfzh;
+		private String key;
 
 	}
 
@@ -53,10 +58,9 @@ public class RequestDemo {
 	 */
 	public void houseRequest() {
 		String url = "http://localhost:8083/bg/houseReqInfo";
-		File file1 = new File("D:\\跑数\\不动产\\11.27\\授权书_吉.pdf");
-		File file2 = new File("D:\\跑数\\不动产\\11.27\\授权书_倪.pdf");
-		String persons = JSONUtil.toJsonStr(new PersonInfo("张三", "xxxxxxxxxxx"));
-		String merCode = "Test";
+		File file1 = new File("C:\\Users\\achen\\Desktop\\微信图片_20241210094019.jpg");
+		String persons = JSONUtil.toJsonStr(ListUtil.of(new PersonInfo("张学友", "6666666666666")));
+		String merCode = "ZDZJ";
 		String pwd = "xxxxx";
 		Map<String, Object> params = new HashMap<>();
 		params.put("types", "3");
@@ -64,12 +68,13 @@ public class RequestDemo {
 		params.put("merCode", merCode);
 		params.put("merSeq", RandomUtil.randomString(16));
 		params.put("sign", sign(merCode + persons, pwd));
+		params.put("key", "xxxx");
 		try (HttpResponse execute = HttpRequest.post(url)
 				.form(params)
 				.form("files", file1)
-				.form("files", file2)
 				.execute()) {
 			String result = execute.body();
+			System.out.println(result);
 		}
 	}
 
@@ -78,7 +83,7 @@ public class RequestDemo {
 	 */
 	public void houseResultRequest() {
 		String url = "http://localhost:8083/bg/houseResultReqInfo";
-		HouseResultReqDTO dto = new HouseResultReqDTO("xxx", "xxx", ListUtil.of(""), "xxx", "xxx");
+		HouseResultReqDTO dto = new HouseResultReqDTO("xxx", "xxx", ListUtil.of(""), "xxx", "xxx", "xxx");
 
 		try (HttpResponse execute = HttpRequest.post(url)
 				.body(JSONUtil.toJsonStr(dto))
@@ -96,6 +101,7 @@ public class RequestDemo {
 		private List<String> personCardNumList;
 		private String reqOrderNo;
 		private String sign;
+		private String key;
 
 	}
 

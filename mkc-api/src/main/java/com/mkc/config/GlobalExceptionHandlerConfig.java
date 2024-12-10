@@ -30,6 +30,7 @@ public class GlobalExceptionHandlerConfig {
     /**
      * 内部服务异常处理
      *
+     *
      * @param e
      * @return
      * @throws Exception

@@ -57,7 +57,6 @@ public class TestController2 {
 	}
 
 
-
 	/**
 	 * 全国高等学历信息查询 /educationInfo 日志分析
 	 */
@@ -310,17 +309,17 @@ public class TestController2 {
 
 	}
 
-	//	@PostConstruct
 	public void testCarMerLogStatistic() {
 
-		List<MerLogLine> readList = readExcel("C:/Users/achen/Downloads/1733706003507商户调用日志数据.xlsx", MerLogLine.class);
+		List<MerLogLine> readList = readExcel("C:\\Users\\achen\\Downloads\\111\\2024-12-10-15-19-33_EXPORT_XLSX_16777742_280_0.xlsx", MerLogLine.class);
 
-		Map<String, ExcelTestCar> plateNoMap = readExcel("D:\\跑数\\车五项\\12.06\\jr车五项样本(1206).xlsx", ExcelTestCar.class)
+		Map<String, ExcelTestCar> plateNoMap = readExcel("D:\\跑数\\车五项\\12.06\\1206车五项跑数结果.xlsx", ExcelTestCar.class)
 				.stream()
 				.distinct()
 				.collect(Collectors.toMap(ExcelTestCar::getPlateNo, Function.identity()));
 
 		List<MerResDTO> collect = readList.stream()
+				.filter(line -> CharSequenceUtil.isNotBlank(line.getResJson()))
 				.map(line -> {
 					try {
 						String gunzip = ZipStrUtils.gunzip(line.getResJson());
@@ -359,13 +358,13 @@ public class TestController2 {
 					return car;
 				}).collect(Collectors.toList());
 
-		EasyExcel.write(new File("D:\\跑数\\车五项\\12.06\\1206车五项跑数结果.xlsx"))
+		EasyExcel.write(new File("D:\\跑数\\车五项\\12.06\\1206车五项跑数结果.xlsx" + System.currentTimeMillis()))
 				.head(ExcelTestCar.class)
 				.excelType(ExcelTypeEnum.XLSX)
 				.sheet("调用日志")
 				.doWrite(plateNoMap.values());
 
-		EasyExcel.write(new File("D:\\跑数\\车五项\\12.06\\1206车五项漏查.xlsx"))
+		EasyExcel.write(new File("D:\\跑数\\车五项\\12.06\\1206车五项漏查.xlsx" + System.currentTimeMillis()))
 				.head(ExcelTestCar.class)
 				.excelType(ExcelTypeEnum.XLSX)
 				.sheet("调用日志")
