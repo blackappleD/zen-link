@@ -7,7 +7,9 @@ server:
   servlet:
     # 应用的访问路径
     context-path: /
-
+  tomcat:
+    connection-timeout: 600s
+    keep-alive-timeout: 600s
 # Spring配置
 spring:
   application:
