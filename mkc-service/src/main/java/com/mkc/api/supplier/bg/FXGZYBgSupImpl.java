@@ -65,7 +65,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
             if (StringUtils.isNotBlank(bean.getUrl())) {
                 baseUrlArr = bean.getUrl().split(",");
             }
-            url = baseUrlArr[0] + "/open/verification/house/getCheckResult";
+            url = baseUrlArr[0] + "/open/verification/fx/getCheckResult";
             List<String> personCardNumList = vo.getPersonCardNumList();
             JSONObject data = new JSONObject();
             data.put("reqOrderNo", vo.getReqOrderNo());
@@ -100,9 +100,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                     if (!CollectionUtils.isEmpty(list)) {
                         fxReqRecord = list.get(0);
                         isExist = true;
-                    }
-                    //不存在
-                    else {
+                    } else {
                         fxReqRecord.setCreateTime(new Date());
                     }
 
@@ -177,12 +175,10 @@ public class FXGZYBgSupImpl implements IBgSupService {
                     return supResult;
                 }
             } else if (NO.equals(code)) {
-                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
                 supResult.setState(ReqState.NOGET);
                 return supResult;
             } else {
-                supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
                 supResult.setState(ReqState.ERROR);
                 errMonitorMsg(log, "  不动产信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
@@ -273,7 +269,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
                 }
 
             }
-            url = baseUrlArr[0] + "/open/verification/house/houseCheck";
+            url = baseUrlArr[0] + "/open/verification/fx/houseCheck";
 
             JSONObject reqData = new JSONObject();
             reqData.put("persons", vo.getPersons());

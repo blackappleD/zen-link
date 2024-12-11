@@ -21,10 +21,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -40,10 +39,9 @@ import java.util.stream.Collectors;
  * @date 2024/11/27 14:02
  */
 @Slf4j
-@RestController
 @Profile({"local"})
-@RequestMapping("/test2")
-public class TestController2 {
+@Component
+public class PostConstructTask {
 
 	private static final String DOWNLOAD_FILEPATH = "C:/Users/achen/Downloads/";
 
@@ -55,7 +53,6 @@ public class TestController2 {
 				.doReadAllSync();
 
 	}
-
 
 	/**
 	 * 全国高等学历信息查询 /educationInfo 日志分析
@@ -390,38 +387,6 @@ public class TestController2 {
 			private String modelNo;
 		}
 	}
-
-	/**
-	 * 车五项异常请求中查询的请求数统计
-	 *
-	 * @param file
-	 */
-	@PostMapping("/cwx/exception")
-	public void exception(@RequestParam("file") MultipartFile file) {
-
-		List<ExcelCell> dataList = new ArrayList<>();
-		int none = 0;
-		try (ExcelReader excelReader = EasyExcel.read(file.getInputStream()).build()) {
-
-			ReadSheet readSheet1 =
-					EasyExcel.readSheet(0).head(ExcelCell.class).registerReadListener(new DemoDataListener(dataList)).build();
-			ReadSheet readSheet2 =
-					EasyExcel.readSheet(1).head(ExcelCell.class).registerReadListener(new DemoDataListener(dataList)).build();
-			excelReader.read(readSheet1, readSheet2);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		for (ExcelCell data : dataList) {
-			ExcelDTO response = JSONUtil.toBean(data.getJson(), ExcelDTO.class);
-			if ("1910020001".equals(response.getCode())) {
-				none++;
-			}
-
-		}
-
-		System.out.println(CharSequenceUtil.format("not found = {}", none));
-	}
-
 
 	@Data
 	public static class ExcelCell {

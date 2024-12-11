@@ -1,9 +1,15 @@
 package com.mkc.dto;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 /**
  * @author chentong
@@ -39,7 +45,26 @@ public class SupLogLine {
 	@ExcelProperty("查询状态")
 	private String status;
 
-	@ExcelProperty("请求时间")
-	private LocalDateTime  reqTime;
+	@ExcelProperty(value = "请求时间", converter = LocalDateTimeConverter.class)
+	private LocalDateTime reqTime;
+
+	public static class LocalDateTimeConverter implements Converter<LocalDateTime> {
+		@Override
+		public LocalDateTime convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) throws Exception {
+			try {
+				return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss");
+			} catch (DateTimeParseException e) {
+				try {
+					return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.SSS");
+				} catch (DateTimeParseException e1) {
+					try {
+						return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.SS");
+					} catch (DateTimeParseException e2) {
+						return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.S");
+					}
+				}
+			}
+		}
+	}
 
 }

@@ -109,7 +109,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
 			result = get(queryParams, bean);
 			return getSupResultArray(supResult, result, bean);
 		} catch (Throwable e) {
-			errMonitorMsg(log, " 【中电郑州】 婚姻关系验证 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+			errMonitorMsg(log, " 【中电郑州】 全国高等学历信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
 			setErrorSupResult(supResult, result, e);
 			return supResult;
