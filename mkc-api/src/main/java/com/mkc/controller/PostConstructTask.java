@@ -24,7 +24,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -44,11 +43,6 @@ import java.util.stream.Collectors;
 public class PostConstructTask {
 
 	private static final String DOWNLOAD_FILEPATH = "C:/Users/achen/Downloads/";
-	private final ResourceUrlProvider mvcResourceUrlProvider;
-
-	public PostConstructTask(ResourceUrlProvider mvcResourceUrlProvider) {
-		this.mvcResourceUrlProvider = mvcResourceUrlProvider;
-	}
 
 	public static <T> List<T> readExcel(String filePath, Class<T> clazz) {
 
