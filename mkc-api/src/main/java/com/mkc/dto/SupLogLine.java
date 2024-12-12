@@ -3,8 +3,10 @@ package com.mkc.dto;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.WriteConverterContext;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import lombok.Data;
 
@@ -55,15 +57,35 @@ public class SupLogLine {
 				return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss");
 			} catch (DateTimeParseException e) {
 				try {
-					return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.SSS");
+					return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.S");
 				} catch (DateTimeParseException e1) {
 					try {
 						return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.SS");
 					} catch (DateTimeParseException e2) {
-						return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.S");
+						try {
+							return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.SSS");
+						} catch (DateTimeParseException e3) {
+							try {
+								return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.SSSS");
+							} catch (DateTimeParseException e4) {
+								try {
+
+									return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.SSSSS");
+								}catch (DateTimeParseException e5) {
+									return LocalDateTimeUtil.parse(cellData.getStringValue(), "yyyy-MM-dd HH:mm:ss.SSSSSS");
+								}
+							}
+						}
 					}
 				}
 			}
+		}
+
+
+		@Override
+		public WriteCellData<?> convertToExcelData(WriteConverterContext<LocalDateTime> context) throws Exception {
+
+			return new WriteCellData<>(LocalDateTimeUtil.format(context.getValue(), "yyyy-MM-dd HH:mm:ss"));
 		}
 	}
 

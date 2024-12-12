@@ -4,11 +4,10 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
-import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.jayway.jsonpath.JsonPath;
 import com.mkc.common.enums.FreeStatus;
@@ -17,17 +16,18 @@ import com.mkc.common.utils.ZipStrUtils;
 import com.mkc.domain.ExcelTestCar;
 import com.mkc.dto.MerLogLine;
 import com.mkc.dto.SupLogLine;
+import com.mkc.dto.fx.HouseInfoDTO;
+import com.mkc.dto.fx.statistic.FxHouseStatisticByPerson;
+import com.mkc.tool.JsonUtil;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
 import java.io.File;
-import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -44,6 +44,11 @@ import java.util.stream.Collectors;
 public class PostConstructTask {
 
 	private static final String DOWNLOAD_FILEPATH = "C:/Users/achen/Downloads/";
+	private final ResourceUrlProvider mvcResourceUrlProvider;
+
+	public PostConstructTask(ResourceUrlProvider mvcResourceUrlProvider) {
+		this.mvcResourceUrlProvider = mvcResourceUrlProvider;
+	}
 
 	public static <T> List<T> readExcel(String filePath, Class<T> clazz) {
 
@@ -51,6 +56,100 @@ public class PostConstructTask {
 				.headRowNumber(1)
 				.head(clazz)
 				.doReadAllSync();
+
+	}
+
+	public void houseStatistic() {
+		List<FxReqDTO> dtoList = readExcel("D:\\work\\不动产\\t_fx_req_record.xlsx", FxReqDTO.class);
+
+		List<FxReqDTO> filterList = dtoList.stream()
+				.filter(dto -> {
+					if (dto.getUpdateTime().isAfter(LocalDateTimeUtil.parse("2024-11-01 00:00:00", "yyyy-MM-dd HH:mm:ss"))
+							&& dto.getUpdateTime().isBefore(LocalDateTimeUtil.parse("2024-11-30 23:59:59", "yyyy-MM-dd HH:mm:ss"))) {
+						return true;
+					}
+					return dto.getCreateTime().isAfter(LocalDateTimeUtil.parse("2024-11-01 00:00:00", "yyyy-MM-dd HH:mm:ss"))
+							&& dto.getCreateTime().isBefore(LocalDateTimeUtil.parse("2024-11-30 23:59:59", "yyyy-MM-dd HH:mm:ss"));
+				})
+				.collect(Collectors.toList());
+
+
+		List<FxHouseStatisticByPerson> statistics = new ArrayList<>();
+
+		filterList.forEach(dto -> {
+			if (dto.getCreateTime().isAfter(LocalDateTimeUtil.parse("2024-11-01 00:00:00", "yyyy-MM-dd HH:mm:ss"))
+					&& dto.getCreateTime().isBefore(LocalDateTimeUtil.parse("2024-11-30 23:59:59", "yyyy-MM-dd HH:mm:ss"))) {
+				if (CharSequenceUtil.isNotBlank(dto.getMerResultData())) {
+					HouseInfoDTO houseInfo = JsonUtil.fromJson(dto.getMerResultData(), HouseInfoDTO.class);
+					for (HouseInfoDTO.AuthResult authResult : houseInfo.getAuthResults()) {
+						FxHouseStatisticByPerson person = new FxHouseStatisticByPerson();
+						person.setReqOrderNo(houseInfo.getReqOrderNo());
+
+						person.setCreateTime(dto.getCreateTime());
+						person.setUpdateTime(dto.getUpdateTime());
+						person.setMerResultData(dto.getMerResultData());
+						person.setMerRequestData(dto.getMerRequestData());
+						person.setUserName(authResult.getCardNum());
+						if (!authResult.getResultList().isEmpty()) {
+							person.setPay("是");
+							person.setGet("是");
+						}
+						statistics.add(person);
+					}
+				}
+				// 如果不是11月创建的请求那么，调用半年前创建的请求也会计费
+			} else if (dto.getUpdateTime().isAfter(dto.getCreateTime().plusMonths(6L))) {
+				if (CharSequenceUtil.isNotBlank(dto.getMerResultData())) {
+					HouseInfoDTO houseInfo = JsonUtil.fromJson(dto.getMerResultData(), HouseInfoDTO.class);
+					for (HouseInfoDTO.AuthResult authResult : houseInfo.getAuthResults()) {
+						FxHouseStatisticByPerson person = new FxHouseStatisticByPerson();
+						person.setReqOrderNo(houseInfo.getReqOrderNo());
+						person.setCreateTime(dto.getCreateTime());
+						person.setUpdateTime(dto.getUpdateTime());
+						person.setMerResultData(dto.getMerResultData());
+						person.setMerRequestData(dto.getMerRequestData());
+						person.setUserName(authResult.getCardNum());
+						if (!authResult.getResultList().isEmpty()) {
+							person.setPay("是");
+							person.setGet("是");
+						}
+						statistics.add(person);
+					}
+				}
+			}
+		});
+
+		EasyExcel.write(new File("D:\\work\\不动产\\法信11月不动产计费统计.xlsx"))
+				.head(FxHouseStatisticByPerson.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("sheet")
+				.doWrite(statistics);
+
+
+	}
+
+	@Data
+	public static class FxReqDTO {
+
+		@ColumnWidth(20)
+		@ExcelProperty("req_order_no")
+		private String reqOrderNo;
+
+		@ColumnWidth(20)
+		@ExcelProperty(value = "create_time", converter = SupLogLine.LocalDateTimeConverter.class)
+		private LocalDateTime createTime;
+
+		@ColumnWidth(20)
+		@ExcelProperty(value = "update_time", converter = SupLogLine.LocalDateTimeConverter.class)
+		private LocalDateTime updateTime;
+
+		@ColumnWidth(20)
+		@ExcelProperty("mer_request_data")
+		private String merRequestData;
+
+		@ColumnWidth(20)
+		@ExcelProperty("mer_result_data")
+		private String merResultData;
 
 	}
 
@@ -157,7 +256,7 @@ public class PostConstructTask {
 				read.setMsg("异常");
 			} else if ("1".equals(data.getStatus())) {
 				String gunzip = ZipStrUtils.gunzip(data.getResJson());
-				ExcelDTO.Result result = JSONUtil.toBean(gunzip, ExcelDTO.class).getResult();
+				CarResDTO.Result result = JSONUtil.toBean(gunzip, CarResDTO.class).getResult();
 				read.setMsg("成功");
 				String engineNo = result.getEngine();
 				String vin = result.getVin();
@@ -276,35 +375,35 @@ public class PostConstructTask {
 	}
 
 	// 车五项，查得数据中缺项数据统计
-	@PostMapping("/cwx/data_right")
-	public void dataRight(@RequestParam("file") MultipartFile file) {
-
-		List<ExcelCell> dataList = new ArrayList<>();
-		int yes = 0;
-		int no = 0;
-		try (ExcelReader excelReader = EasyExcel.read(file.getInputStream()).build()) {
-
-			ReadSheet readSheet1 =
-					EasyExcel.readSheet(0).head(ExcelCell.class).registerReadListener(new DemoDataListener(dataList)).build();
-			ReadSheet readSheet2 =
-					EasyExcel.readSheet(1).head(ExcelCell.class).registerReadListener(new DemoDataListener(dataList)).build();
-			excelReader.read(readSheet1, readSheet2);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+	public void dataRight() {
+		String[] filePaths = {"D:\\跑数\\车五项\\11.09\\车五项跑数结果.xlsx", "D:\\跑数\\车五项\\11.21\\20241121180630车五项跑数结果.xlsx",
+				"D:\\跑数\\车五项\\11.29\\11.27车五项跑数结果.xlsx", "D:\\跑数\\车五项\\12.06\\1206车五项跑数结果62w.xlsx"};
+		for (String filepath : filePaths) {
+			List<ExcelTestCar> excelTestCars = readExcel(filepath, ExcelTestCar.class);
+			long aNull = excelTestCars.stream().filter(car -> {
+				if ("200".equals(car.getCode())) {
+					if (!CharSequenceUtil.isAllNotBlank(car.getModelNo(), car.getBrandName(), car.getVin(), car.getVin(), car.getInitialRegistrationDate())) {
+						return true;
+					} else {
+						return isAnyEqual("null", car.getBrandName(), car.getVin(), car.getInitialRegistrationDate(), car.getEngineNo(), car.getModelNo());
+					}
+				}
+				return false;
+			}).count();
+			System.err.println(filepath + "  缺项： " + aNull);
 		}
-		for (ExcelCell data : dataList) {
-			String gunzip = ZipStrUtils.gunzip(data.getJson());
-			ExcelDTO.Result result = JSONUtil.toBean(gunzip, ExcelDTO.class).getResult();
-			if (CharSequenceUtil.isAllNotBlank(result.getVin(), result.getEngine(), result.getCarName(), result.getRecordDate(), result.getVehicleModel())) {
-				yes++;
-			} else {
-				no++;
-			}
-
-		}
-		System.out.println(CharSequenceUtil.format("yes = {}, no = {}", yes, no));
 
 	}
+
+	private static boolean isAnyEqual(String target, String... args) {
+		for (String arg : args) {
+			if (!arg.equals(target)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	public void testCarMerLogStatistic() {
 
@@ -397,7 +496,7 @@ public class PostConstructTask {
 	}
 
 	@Data
-	public static class ExcelDTO {
+	public static class CarResDTO {
 
 		private String code;
 		private String message;

@@ -55,6 +55,8 @@ public class TestController {
 			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
 	private final ThreadPoolExecutor towWThreadPoolExecutor = new ThreadPoolExecutor(10, 10,
 			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
+	private final ThreadPoolExecutor houseThreadPoolExecutor = new ThreadPoolExecutor(10, 10,
+			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
 
 	public static class Sleep10sResubmitHandler implements RejectedExecutionHandler {
 
@@ -155,65 +157,73 @@ public class TestController {
 				.sheet(sheetNo - 1)
 				.doReadSync();
 		List<ExcelTestHouse> writeList = new ArrayList<>();
-		readList.forEach(line -> {
-
-			String responseJson = ZipStrUtils.gunzip(line.getResJson());
-
-			BdcResponse res = JSONUtil.toBean(responseJson, BdcResponse.class);
-
-			BdcRequest req = JSONUtil.toBean(line.getReqJson(), BdcRequest.class);
-
-			String reqOrderNo = res.getData().getReqOrderNo();
-			String name = req.getData().getPersons().get(0).getName();
-			String cardNum = req.getData().getPersons().get(0).getCardNum();
-
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("reqOrderNo", reqOrderNo);
-			jsonObject.put("personCardNumList", Collections.singletonList(cardNum));
-			JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", jsonObject, reqOrderNo);
+		CountDownLatch latch = new CountDownLatch(readList.size());
+		readList.forEach(line -> houseThreadPoolExecutor.submit(() -> {
 			try {
-				JSONObject data = post.getJSONObject("data");
-				if (Objects.nonNull(data)) {
-					JSONArray authResults = data.getJSONArray("authResults");
-					if (!CollectionUtils.isEmpty(authResults)) {
-						JSONObject authResult = authResults.getJSONObject(0);
-						JSONArray resultList = authResult.getJSONArray("resultList");
-						if (!CollectionUtils.isEmpty(resultList)) {
-							for (int i = 0; i < resultList.size(); i++) {
-								JSONObject result = resultList.getJSONObject(i);
+				String responseJson = ZipStrUtils.gunzip(line.getResJson());
+				BdcResponse res = JSONUtil.toBean(responseJson, BdcResponse.class);
+
+				BdcRequest req = JSONUtil.toBean(line.getReqJson(), BdcRequest.class);
+
+				String reqOrderNo = res.getData().getReqOrderNo();
+				String name = req.getData().getPersons().get(0).getName();
+				String cardNum = req.getData().getPersons().get(0).getCardNum();
+
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("reqOrderNo", reqOrderNo);
+				jsonObject.put("personCardNumList", Collections.singletonList(cardNum));
+				JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", jsonObject, reqOrderNo);
+				try {
+					JSONObject data = post.getJSONObject("data");
+					if (Objects.nonNull(data)) {
+						JSONArray authResults = data.getJSONArray("authResults");
+						if (!CollectionUtils.isEmpty(authResults)) {
+							JSONObject authResult = authResults.getJSONObject(0);
+							JSONArray resultList = authResult.getJSONArray("resultList");
+							if (!CollectionUtils.isEmpty(resultList)) {
+								for (int i = 0; i < resultList.size(); i++) {
+									JSONObject result = resultList.getJSONObject(i);
+									ExcelTestHouse excelTestHouse = new ExcelTestHouse();
+									excelTestHouse.setXm(name);
+									excelTestHouse.setPersonCardNum(cardNum);
+									excelTestHouse.setCode(post.getString("code"));
+									excelTestHouse.setReqOrderNo(reqOrderNo);
+									excelTestHouse.setCertNo(result.getString("certNo"));
+									excelTestHouse.setUnitNo(result.getString("unitNo"));
+									excelTestHouse.setLocation(result.getString("location"));
+									excelTestHouse.setOwnership(result.getString("ownership"));
+									excelTestHouse.setHouseArea(result.getString("houseArea"));
+									excelTestHouse.setRightsType(result.getString("rightsType"));
+									excelTestHouse.setIsSealUp(result.getString("isSealUp"));
+									excelTestHouse.setIsMortgaged(result.getString("isMortgaged"));
+									excelTestHouse.setRightsStartTime(result.getString("rightsStartTime"));
+									excelTestHouse.setRightsEndTime(result.getString("rightsEndTime"));
+									excelTestHouse.setUseTo(result.getString("useTo"));
+									writeList.add(excelTestHouse);
+								}
+							} else {
 								ExcelTestHouse excelTestHouse = new ExcelTestHouse();
 								excelTestHouse.setXm(name);
 								excelTestHouse.setPersonCardNum(cardNum);
 								excelTestHouse.setCode(post.getString("code"));
 								excelTestHouse.setReqOrderNo(reqOrderNo);
-								excelTestHouse.setCertNo(result.getString("certNo"));
-								excelTestHouse.setUnitNo(result.getString("unitNo"));
-								excelTestHouse.setLocation(result.getString("location"));
-								excelTestHouse.setOwnership(result.getString("ownership"));
-								excelTestHouse.setHouseArea(result.getString("houseArea"));
-								excelTestHouse.setRightsType(result.getString("rightsType"));
-								excelTestHouse.setIsSealUp(result.getString("isSealUp"));
-								excelTestHouse.setIsMortgaged(result.getString("isMortgaged"));
-								excelTestHouse.setRightsStartTime(result.getString("rightsStartTime"));
-								excelTestHouse.setRightsEndTime(result.getString("rightsEndTime"));
-								excelTestHouse.setUseTo(result.getString("useTo"));
 								writeList.add(excelTestHouse);
 							}
-						} else {
-							ExcelTestHouse excelTestHouse = new ExcelTestHouse();
-							excelTestHouse.setXm(name);
-							excelTestHouse.setPersonCardNum(cardNum);
-							excelTestHouse.setCode(post.getString("code"));
-							excelTestHouse.setReqOrderNo(reqOrderNo);
-							writeList.add(excelTestHouse);
 						}
 					}
+				} catch (Exception e) {
+					log.error(e.getMessage());
 				}
-			} catch (Exception e) {
-				log.error(e.getMessage());
+				System.err.println(post);
+			} catch (Exception ignore) {
 			}
-			System.err.println(post);
-		});
+			latch.countDown();
+		}));
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 		setExcelRespProp(response, DateUtils.dateTimeNow() + "不动产测试结果");
 		EasyExcel.write(response.getOutputStream())
 				.head(ExcelTestHouse.class)
@@ -222,7 +232,6 @@ public class TestController {
 				.doWrite(writeList);
 
 	}
-
 
 
 	/**

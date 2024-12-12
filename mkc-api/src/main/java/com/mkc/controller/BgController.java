@@ -716,10 +716,7 @@ public class BgController extends BaseController {
 			MerReqLogVo merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-
-			Result result = bgService.queryHouseResultInfo(params, merLog);
-
-			return result;
+			return bgService.queryHouseResultInfo(params, merLog);
 		} catch (ApiServiceException e) {
 
 			return Result.fail(e.getCode(), e.getMessage());
