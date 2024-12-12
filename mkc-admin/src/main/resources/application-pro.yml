@@ -55,7 +55,7 @@ spring:
                 # 配置获取连接等待超时的时间
                 maxWait: 60000
                 # 配置查询等待超时的时间
-                queryTimeout: 600000
+                queryTimeout: 6000000
                 validationQuery: SELECT 1
                 testWhileIdle: true
                 testOnBorrow: false
@@ -63,7 +63,7 @@ spring:
                 poolPreparedStatements: true
                 maxPoolPreparedStatementPerConnectionSize: 20
                 filters: stat,slf4j
-                socket-timeout: 600000
+                socket-timeout: 6000000
               #  connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
             datasource:
                 # 后台配置数据源
