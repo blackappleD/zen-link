@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -26,7 +27,7 @@ import java.security.SecureRandom;
 public class AESUtil {
 
     //"算法/模式/补码方式"  CBC 密文每次不一样，ECB每次都一样
-    private static String ALGORITHM="AES/ECB/PKCS5Padding";
+    private static final String ALGORITHM="AES/ECB/PKCS5Padding";
 
     private static final String KEY_ALGORITHM = "AES";
     private static final String KEY = "BHSK_DATA_2024!!";
@@ -79,8 +80,7 @@ public class AESUtil {
             byte[] encrypted1 =  Base64Util.decode(sSrc);//先用base64解密
             try {
                 byte[] original = cipher.doFinal(encrypted1);
-                String originalString = new String(original,"utf-8");
-                return originalString;
+	            return new String(original, StandardCharsets.UTF_8);
             } catch (Exception e) {
                 System.out.println(e.toString());
                 return null;
@@ -105,8 +105,7 @@ public class AESUtil {
             byte[] encrypted1 =  Base64Util.decode(sSrc);//先用base64解密
             try {
                 byte[] original = cipher.doFinal(encrypted1);
-                String originalString = new String(original,"utf-8");
-                return originalString;
+	            return new String(original, StandardCharsets.UTF_8);
             } catch (Exception e) {
                 System.out.println(e.toString());
                 return null;
@@ -169,11 +168,11 @@ public class AESUtil {
         String cSrc = "www.gowhere.so";
         System.out.println(cSrc);
         // 加密
-        String enString = AESUtil.encrypt(cSrc, cKey);
+        String enString = AESUtil.encrypt(cSrc);
         System.out.println("加密后的字串是：" + enString);
 
         // 解密
-        String DeString = AESUtil.decrypt(enString, cKey);
+        String DeString = AESUtil.decrypt(enString);
         System.out.println("解密后的字串是：" + DeString);
 
         System.out.println(encrypt("123456"));
