@@ -38,21 +38,7 @@ public class AESUtil {
      * @throws Exception
      */
     public static String encrypt(String plainText)  {
-        try {
-           // byte[] raw = sKey.getBytes("utf-8");
-            //SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-            SecretKey skeySpec =getSecretKey(KEY);
-
-            Cipher cipher = Cipher.getInstance(ALGORITHM);//"算法/模式/补码方式"
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-            byte[] encrypted = cipher.doFinal(plainText.getBytes("utf-8"));
-            //此处使用BASE64做转码功能，同时能起到2次加密的作用。
-            return  Base64Util.encode(encrypted);
-
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return null;
+	    return encrypt(plainText, KEY);
     }
     /***
      *
