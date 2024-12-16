@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.ICkSupService;
+import com.mkc.api.supplier.dto.BankFourResDTO;
 import com.mkc.api.vo.ck.BankReqVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
@@ -61,7 +62,6 @@ public class YhCkSupImpl implements ICkSupService {
 		TRANSACTION_DUPLICATE("S0000020", "交易流水号重复"),
 		TRANSACTION_LIMIT_EXCEEDED("S0000021", "交易次数超限，请隔日重试"),
 		BANK_RESTRICTION("S0000101", "交易银行受限，请联系平台"),
-		ERROR("1", "异常"),
 		SYSTEM_TIMEOUT_OR_EXCEPTION("0014", "系统超时或异常"),
 		SIGNATURE_EXPIRED("0017", "超时签名"),
 		MISSING_REQUIRED_FIELDS("0016", "缺少必传字段"),
@@ -128,7 +128,6 @@ public class YhCkSupImpl implements ICkSupService {
 			supResult.setRespTime(LocalDateTime.now());
 			String code = responseObj.getString("code");
 			BusinessCode businessCode = BusinessCode.getByCode(code);
-
 			switch (businessCode) {
 				case VERIFICATION_SUCCESS:
 				case VERIFICATION_FAILED:
@@ -142,7 +141,7 @@ public class YhCkSupImpl implements ICkSupService {
 					supResult.setData(businessCode.getMessage());
 			}
 			supResult.setRemark(businessCode.getMessage());
-			supResult.setData(businessCode.getMessage());
+			supResult.setData(new BankFourResDTO("2", businessCode.getCode(), businessCode.getMessage()));
 			return supResult;
 		} catch (Throwable e) {
 			errMonitorMsg(log, " 【{}】 银行卡四要素 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
