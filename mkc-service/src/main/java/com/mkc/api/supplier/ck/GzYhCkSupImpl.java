@@ -8,6 +8,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.supplier.dto.BankFourResDTO;
+import com.mkc.api.supplier.enums.BankFourCode;
 import com.mkc.api.vo.ck.BankReqVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
@@ -34,48 +35,48 @@ import java.util.TreeMap;
  */
 @Service("CK_GZYH")
 @Slf4j
-@SuppressWarnings("rawtypes")
-public class YhCkSupImpl implements ICkSupService {
+public class GzYhCkSupImpl implements ICkSupService {
 
 	@AllArgsConstructor
 	@Getter
 	public enum BusinessCode {
-		VERIFICATION_SUCCESS("00000000", "验证通过"),
-		VERIFICATION_FAILED("B0000001", "验证不通过"),
-		INVALID_CARD_NUMBER("B0000002", "无效卡号或卡状态异常，请换卡重试或联系发卡行"),
-		RESTRICTED_CARD("B0000003", "受限制的卡，请换卡重试或联系发卡行"),
-		ABNORMAL_CARD_STATUS("B0000004", "卡状态异常，请换卡重试或联系发卡行"),
-		TRANSACTION_FAILED("B0000607", "交易失败，详情请咨询您的发卡行"),
-		SYSTEM_MAINTENANCE("S0000002", "系统维护期间，请稍后重试"),
-		NETWORK_EXCEPTION("S0000003", "网络异常，请稍后重试"),
-		TRANSACTION_TIMEOUT("S0000004", "交易超时，请稍后重试"),
-		LIMIT_FLOW_OR_FREQUENT("S0000005", "交易限流或过于频繁，请稍后重试"),
-		ILLEGAL_REQUEST("S0000011", "非法请求"),
-		REQUEST_FORMAT_ERROR("S0000012", "请求报文格式有误"),
-		MISSING_REQUIRED_PARAMS("S0000013", "请求报文必填参数缺失"),
-		REQUEST_PARAMS_ERROR("S0000014", "请求报文参数有误"),
-		PARAM_LENGTH_LIMIT("S0000015", "请求报文有字段长度超限"),
-		DECRYPTION_FAILED("S0000016", "报文解密失败"),
-		SIGNATURE_FAILED("S0000017", "请求报文签名失败"),
-		ENCRYPTION_FAILED("S0000018", "响应报文签名失败"),
-		ENCRYPTION_ERROR("S0000019", "响应报文加密失败"),
-		TRANSACTION_DUPLICATE("S0000020", "交易流水号重复"),
-		TRANSACTION_LIMIT_EXCEEDED("S0000021", "交易次数超限，请隔日重试"),
-		BANK_RESTRICTION("S0000101", "交易银行受限，请联系平台"),
-		SYSTEM_TIMEOUT_OR_EXCEPTION("0014", "系统超时或异常"),
-		SIGNATURE_EXPIRED("0017", "超时签名"),
-		MISSING_REQUIRED_FIELDS("0016", "缺少必传字段"),
-		IP_RESTRICTION("0018", "IP受限"),
-		IP_ADDRESS_MISMATCH("0019", "IP地址和商户号不匹配"),
-		ILLEGAL_SIGNATURE("0021", "非法签名"),
-		INVALID_APP_ID("0022", "AppId调用接口查无此权限"),
-		WRONG_PARAM_SIGNATURE("0023", "签名参数有误"),
-		BALANCE_INSUFFICIENT("2020", "调用失败，您的余额不足!"),
-		WRONG_SIGNATURE_PARAMS("2001", "签名参数有误"),
-		WRONG_SIGNATURE("2006", "签名错误"),
-		UNKNOWN("1", "未知异常");
+		VERIFICATION_SUCCESS("00000000", BankFourCode.VERIFICATION_SUCCESS, "验证通过"),
+		VERIFICATION_FAILED("B0000001", null, "验证不通过"),
+		INVALID_CARD_NUMBER("B0000002", BankFourCode.CARD_STATUS_ABNORMAL, "无效卡号或卡状态异常，请换卡重试或联系发卡行"),
+		RESTRICTED_CARD("B0000003", null, "受限制的卡，请换卡重试或联系发卡行"),
+		ABNORMAL_CARD_STATUS("B0000004", BankFourCode.CARD_STATUS_ABNORMAL, "卡状态异常，请换卡重试或联系发卡行"),
+		TRANSACTION_FAILED("B0000607", BankFourCode.TRANSACTION_FAILED, "交易失败，详情请咨询您的发卡行"),
+		SYSTEM_MAINTENANCE("S0000002", null, "系统维护期间，请稍后重试"),
+		NETWORK_EXCEPTION("S0000003", null, "网络异常，请稍后重试"),
+		TRANSACTION_TIMEOUT("S0000004", null, "交易超时，请稍后重试"),
+		LIMIT_FLOW_OR_FREQUENT("S0000005", BankFourCode.TRANSACTION_TOO_FREQUENT, "交易限流或过于频繁，请稍后重试"),
+		ILLEGAL_REQUEST("S0000011", null, "非法请求"),
+		REQUEST_FORMAT_ERROR("S0000012", null, "请求报文格式有误"),
+		MISSING_REQUIRED_PARAMS("S0000013", null, "请求报文必填参数缺失"),
+		REQUEST_PARAMS_ERROR("S0000014", null, "请求报文参数有误"),
+		PARAM_LENGTH_LIMIT("S0000015", null, "请求报文有字段长度超限"),
+		DECRYPTION_FAILED("S0000016", null, "报文解密失败"),
+		SIGNATURE_FAILED("S0000017", null, "请求报文签名失败"),
+		ENCRYPTION_FAILED("S0000018", null, "响应报文签名失败"),
+		ENCRYPTION_ERROR("S0000019", null, "响应报文加密失败"),
+		TRANSACTION_DUPLICATE("S0000020", null, "交易流水号重复"),
+		TRANSACTION_LIMIT_EXCEEDED("S0000021", BankFourCode.TRANSACTION_TOO_FREQUENT, "交易次数超限，请隔日重试"),
+		BANK_RESTRICTION("S0000101", null, "交易银行受限，请联系平台"),
+		SYSTEM_TIMEOUT_OR_EXCEPTION("0014", null, "系统超时或异常"),
+		SIGNATURE_EXPIRED("0017", null, "超时签名"),
+		MISSING_REQUIRED_FIELDS("0016", null, "缺少必传字段"),
+		IP_RESTRICTION("0018", null, "IP受限"),
+		IP_ADDRESS_MISMATCH("0019", null, "IP地址和商户号不匹配"),
+		ILLEGAL_SIGNATURE("0021", null, "非法签名"),
+		INVALID_APP_ID("0022", null, "AppId调用接口查无此权限"),
+		WRONG_PARAM_SIGNATURE("0023", null, "签名参数有误"),
+		BALANCE_INSUFFICIENT("2020", null, "调用失败，您的余额不足!"),
+		WRONG_SIGNATURE_PARAMS("2001", null, "签名参数有误"),
+		WRONG_SIGNATURE("2006", null, "签名错误"),
+		UNKNOWN("1", null, "未知异常");
 		private final String code;
-		private final String message;
+		private final BankFourCode bankFourCode;
+		private final String desc;
 
 		public static BusinessCode getByCode(String code) {
 			for (BusinessCode c : BusinessCode.values()) {
@@ -86,13 +87,21 @@ public class YhCkSupImpl implements ICkSupService {
 			return UNKNOWN; // 或抛出异常，取决于你的需求
 		}
 
+		public String getBankFourCode() {
+			return bankFourCode == null ? code : bankFourCode.getCode();
+		}
+
+
+		public String getBankFourDesc() {
+			return bankFourCode == null ? code : bankFourCode.getMessage();
+		}
 	}
 
 
 	@Override
-	public SupResult ckBankFour(BankReqVo vo, SuplierQueryBean bean) {
+	public SupResult<BankFourResDTO> ckBankFour(BankReqVo vo, SuplierQueryBean bean) {
 		String result = null;
-		SupResult supResult = null;
+		SupResult<BankFourResDTO> supResult = null;
 		String url = null;
 		Map<String, String> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		LocalDateTime now = LocalDateTime.now();
@@ -110,7 +119,7 @@ public class YhCkSupImpl implements ICkSupService {
 			params.put("requestId", vo.getMerSeq());
 			params.put("sigval", LoyalCryptUtils.cryptMd5(params, bean.getSignPwd()));
 			String jsonStr = JSONUtil.toJsonStr(params);
-			supResult = new SupResult(jsonStr, now);
+			supResult = new SupResult<>(jsonStr, now);
 			try (HttpResponse response = HttpUtil.createPost(url)
 					.header("Content-Type", "application/json")
 					.body(jsonStr)
@@ -131,23 +140,22 @@ public class YhCkSupImpl implements ICkSupService {
 			switch (businessCode) {
 				case VERIFICATION_SUCCESS:
 				case VERIFICATION_FAILED:
-					supResult.setRemark(businessCode.getMessage());
+					supResult.setRemark(businessCode.getDesc());
 					supResult.setState(ReqState.SUCCESS);
 					supResult.setFree(FreeStatus.YES);
 					break;
 				default:
 					supResult.setState(ReqState.ERROR);
 					supResult.setFree(FreeStatus.NO);
-					supResult.setData(businessCode.getMessage());
 			}
-			supResult.setRemark(businessCode.getMessage());
-			supResult.setData(new BankFourResDTO("2", businessCode.getCode(), businessCode.getMessage()));
+			supResult.setRemark(businessCode.getBankFourDesc());
+			supResult.setData(new BankFourResDTO("2", businessCode.getBankFourCode(), businessCode.getBankFourDesc()));
 			return supResult;
 		} catch (Throwable e) {
 			errMonitorMsg(log, " 【{}】 银行卡四要素 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getSupName(), bean.getOrderNo(), url, result, e);
 			if (supResult == null) {
-				supResult = new SupResult(JSONUtil.toJsonStr(params), now);
+				supResult = new SupResult<>(JSONUtil.toJsonStr(params), now);
 			}
 			supResult.setState(ReqState.ERROR);
 			supResult.setRespTime(LocalDateTime.now());

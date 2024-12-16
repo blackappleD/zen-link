@@ -2,11 +2,13 @@ package com.mkc.api.supplier.ck;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.ICkSupService;
+import com.mkc.api.supplier.dto.BankFourResDTO;
 import com.mkc.api.vo.ck.BankReqVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
@@ -202,9 +204,9 @@ public class JzkjCkSupImpl implements ICkSupService {
 	}
 
 	@Override
-	public SupResult ckBankFour(BankReqVo vo, SuplierQueryBean bean) {
+	public SupResult<BankFourResDTO> ckBankFour(BankReqVo vo, SuplierQueryBean bean) {
 		String result = null;
-		SupResult supResult = null;
+		SupResult<BankFourResDTO> supResult = null;
 		JSONObject params = new JSONObject();
 		String url = null;
 
@@ -228,7 +230,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			params.put("key", appsecret);
 			String sign = Md5Utils.md5(appkey + certName + certNo + mobile + bankCard + signPwd);
 			params.put("sign", sign);
-			supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+			supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
 
 			log.info(CharSequenceUtil.format("【银行四要素核验返回体】{}", result));
@@ -251,7 +253,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 				supResult.setState(ReqState.SUCCESS);
 				JSONObject resultJson = resultObject.getJSONObject("data");
 				if (resultJson != null) {
-					supResult.setData(resultJson);
+					supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankFourResDTO.class));
 					return supResult;
 				}
 			} else if (NOGET.equals(code)) {
@@ -275,7 +277,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			errMonitorMsg(log, " 【上海敬众科技股份有限公司供应商】 【银联】x四要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
 			if (supResult == null) {
-				supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+				supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
 			}
 			supResult.setState(ReqState.ERROR);
 			supResult.setRespTime(LocalDateTime.now());

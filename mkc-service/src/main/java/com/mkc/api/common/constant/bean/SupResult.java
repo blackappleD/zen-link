@@ -98,7 +98,7 @@ public class SupResult<T> implements Serializable {
 	}
 
 
-	public static SupResult err() {
+	public static <T> SupResult<T> err() {
 		return new SupResult<>("", LocalDateTime.now(), LocalDateTime.now(), "该供应商不支持这种产品查询");
 	}
 
