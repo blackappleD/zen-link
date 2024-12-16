@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * 亿宏
+ * 广州亿宏
  *
  * @author xiewei
  * @date 2024/08/02 17:10
  */
-@Service("CK_YH")
+@Service("CK_GZYH")
 @Slf4j
 @SuppressWarnings("rawtypes")
 public class YhCkSupImpl implements ICkSupService {
