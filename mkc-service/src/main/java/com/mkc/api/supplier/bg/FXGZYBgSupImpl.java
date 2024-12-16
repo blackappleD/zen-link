@@ -192,7 +192,7 @@ public class FXGZYBgSupImpl implements IBgSupService {
 				}
 			} else if (NO.equals(code)) {
 				supResult.setRemark("查无");
-				supResult.setState(ReqState.NOGET);
+				supResult.setState(ReqState.NOT_GET);
 				return supResult;
 			} else {
 				supResult.setRemark("查询失败");

@@ -146,7 +146,7 @@ public class SupResult<T> implements Serializable {
 	 * @return
 	 */
 	public boolean isNoGet() {
-		return ReqState.NOGET.equals(this.getState());
+		return ReqState.NOT_GET.equals(this.getState());
 	}
 
 	/**

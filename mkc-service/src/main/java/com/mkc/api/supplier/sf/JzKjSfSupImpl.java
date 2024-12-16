@@ -87,7 +87,7 @@ public class JzKjSfSupImpl implements ISfSupService {
 
                 supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 return supResult;
             } else {
                 supResult.setFree(FreeStatus.NO);
@@ -174,7 +174,7 @@ public class JzKjSfSupImpl implements ISfSupService {
 
                 supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 return supResult;
             } else {
                 supResult.setFree(FreeStatus.NO);

@@ -36,7 +36,7 @@ public interface ISupService {
 	 * @param arguments
 	 * @return
 	 */
-	default public void errMonitorMsg(Logger log, String messagePattern, Object... arguments) {
+	default void errMonitorMsg(Logger log, String messagePattern, Object... arguments) {
 
 		try {
 			FormattingTuple formattingTuple = MessageFormatter.arrayFormat(messagePattern, arguments);

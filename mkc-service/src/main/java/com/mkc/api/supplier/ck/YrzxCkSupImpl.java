@@ -233,7 +233,7 @@ public class YrzxCkSupImpl implements ICkSupService {
             } else if (EMPTY.equals(code)) {
                 supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 supResult.setData(resultObject.getJSONObject("msg"));
                 return supResult;
             } else {

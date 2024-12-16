@@ -95,7 +95,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             } else if (EMPTY.equals(code)) {
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             } else {
@@ -175,7 +175,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             } else if (EMPTY.equals(code)) {
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             } else {
@@ -255,7 +255,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             } else if (EMPTY.equals(code)) {
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             }  else if (ERROR_CODE1.equals(code)) {
@@ -346,7 +346,7 @@ public class YrzxBgSupImpl implements IBgSupService {
             } else if (EMPTY.equals(code)) {
                 supResult.setFree(FreeStatus.YES);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 supResult.setData(resultObject.getString("msg"));
                 return  supResult;
             } else {

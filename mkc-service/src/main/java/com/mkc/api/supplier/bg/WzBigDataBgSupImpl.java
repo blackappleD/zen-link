@@ -102,7 +102,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
 
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 return supResult;
             } else {
                 supResult.setFree(FreeStatus.NO);
@@ -198,7 +198,7 @@ public class WzBigDataBgSupImpl implements IBgSupService {
 
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 return supResult;
             } else {
                 supResult.setFree(FreeStatus.NO);

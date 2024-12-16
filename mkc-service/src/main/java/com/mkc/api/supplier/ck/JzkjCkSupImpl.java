@@ -94,7 +94,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			} else if (NOGET.equals(code)) {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查无");
-				supResult.setState(ReqState.NOGET);
+				supResult.setState(ReqState.NOT_GET);
 
 			} else if (NOT.equals(code)) {
 				supResult.setFree(FreeStatus.YES);
@@ -175,7 +175,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			} else if (NOGET.equals(code)) {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查无");
-				supResult.setState(ReqState.NOGET);
+				supResult.setState(ReqState.NOT_GET);
 
 			} else if (NOT.equals(code)) {
 				supResult.setFree(FreeStatus.YES);
@@ -231,7 +231,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
 
-			log.info(CharSequenceUtil.format("【银行三要素核验返回体】{}", result));
+			log.info(CharSequenceUtil.format("【银行四要素核验返回体】{}", result));
 			supResult.setRespJson(result);
 
 			//判断是否有响应结果 无就是请求异常或超时
@@ -257,7 +257,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			} else if (NOGET.equals(code)) {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查无");
-				supResult.setState(ReqState.NOGET);
+				supResult.setState(ReqState.NOT_GET);
 				return supResult;
 			} else if (NOT.equals(code)) {
 				supResult.setFree(FreeStatus.YES);

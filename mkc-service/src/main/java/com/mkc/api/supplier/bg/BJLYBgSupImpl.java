@@ -80,7 +80,7 @@ public class BJLYBgSupImpl implements IBgSupService {
             } else if (NOGET.equals(code)) {
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
             } else {
                 supResult.setFree(FreeStatus.NO);
                 String message = resultObject.getString("message");

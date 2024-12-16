@@ -110,12 +110,12 @@ public class YhjCkSupImpl implements ICkSupService {
 
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 return supResult;
             } else {
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查询失败");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 return supResult;
             }
             //设置运营商信息，查无 直接移动

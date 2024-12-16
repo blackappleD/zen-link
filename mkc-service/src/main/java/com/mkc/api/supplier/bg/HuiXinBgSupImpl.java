@@ -85,7 +85,7 @@ public class HuiXinBgSupImpl implements IBgSupService {
             } else if (NO.equals(code)) {
                 supResult.setFree(FreeStatus.NO);
                 supResult.setRemark("查无");
-                supResult.setState(ReqState.NOGET);
+                supResult.setState(ReqState.NOT_GET);
                 return supResult;
             } else {
                 supResult.setFree(FreeStatus.NO);
