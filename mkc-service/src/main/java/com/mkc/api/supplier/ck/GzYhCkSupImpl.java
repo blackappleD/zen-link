@@ -42,7 +42,7 @@ public class GzYhCkSupImpl implements ICkSupService {
 	public enum BusinessCode {
 		VERIFICATION_SUCCESS("00000000", BankFourCode.VERIFICATION_SUCCESS, "验证通过"),
 		VERIFICATION_FAILED("B0000001", null, "验证不通过"),
-		INVALID_CARD_NUMBER("B0000002", BankFourCode.CARD_STATUS_ABNORMAL, "无效卡号或卡状态异常，请换卡重试或联系发卡行"),
+		INVALID_CARD_NUMBER("B0000002", BankFourCode.VERIFICATION_FAILED, "无效卡号或卡状态异常，请换卡重试或联系发卡行"),
 		RESTRICTED_CARD("B0000003", null, "受限制的卡，请换卡重试或联系发卡行"),
 		ABNORMAL_CARD_STATUS("B0000004", BankFourCode.CARD_STATUS_ABNORMAL, "卡状态异常，请换卡重试或联系发卡行"),
 		TRANSACTION_FAILED("B0000607", BankFourCode.TRANSACTION_FAILED, "交易失败，详情请咨询您的发卡行"),
