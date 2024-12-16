@@ -145,7 +145,7 @@ public class GzYhCkSupImpl implements ICkSupService {
 					supResult.setFree(FreeStatus.YES);
 					break;
 				default:
-					supResult.setState(ReqState.ERROR);
+					supResult.setState(ReqState.SUCCESS);
 					supResult.setFree(FreeStatus.NO);
 			}
 			supResult.setRemark(businessCode.getBankFourDesc());
