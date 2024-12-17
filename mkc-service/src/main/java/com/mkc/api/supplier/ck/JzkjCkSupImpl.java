@@ -178,11 +178,9 @@ public class JzkjCkSupImpl implements ICkSupService {
 				supResult.setState(ReqState.NOT);
 				return supResult;
 			} else if (ERROR.equals(code)) {
-				supResult.setRemark("查询失败");
-				supResult.setData(msg);
+				supResult.setRemark(CharSequenceUtil.format("查询失败:{}", msg));
 			} else {
-				supResult.setRemark("异常");
-				supResult.setData(msg);
+				supResult.setRemark(CharSequenceUtil.format("异常:{}", msg));
 			}
 			return supResult;
 		} catch (Throwable e) {
