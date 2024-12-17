@@ -179,7 +179,7 @@ public class Result<T> implements Serializable {
 
 	public static <T> Result<T> fail(T data, String msg, String seqNo) {
 
-		return restResult(null, ApiReturnCode.FAIL.getCode(), msg, FreeStatus.NO, seqNo);
+		return restResult(data, ApiReturnCode.FAIL.getCode(), msg, FreeStatus.NO, seqNo);
 	}
 
 

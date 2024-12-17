@@ -153,7 +153,7 @@ public class JzkjCkSupImpl implements ICkSupService {
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
 			log.info(CharSequenceUtil.format("【银行三要素核验返回体】{}", result));
 			supResult.setRespJson(result);
-
+			supResult.setRespTime(LocalDateTime.now());
 			//判断是否有响应结果 无就是请求异常或超时
 			if (StringUtils.isBlank(result)) {
 				supResult.setRemark("供应商没有响应结果");
@@ -162,19 +162,14 @@ public class JzkjCkSupImpl implements ICkSupService {
 			}
 			JSONObject resultObject = JSON.parseObject(result);
 			String code = resultObject.getString("code");
-
-			//                0：成功（收费）
-			//                405：查无（不收费）
+			String msg = resultObject.getString("msg");
 			JSONObject resultJson = resultObject.getJSONObject("data");
-			if (resultJson != null) {
-				supResult.setData(resultJson);
-			}
+			supResult.setData(resultJson);
 			if (SUCCESS.equals(code)) {
 				supResult.setFree(FreeStatus.YES);
 				supResult.setRemark("查询成功");
 				supResult.setState(ReqState.SUCCESS);
 			} else if (NOGET.equals(code)) {
-				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOT_GET);
 			} else if (NOT.equals(code)) {
@@ -183,8 +178,11 @@ public class JzkjCkSupImpl implements ICkSupService {
 				supResult.setState(ReqState.NOT);
 				return supResult;
 			} else if (ERROR.equals(code)) {
-				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查询失败");
+				supResult.setData(msg);
+			} else {
+				supResult.setRemark("异常");
+				supResult.setData(msg);
 			}
 			return supResult;
 		} catch (Throwable e) {
