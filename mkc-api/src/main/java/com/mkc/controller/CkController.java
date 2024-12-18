@@ -7,11 +7,11 @@ import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.constant.enums.ReqParamType;
 import com.mkc.api.common.constant.enums.YysProductCode;
 import com.mkc.api.common.exception.ApiServiceException;
+import com.mkc.api.dto.ck.*;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.ICkService;
-import com.mkc.api.vo.ck.VehicleLicenseReqVo;
-import com.mkc.api.vo.ck.*;
-import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.CkMerBean;
+import com.mkc.tool.JsonUtil;
 import com.mkc.tool.RegTool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * 信息核验相关类入口
@@ -39,10 +40,28 @@ public class CkController extends BaseController {
 	private ICkService ckService;
 
 	/**
+	 * 技能人员职业资格证书核验数据元件接口
+	 *
+	 * @param request
+	 * @param req
+	 * @return
+	 */
+	@PostMapping("/pro_qualify_cert")
+	public Result<ProQualifyCertResDTO> ckProQualifyCert(HttpServletRequest request,
+	                                                     @Valid @RequestBody ProQualifyCertReqDTO req) {
+		CkMerBean ckMerBean = CkMerBean.build(req, ProductCodeEum.CK_PRO_QUALIFY_CERT_001);
+		ckMerBean.setPlaintext(req.getMerCode() + req.getName() + req.getIdNum());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(req));
+		return ckService.ckProQualifyCert(req, merLog);
+	}
+
+	/**
 	 * 银行卡四要素
 	 */
 	@PostMapping("/bankFour")
-	public Result ckBankFour(HttpServletRequest request, @RequestBody BankReqVo params) throws InterruptedException {
+	public Result ckBankFour(HttpServletRequest request, @RequestBody BankReqDTO params) throws InterruptedException {
 
 		String reqJson = null;
 		long start = System.currentTimeMillis();
@@ -54,7 +73,7 @@ public class CkController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.CK_BANK_FOUR.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = ckService.ckBankFour(params, merLog);
@@ -87,7 +106,7 @@ public class CkController extends BaseController {
 	 * 银行卡三要素
 	 */
 	@PostMapping("/bankThree")
-	public Result ckBankThree(HttpServletRequest request, @RequestBody BankReqVo params) throws InterruptedException {
+	public Result ckBankThree(HttpServletRequest request, @RequestBody BankReqDTO params) throws InterruptedException {
 
 		String reqJson = null;
 		long start = System.currentTimeMillis();
@@ -99,7 +118,7 @@ public class CkController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.CK_BANK_THREE.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = ckService.ckBankThree(params, merLog);
@@ -131,7 +150,7 @@ public class CkController extends BaseController {
 	 * 银行卡二要素
 	 */
 	@PostMapping("/bankTwo")
-	public Result ckBankTwo(HttpServletRequest request, @RequestBody BankReqVo params) throws InterruptedException {
+	public Result ckBankTwo(HttpServletRequest request, @RequestBody BankReqDTO params) throws InterruptedException {
 
 		String reqJson = null;
 		long start = System.currentTimeMillis();
@@ -143,7 +162,7 @@ public class CkController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.CK_BANK_TWO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = ckService.ckBankTwo(params, merLog);
@@ -175,7 +194,7 @@ public class CkController extends BaseController {
 	 * 行驶证核验
 	 */
 	@PostMapping("/ckVehicleLicense")
-	public Result ckVehicleLicense(HttpServletRequest request, @RequestBody VehicleLicenseReqVo params) {
+	public Result ckVehicleLicense(HttpServletRequest request, @RequestBody VehicleLicenseReqDTO params) {
 
 		String reqJson = null;
 		try {
@@ -186,7 +205,7 @@ public class CkController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.CK_VEHICLE_LICENSE_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = ckService.ckVehicleLicenseInfo(params, merLog);
@@ -200,7 +219,7 @@ public class CkController extends BaseController {
 		}
 	}
 
-	private CkMerBean ckVehicleLicenseParams(VehicleLicenseReqVo params) {
+	private CkMerBean ckVehicleLicenseParams(VehicleLicenseReqDTO params) {
 
 		String merCode = params.getMerCode();
 
@@ -234,7 +253,7 @@ public class CkController extends BaseController {
 		return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 	}
 
-	private CkMerBean ckBankFourParams(BankReqVo params) {
+	private CkMerBean ckBankFourParams(BankReqDTO params) {
 
 		String merCode = params.getMerCode();
 
@@ -274,7 +293,7 @@ public class CkController extends BaseController {
 		return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 	}
 
-	private CkMerBean ckBankThreeParams(BankReqVo params) {
+	private CkMerBean ckBankThreeParams(BankReqDTO params) {
 
 		String merCode = params.getMerCode();
 
@@ -307,7 +326,7 @@ public class CkController extends BaseController {
 		return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 	}
 
-	private CkMerBean ckBankTwoParams(BankReqVo params) {
+	private CkMerBean ckBankTwoParams(BankReqDTO params) {
 
 		String merCode = params.getMerCode();
 
@@ -343,7 +362,7 @@ public class CkController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/populationThree")
-	public Result populationThree(HttpServletRequest request, @RequestBody PopulationThreeReqVo params) {
+	public Result populationThree(HttpServletRequest request, @RequestBody PopulationThreeReqDTO params) {
 
 		String reqJson = null;
 		try {
@@ -354,7 +373,7 @@ public class CkController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.CK_POPULATION_THREE.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = ckService.ckPopulationThree(params, merLog);
@@ -368,7 +387,7 @@ public class CkController extends BaseController {
 	}
 
 	@PostMapping("/workUnitVerify")
-	public Result workUnitVerify(HttpServletRequest request, @RequestBody WorkUnitReqVo params) {
+	public Result workUnitVerify(HttpServletRequest request, @RequestBody WorkUnitReqDTO params) {
 
 		String reqJson = null;
 		try {
@@ -379,7 +398,7 @@ public class CkController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.CK_WORK_UNIT.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = ckService.ckWorkUnit(params, merLog);
@@ -393,7 +412,7 @@ public class CkController extends BaseController {
 		}
 	}
 
-	private CkMerBean ckPopulationThreeParams(PopulationThreeReqVo params) {
+	private CkMerBean ckPopulationThreeParams(PopulationThreeReqDTO params) {
 
 		String merCode = params.getMerCode();
 
@@ -433,7 +452,7 @@ public class CkController extends BaseController {
 		return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 	}
 
-	private CkMerBean ckWorkUnitInfoParams(WorkUnitReqVo params) {
+	private CkMerBean ckWorkUnitInfoParams(WorkUnitReqDTO params) {
 
 		String merCode = params.getMerCode();
 
@@ -467,7 +486,7 @@ public class CkController extends BaseController {
 	}
 
 	@PostMapping("/personCarVerify")
-	public Result personCarVerify(HttpServletRequest request, @RequestBody PersonCarReqVo params) {
+	public Result personCarVerify(HttpServletRequest request, @RequestBody PersonCarReqDTO params) {
 
 		String reqJson = null;
 
@@ -479,7 +498,7 @@ public class CkController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.CK_PERSON_CAR.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = ckService.ckPersonCar(params, merLog);
@@ -494,7 +513,7 @@ public class CkController extends BaseController {
 
 	}
 
-	private CkMerBean ckPersonCarInfoParams(PersonCarReqVo params) {
+	private CkMerBean ckPersonCarInfoParams(PersonCarReqDTO params) {
 
 		String merCode = params.getMerCode();
 
@@ -528,7 +547,7 @@ public class CkController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/mobileThree")
-	public Result mobileThree(HttpServletRequest request, @RequestBody MobThreeReqVo params) {
+	public Result mobileThree(HttpServletRequest request, @RequestBody MobThreeReqDTO params) {
 		String reqJson = null;
 		try {
 			reqJson = JSON.toJSONString(params);
@@ -540,7 +559,7 @@ public class CkController extends BaseController {
 			// ckMerBean.setProductCode(ProductCodeEum.CK_MOB_THREE.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 			merLog.setReqProductCode(yysProduct.getMobReqProductCode());
 			merLog.setYysProductCode(yysProduct);
@@ -559,7 +578,7 @@ public class CkController extends BaseController {
 	}
 
 
-	private CkMerBean ckThreeParams(MobThreeReqVo params) {
+	private CkMerBean ckThreeParams(MobThreeReqDTO params) {
 
 		String merCode = params.getMerCode();
 

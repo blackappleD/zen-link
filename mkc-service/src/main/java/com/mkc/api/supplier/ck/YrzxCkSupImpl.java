@@ -7,9 +7,9 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.vo.ck.PersonCarReqVo;
-import com.mkc.api.vo.ck.VehicleLicenseReqVo;
-import com.mkc.api.vo.ck.WorkUnitReqVo;
+import com.mkc.api.dto.ck.PersonCarReqDTO;
+import com.mkc.api.dto.ck.VehicleLicenseReqDTO;
+import com.mkc.api.dto.ck.WorkUnitReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -34,7 +34,7 @@ public class YrzxCkSupImpl implements ICkSupService {
     private final static String EMPTY = "999";
 
     @Override
-    public SupResult ckVehicleLicenseInfo(VehicleLicenseReqVo vo, SuplierQueryBean bean) {
+    public SupResult ckVehicleLicenseInfo(VehicleLicenseReqDTO vo, SuplierQueryBean bean) {
 
         String result = null;
         SupResult supResult = null;
@@ -110,7 +110,7 @@ public class YrzxCkSupImpl implements ICkSupService {
     }
 
     @Override
-    public SupResult ckWorkUnit(WorkUnitReqVo vo, SuplierQueryBean bean) {
+    public SupResult ckWorkUnit(WorkUnitReqDTO vo, SuplierQueryBean bean) {
 
         String result = null;
         SupResult supResult = null;
@@ -183,7 +183,7 @@ public class YrzxCkSupImpl implements ICkSupService {
 
 
     @Override
-    public SupResult ckPersonCar(PersonCarReqVo vo, SuplierQueryBean bean) {
+    public SupResult ckPersonCar(PersonCarReqDTO vo, SuplierQueryBean bean) {
 
         String result = null;
         SupResult supResult = null;

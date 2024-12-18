@@ -1,58 +1,76 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mkc.mapper.SupplierMapper">
-    
+
     <resultMap type="com.mkc.domain.Supplier" id="SupplierResult">
-        <result property="id"    column="id"    />
-        <result property="code"    column="code"    />
-        <result property="processor"    column="processor"    />
-        <result property="name"    column="name"    />
-        <result property="acc"    column="acc"    />
-        <result property="status"    column="status"    />
-        <result property="url"    column="url"    />
-        <result property="signPwd"    column="sign_pwd"    />
-        <result property="signKey"    column="sign_key"    />
-<!--        <result property="okCode"    column="ok_code"    />-->
-<!--        <result property="noCode"    column="no_code"    />-->
-<!--        <result property="notCode"    column="not_code"    />-->
-        <result property="createBy"    column="create_by"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="processor" column="processor"/>
+        <result property="name" column="name"/>
+        <result property="acc" column="acc"/>
+        <result property="status" column="status"/>
+        <result property="url" column="url"/>
+        <result property="signPwd" column="sign_pwd"/>
+        <result property="signKey" column="sign_key"/>
+        <result property="authAccount" column="auth_account"/>
+        <result property="authPwd" column="auth_Pwd"/>
+        <!--        <result property="okCode"    column="ok_code"    />-->
+        <!--        <result property="noCode"    column="no_code"    />-->
+        <!--        <result property="notCode"    column="not_code"    />-->
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
     <sql id="selectSupplierVo">
-        select id, code,processor, name, acc, status, url, sign_pwd, sign_key,  create_By, update_By, create_time, update_time, remark from t_supplier
+        select id,
+               code,
+               processor,
+               name,
+               acc,
+               status,
+               url,
+               sign_pwd,
+               sign_key,
+               auth_account,
+               auth_pwd,
+               create_By,
+               update_By,
+               create_time,
+               update_time,
+               remark
+        from t_supplier
     </sql>
 
     <select id="selectSupplierList" parameterType="com.mkc.domain.Supplier" resultMap="SupplierResult">
         <include refid="selectSupplierVo"/>
         <where>
-            <if test="code != null  and code != ''"> and code = #{code}</if>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="acc != null  and acc != ''"> and acc = #{acc}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="url != null  and url != ''"> and url = #{url}</if>
-            <if test="signPwd != null  and signPwd != ''"> and sign_pwd = #{signPwd}</if>
-            <if test="signKey != null  and signKey != ''"> and sign_key = #{signKey}</if>
-            <if test="createBy != null  and createBy != ''"> and create_By = #{createBy}</if>
-            <if test="updateBy != null  and updateBy != ''"> and update_By = #{updateBy}</if>
+            <if test="code != null  and code != ''">and code = #{code}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="acc != null  and acc != ''">and acc = #{acc}</if>
+            <if test="status != null  and status != ''">and status = #{status}</if>
+            <if test="url != null  and url != ''">and url = #{url}</if>
+            <if test="signPwd != null  and signPwd != ''">and sign_pwd = #{signPwd}</if>
+            <if test="signKey != null  and signKey != ''">and sign_key = #{signKey}</if>
+            <if test="createBy != null  and createBy != ''">and create_By = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''">and update_By = #{updateBy}</if>
         </where>
         order by id desc
     </select>
 
     <select id="selectSupListByproCode" parameterType="String" resultMap="SupplierResult">
         select ts.*
-         from
-              t_supplier ts, t_supplier_product tsp
+        from
+        t_supplier ts, t_supplier_product tsp
         <where>
             tsp.sup_code=ts.code
             and ts.status='00'
             and tsp.status='00'
-            <if test="productCode != null  and productCode != ''"> and tsp.product_code =#{productCode}</if>
+            <if test="productCode != null  and productCode != ''">and tsp.product_code =#{productCode}</if>
         </where>
 
         order by id desc
@@ -78,13 +96,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="url != null and url != ''">url,</if>
             <if test="signPwd != null">sign_pwd,</if>
             <if test="signKey != null">sign_key,</if>
+            <if test="authAccount != null">auth_account,</if>
+            <if test="authPwd != null">auth_pwd,</if>
             <if test="createBy != null and createBy != ''">create_By,</if>
             <if test="updateBy != null and updateBy != ''">update_By,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
             <if test="processor != null">processor,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="code != null">#{code},</if>
             <if test="name != null and name != ''">#{name},</if>
@@ -93,13 +113,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="url != null and url != ''">#{url},</if>
             <if test="signPwd != null">#{signPwd},</if>
             <if test="signKey != null">#{signKey},</if>
+            <if test="authAccount != null">auth_account = #{authAccount},</if>
+            <if test="authPwd != null">auth_pwd = #{authPwd},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
             <if test="processor != null">#{processor},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateSupplier" parameterType="com.mkc.domain.Supplier">
@@ -112,6 +134,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="url != null and url != ''">url = #{url},</if>
             <if test="signPwd != null">sign_pwd = #{signPwd},</if>
             <if test="signKey != null">sign_key = #{signKey},</if>
+            <if test="authAccount != null">auth_account = #{authAccount},</if>
+            <if test="authPwd != null">auth_pwd = #{authPwd},</if>
             <if test="createBy != null and createBy != ''">create_By = #{createBy},</if>
             <if test="updateBy != null and updateBy != ''">update_By = #{updateBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
@@ -123,7 +147,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteSupplierById" parameterType="Long">
-        delete from t_supplier where id = #{id}
+        delete
+        from t_supplier
+        where id = #{id}
     </delete>
 
     <delete id="deleteSupplierByIds" parameterType="Integer">

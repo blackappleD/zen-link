@@ -6,8 +6,8 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.ISfSupService;
-import com.mkc.api.vo.sf.DishonestExecutiveReqVo;
-import com.mkc.api.vo.sf.RestrictedConsumerReqVo;
+import com.mkc.api.dto.sf.DishonestExecutiveReqDTO;
+import com.mkc.api.dto.sf.RestrictedConsumerReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -30,7 +30,7 @@ public class JzKjSfSupImpl implements ISfSupService {
     private final static String NO="404";
 
     @Override
-    public SupResult queryDishonestExecutiveInfo(DishonestExecutiveReqVo vo, SuplierQueryBean bean) {
+    public SupResult queryDishonestExecutiveInfo(DishonestExecutiveReqDTO vo, SuplierQueryBean bean) {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();
@@ -117,7 +117,7 @@ public class JzKjSfSupImpl implements ISfSupService {
     }
 
     @Override
-    public SupResult queryRestrictedConsumerInfo(RestrictedConsumerReqVo vo, SuplierQueryBean bean) {
+    public SupResult queryRestrictedConsumerInfo(RestrictedConsumerReqDTO vo, SuplierQueryBean bean) {
         String result = null;
         SupResult supResult = null;
         JSONObject params = new JSONObject();

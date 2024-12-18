@@ -8,7 +8,7 @@ import com.mkc.api.common.constant.enums.ReqParamType;
 import com.mkc.api.common.constant.enums.YysCode;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.vo.ck.*;
+import com.mkc.api.dto.ck.*;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -35,7 +35,7 @@ public class YhjCkSupImpl implements ICkSupService {
 
 
     @Override
-    public SupResult ckMobThree(MobThreeReqVo vo, SuplierQueryBean bean) {
+    public SupResult ckMobThree(MobThreeReqDTO vo, SuplierQueryBean bean) {
 
         String result = null;
         SupResult supResult = null;
@@ -85,7 +85,7 @@ public class YhjCkSupImpl implements ICkSupService {
             JSONObject data = resultObject.getJSONObject("data");
 
             String isp = "CMCC";
-            MobTreeRespVo respVo = new MobTreeRespVo();
+            MobTreeRespDTO respVo = new MobTreeRespDTO();
             if (data != null) {
                 isp = data.getString("isp");
             }
@@ -128,7 +128,7 @@ public class YhjCkSupImpl implements ICkSupService {
             }
             supResult.setYysCode(yysCode);
 
-            respVo.setRetCode(MobTreeRespVo.SUCCESS);
+            respVo.setRetCode(MobTreeRespDTO.SUCCESS);
             respVo.setIsp(yysCode.getCode());
             supResult.setData(respVo);
             return supResult;

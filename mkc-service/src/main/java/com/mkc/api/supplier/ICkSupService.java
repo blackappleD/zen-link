@@ -1,38 +1,40 @@
 package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
-import com.mkc.api.supplier.dto.BankFourResDTO;
-import com.mkc.api.vo.ck.*;
+import com.mkc.api.dto.bg.BankFourResDTO;
+import com.mkc.api.dto.ck.*;
 import com.mkc.bean.SuplierQueryBean;
+
+import java.util.List;
 
 public interface ICkSupService extends ISupService {
 
 	/**
 	 * 行驶证核验
 	 */
-	default SupResult ckVehicleLicenseInfo(VehicleLicenseReqVo vo, SuplierQueryBean bean) {
-		return SupResult.err();
+	default SupResult ckVehicleLicenseInfo(VehicleLicenseReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
 	}
 
 	/**
 	 * 银行卡四要素
 	 */
-	default SupResult<BankFourResDTO> ckBankFour(BankReqVo vo, SuplierQueryBean bean) {
-		return SupResult.err();
+	default SupResult<BankFourResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
 	}
 
 	/**
 	 * 银行卡三要素
 	 */
-	default SupResult ckBankThree(BankReqVo vo, SuplierQueryBean bean) {
-		return SupResult.err();
+	default SupResult ckBankThree(BankReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
 	}
 
 	/**
 	 * 银行卡二要素
 	 */
-	default SupResult ckBankTwo(BankReqVo vo, SuplierQueryBean bean) {
-		return SupResult.err();
+	default SupResult ckBankTwo(BankReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
 	}
 
 
@@ -43,8 +45,8 @@ public interface ICkSupService extends ISupService {
 	 * @param bean
 	 * @return
 	 */
-	default SupResult ckMobThree(MobThreeReqVo vo, SuplierQueryBean bean) {
-		return SupResult.err();
+	default SupResult ckMobThree(MobThreeReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
 	}
 
 	/**
@@ -54,8 +56,8 @@ public interface ICkSupService extends ISupService {
 	 * @param bean
 	 * @return
 	 */
-	default SupResult ckPersonCar(PersonCarReqVo vo, SuplierQueryBean bean) {
-		return SupResult.err();
+	default SupResult ckPersonCar(PersonCarReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
 	}
 
 	/**
@@ -65,15 +67,27 @@ public interface ICkSupService extends ISupService {
 	 * @param bean
 	 * @return
 	 */
-	default SupResult ckWorkUnit(WorkUnitReqVo vo, SuplierQueryBean bean) {
-		return SupResult.err();
+	default SupResult ckWorkUnit(WorkUnitReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
 	}
 
 	/**
 	 * 全国⼈⼝身份信息三要素核验
 	 */
-	default SupResult ckPopulationThree(PopulationThreeReqVo vo, SuplierQueryBean bean) {
-		return SupResult.err();
+	default SupResult ckPopulationThree(PopulationThreeReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+
+	/**
+	 * 全国人社部_技能人员职业资格证书核验数据元件接口
+	 *
+	 * @param dto
+	 * @param bean
+	 * @return
+	 */
+	default SupResult<List<ProQualifyCertResDTO>> ckProQualifyCert(ProQualifyCertReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
 	}
 
 }

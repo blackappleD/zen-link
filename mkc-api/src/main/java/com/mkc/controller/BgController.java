@@ -7,9 +7,9 @@ import com.mkc.api.common.constant.ApiReturnCode;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
+import com.mkc.api.dto.bg.*;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.IBgService;
-import com.mkc.api.vo.bg.*;
-import com.mkc.api.vo.common.MerReqLogVo;
 import com.mkc.bean.CkMerBean;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +51,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_HIGH_SCHOOL_EDUCATION_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryHighSchoolEducationResultInfo(params, merLog);
@@ -99,7 +99,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_HIGH_SCHOOL_EDUCATION_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryHighSchoolEducationInfo(params, merLog);
@@ -152,7 +152,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_HIGH_SCHOOL_EDUCATION.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryHighSchoolEducation(params, merLog);
@@ -181,7 +181,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_MARITAL_STABILITY.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.ckMarriageStabilityParams(params, merLog);
@@ -235,7 +235,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_MARITAL_STATUS.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryMaritalStatus(params, merLog);
@@ -290,7 +290,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_MARITAL_RELATIONSHIP.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryMaritalRelationship(params, merLog);
@@ -356,7 +356,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_EDU_ASSESSMENT.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryEduAssessment(params, merLog);
@@ -385,7 +385,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_EDUCATION_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryEducationInfo(params, merLog);
@@ -438,7 +438,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_DRIVING_LICENSE_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryDrivingLicenseInfo(params, merLog);
@@ -465,7 +465,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_ECONOMIC_RATE_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryEconomicRateInfo(params, merLog);
@@ -497,7 +497,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_ENTERPRISE_FOUR_ELEMENT_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryFourElementsInfo(params, merLog);
@@ -527,11 +527,10 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_PERSON_CAR_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = bgService.queryPersonCarInfo(params, merLog);
-			return result;
+			return bgService.queryPersonCarInfo(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
@@ -555,7 +554,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_SURE_SCORE_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.querySureScoreInfo(params, merLog);
@@ -584,7 +583,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_FINANCE_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryFinanceInfo(params, merLog);
@@ -612,7 +611,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_FINANCE_INFO_V3.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryFinanceInfoV3(params, merLog);
@@ -640,7 +639,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_FINANCE_INFO_V7.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			Result result = bgService.queryFinanceInfoV7(params, merLog);
@@ -659,10 +658,14 @@ public class BgController extends BaseController {
 	 * 不动产信息核查
 	 */
 	@PostMapping("/houseReqInfo")
-	public Result houseInfo(HttpServletRequest request, @RequestParam("files") List<MultipartFile> files,
-	                        @RequestParam("types") List<String> types, @RequestParam("persons") String persons,
-	                        @RequestParam("merCode") String merCode, @RequestParam("key") String key,
-	                        @RequestParam("merSeq") String merSeq, @RequestParam("sign") String sign) {
+	public Result houseInfo(HttpServletRequest request,
+	                        @RequestParam("files") List<MultipartFile> files,
+	                        @RequestParam("types") List<String> types,
+	                        @RequestParam("persons") String persons,
+	                        @RequestParam("merCode") String merCode,
+	                        @RequestParam("key") String key,
+	                        @RequestParam("merSeq") String merSeq,
+	                        @RequestParam("sign") String sign) {
 		HouseInfoReqVo houseInfoReqVo = new HouseInfoReqVo();
 		houseInfoReqVo.setFiles(files);
 		houseInfoReqVo.setTypes(types);
@@ -684,7 +687,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 			Result result = bgService.queryHouseInfo(houseInfoReqVo, merLog);
 			return result;
@@ -713,7 +716,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			return bgService.queryHouseResultInfo(params, merLog);
@@ -743,7 +746,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_CAR_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 			return bgService.queryCarInfo(params, merLog);
@@ -773,7 +776,7 @@ public class BgController extends BaseController {
 			ckMerBean.setProductCode(ProductCodeEum.BG_VEHICLE_LICENSE_INFO.getCode());
 
 			//检查商户参数有效性
-			MerReqLogVo merLog = ckMer(request, ckMerBean);
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
 

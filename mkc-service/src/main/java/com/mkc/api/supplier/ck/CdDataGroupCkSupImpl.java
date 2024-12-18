@@ -6,7 +6,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.vo.ck.PopulationThreeReqVo;
+import com.mkc.api.dto.ck.PopulationThreeReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -39,7 +39,7 @@ public class CdDataGroupCkSupImpl implements ICkSupService {
 
 
     @Override
-    public SupResult ckPopulationThree(PopulationThreeReqVo vo, SuplierQueryBean bean) {
+    public SupResult ckPopulationThree(PopulationThreeReqDTO vo, SuplierQueryBean bean) {
 
         String result = null;
         SupResult supResult = null;

@@ -10,10 +10,10 @@ import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.ISfService;
 import com.mkc.api.supplier.ISfSupService;
-import com.mkc.api.vo.BaseVo;
-import com.mkc.api.vo.common.MerReqLogVo;
-import com.mkc.api.vo.sf.DishonestExecutiveReqVo;
-import com.mkc.api.vo.sf.RestrictedConsumerReqVo;
+import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.common.MerReqLogDTO;
+import com.mkc.api.dto.sf.DishonestExecutiveReqDTO;
+import com.mkc.api.dto.sf.RestrictedConsumerReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -60,7 +60,7 @@ public class SfServiceImpl implements ISfService {
 	private IMailProcess mailProcess;
 
 	@Override
-	public SupResult sfCommonSup(MerReqLogVo merLog, BaseVo vo, BiFunction<ISfSupService, SuplierQueryBean, SupResult> function) {
+	public SupResult sfCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<ISfSupService, SuplierQueryBean, SupResult> function) {
 
 		String merCode = merLog.getMerCode();
 		String productCode = merLog.getProductCode();
@@ -131,16 +131,16 @@ public class SfServiceImpl implements ISfService {
 	}
 
 	@Override
-	public Result queryRestrictedConsumerInfo(RestrictedConsumerReqVo params, MerReqLogVo merLog) {
+	public Result queryRestrictedConsumerInfo(RestrictedConsumerReqDTO params, MerReqLogDTO merLog) {
 		return sfCommon(merLog, params, (sfSupService, supQueryBean) -> sfSupService.queryRestrictedConsumerInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryDishonestExecutiveInfo(DishonestExecutiveReqVo params, MerReqLogVo merLog) {
+	public Result queryDishonestExecutiveInfo(DishonestExecutiveReqDTO params, MerReqLogDTO merLog) {
 		return sfCommon(merLog, params, (sfSupService, supQueryBean) -> sfSupService.queryDishonestExecutiveInfo(params, supQueryBean));
 	}
 
-	private Result sfCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<ISfSupService, SuplierQueryBean, SupResult> function) {
+	private Result sfCommon(MerReqLogDTO merLog, BaseDTO vo, BiFunction<ISfSupService, SuplierQueryBean, SupResult> function) {
 		SupResult supResult = sfCommonSup(merLog, vo, function);
 
 		return getRespResult(merLog, supResult);
@@ -153,7 +153,7 @@ public class SfServiceImpl implements ISfService {
 	 * @param supResult 调用成功，或最后调用的供应商 调用结果
 	 * @return
 	 */
-	private Result getRespResult(MerReqLogVo merLog, SupResult supResult) {
+	private Result getRespResult(MerReqLogDTO merLog, SupResult supResult) {
 		if (supResult == null) {
 			return getFailResult(merLog);
 		}
@@ -202,7 +202,7 @@ public class SfServiceImpl implements ISfService {
 	 * @param merLog
 	 * @return
 	 */
-	private Result getFailResult(MerReqLogVo merLog) {
+	private Result getFailResult(MerReqLogDTO merLog) {
 		//设置流水号
 		String orderNo = merLog.getOrderNo();
 		log.error(ErrMonitorCode.BIZ_ERR + " 该商户的产品 没有配置可用的供应商   merCode: {} , productCode: {} , orderNo: {} ", merLog.getMerCode(), merLog.getProductCode(), orderNo);

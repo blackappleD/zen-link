@@ -7,7 +7,7 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.api.supplier.utils.UrlUtils;
-import com.mkc.api.vo.bg.EducationInfoReqVo;
+import com.mkc.api.dto.bg.EducationInfoReqVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;

@@ -1,75 +1,105 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mkc.mapper.SupplierProductMapper">
-    
+
     <resultMap type="com.mkc.domain.SupplierProduct" id="SupplierProductResult">
-        <result property="id"    column="id"    />
-        <result property="supProductCode"    column="sup_product_code"    />
-        <result property="supProductName"    column="sup_product_name"    />
-        <result property="supCode"    column="sup_code"    />
-        <result property="supName"    column="sup_Name"    />
-        <result property="status"    column="status"    />
-        <result property="productCode"    column="product_code"    />
-        <result property="inPrice"    column="in_price"    />
-        <result property="timeOut"    column="time_out"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
+        <result property="id" column="id"/>
+        <result property="supProductCode" column="sup_product_code"/>
+        <result property="supProductName" column="sup_product_name"/>
+        <result property="supCode" column="sup_code"/>
+        <result property="supName" column="sup_Name"/>
+        <result property="status" column="status"/>
+        <result property="productCode" column="product_code"/>
+        <result property="inPrice" column="in_price"/>
+        <result property="timeOut" column="time_out"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
     </resultMap>
-
-
 
 
     <resultMap type="com.mkc.bean.SuplierQueryBean" id="supProductAllResult">
-        <result property="supCode"    column="code"    />
-        <result property="supName"    column="name"    />
-        <result property="supProcessor"    column="processor"    />
-        <result property="acc"    column="acc"    />
-        <result property="url"    column="url"    />
-        <result property="signPwd"    column="sign_pwd"    />
-        <result property="signKey"    column="sign_key"    />
-        <result property="timeOut"    column="time_out"    />
-        <result property="productCode"    column="product_code"    />
-        <result property="inPrice"    column="in_price"    />
-        <result property="supProductCode"    column="sup_product_code"    />
+        <result property="supCode" column="code"/>
+        <result property="supName" column="name"/>
+        <result property="supProcessor" column="processor"/>
+        <result property="acc" column="acc"/>
+        <result property="url" column="url"/>
+        <result property="signPwd" column="sign_pwd"/>
+        <result property="signKey" column="sign_key"/>
+        <result property="authAccount" column="auth_account"/>
+        <result property="authPwd" column="auth_pwd"/>
+        <result property="timeOut" column="time_out"/>
+        <result property="productCode" column="product_code"/>
+        <result property="inPrice" column="in_price"/>
+        <result property="supProductCode" column="sup_product_code"/>
 
     </resultMap>
 
 
-    <select id="querySupProductBySupPro"  resultMap="supProductAllResult">
+    <select id="querySupProductBySupPro" resultMap="supProductAllResult">
 
-        select code, name,processor, acc, sign_pwd, sign_key,url, in_price,sup_product_code,time_out,tsp.product_code from
-               t_supplier ts, t_supplier_product tsp
-        where tsp.sup_code=ts.code
-          and ts.status='00'
-          and tsp.status='00'
-          and tsp.product_code =#{productCode}
-          and ts.code=#{supCode}
+        select code,
+               name,
+               processor,
+               acc,
+               sign_pwd,
+               sign_key,
+               auth_account,
+               auth_pwd,
+               url,
+               in_price,
+               sup_product_code,
+               time_out,
+               tsp.product_code
+        from t_supplier ts,
+             t_supplier_product tsp
+        where tsp.sup_code = ts.code
+          and ts.status = '00'
+          and tsp.status = '00'
+          and tsp.product_code = #{productCode}
+          and ts.code = #{supCode}
 
     </select>
 
     <sql id="selectSupplierProductVo">
-        select id, sup_product_code,time_out,sup_product_name, sup_code,sup_Name, status, product_code,
-               in_price, create_By, update_By, create_time, update_time, remark,time_out from t_supplier_product
+        select id,
+               sup_product_code,
+               time_out,
+               sup_product_name,
+               sup_code,
+               sup_Name,
+               status,
+               product_code,
+               in_price,
+               create_By,
+               update_By,
+               create_time,
+               update_time,
+               remark,
+               time_out
+        from t_supplier_product
     </sql>
 
-    <select id="selectSupplierProductList" parameterType="com.mkc.domain.SupplierProduct" resultMap="SupplierProductResult">
+    <select id="selectSupplierProductList" parameterType="com.mkc.domain.SupplierProduct"
+            resultMap="SupplierProductResult">
 
-        select t.*,t1.product_name from t_supplier_product t,	t_product t1
+        select t.*,t1.product_name from t_supplier_product t, t_product t1
 
         <where>
-             t.product_code=t1.product_code
-            <if test="supProductName != null  and supProductName != ''"> and t.sup_product_name like concat('%', #{supProductName}, '%')</if>
-            <if test="supCode != null  and supCode != ''"> and t.sup_code = #{supCode}</if>
-            <if test="status != null  and status != ''"> and t.status = #{status}</if>
-            <if test="productCode != null  and productCode != ''"> and t.product_code = #{productCode}</if>
-            <if test="supProductCode != null  and supProductCode != ''"> and t.sup_product_code = #{supProductCode}</if>
-            <if test="createBy != null  and createBy != ''"> and t.create_By = #{createBy}</if>
-            <if test="updateBy != null  and updateBy != ''"> and t.update_By = #{updateBy}</if>
+            t.product_code=t1.product_code
+            <if test="supProductName != null  and supProductName != ''">and t.sup_product_name like concat('%',
+                #{supProductName}, '%')
+            </if>
+            <if test="supCode != null  and supCode != ''">and t.sup_code = #{supCode}</if>
+            <if test="status != null  and status != ''">and t.status = #{status}</if>
+            <if test="productCode != null  and productCode != ''">and t.product_code = #{productCode}</if>
+            <if test="supProductCode != null  and supProductCode != ''">and t.sup_product_code = #{supProductCode}</if>
+            <if test="createBy != null  and createBy != ''">and t.create_By = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''">and t.update_By = #{updateBy}</if>
         </where>
     </select>
 
@@ -77,8 +107,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSupplierProductVo"/>
         where id = #{id}
     </select>
-        
-    <insert id="insertSupplierProduct" parameterType="com.mkc.domain.SupplierProduct" useGeneratedKeys="true" keyProperty="id">
+
+    <insert id="insertSupplierProduct" parameterType="com.mkc.domain.SupplierProduct" useGeneratedKeys="true"
+            keyProperty="id">
         insert into t_supplier_product
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="supProductName != null and supProductName != ''">sup_product_name,</if>
@@ -91,7 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="supProductName != null and supProductName != ''">#{supProductName},</if>
             <if test="supCode != null and supCode != ''">#{supCode},</if>
@@ -103,7 +134,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateSupplierProduct" parameterType="com.mkc.domain.SupplierProduct">
@@ -126,7 +157,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteSupplierProductById" parameterType="Long">
-        delete from t_supplier_product where id = #{id}
+        delete
+        from t_supplier_product
+        where id = #{id}
     </delete>
 
     <delete id="deleteSupplierProductByIds" parameterType="Integer">

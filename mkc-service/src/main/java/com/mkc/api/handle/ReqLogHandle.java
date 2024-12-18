@@ -1,7 +1,7 @@
 package com.mkc.api.handle;
 
 import com.mkc.api.common.constant.bean.SupResult;
-import com.mkc.api.vo.common.MerReqLogVo;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
 
 /**
@@ -12,9 +12,9 @@ import com.mkc.bean.SuplierQueryBean;
 public interface  ReqLogHandle {
 
 
-    public void  supReqLogHandle(SupResult supResult, MerReqLogVo merReqLog, SuplierQueryBean supQueryBean);
+    public void  supReqLogHandle(SupResult supResult, MerReqLogDTO merReqLog, SuplierQueryBean supQueryBean);
 
 
-    public void  merReqLogHandle(MerReqLogVo merLog,SupResult supResult);
+    public void  merReqLogHandle(MerReqLogDTO merLog, SupResult supResult);
 
 }

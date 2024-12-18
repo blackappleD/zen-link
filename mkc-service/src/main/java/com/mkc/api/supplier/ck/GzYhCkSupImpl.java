@@ -7,9 +7,9 @@ import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.supplier.dto.BankFourResDTO;
+import com.mkc.api.dto.bg.BankFourResDTO;
 import com.mkc.api.supplier.enums.BankFourCode;
-import com.mkc.api.vo.ck.BankReqVo;
+import com.mkc.api.dto.ck.BankReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -99,7 +99,7 @@ public class GzYhCkSupImpl implements ICkSupService {
 
 
 	@Override
-	public SupResult<BankFourResDTO> ckBankFour(BankReqVo vo, SuplierQueryBean bean) {
+	public SupResult<BankFourResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
 		String result = null;
 		SupResult<BankFourResDTO> supResult = null;
 		String url = null;

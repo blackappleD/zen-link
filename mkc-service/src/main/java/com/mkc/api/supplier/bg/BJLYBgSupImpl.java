@@ -6,7 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.IBgSupService;
-import com.mkc.api.vo.bg.CarInfoReqVo;
+import com.mkc.api.dto.bg.CarInfoReqVo;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;

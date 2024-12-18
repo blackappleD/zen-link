@@ -10,9 +10,11 @@ import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.ICkService;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.vo.BaseVo;
-import com.mkc.api.vo.ck.*;
-import com.mkc.api.vo.common.MerReqLogVo;
+import com.mkc.api.dto.ck.ProQualifyCertReqDTO;
+import com.mkc.api.dto.ck.ProQualifyCertResDTO;
+import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.ck.*;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -63,35 +65,41 @@ public class CkServiceImpl implements ICkService {
 
 
 	@Override
-	public Result ckMobThree(MobThreeReqVo params, MerReqLogVo merLog) {
+	public Result ckMobThree(MobThreeReqDTO params, MerReqLogDTO merLog) {
 
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckMobThree(params, supQueryBean));
 	}
 
 	@Override
-	public Result ckPopulationThree(PopulationThreeReqVo params, MerReqLogVo merLog) {
+	public Result ckPopulationThree(PopulationThreeReqDTO params, MerReqLogDTO merLog) {
 
-		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
-				ckSupService.ckPopulationThree(params, supQueryBean));
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) -> {
+					try {
+						return ckSupService.ckPopulationThree(params, supQueryBean);
+					} catch (Exception e) {
+						throw e;
+					}
+				}
+		);
 	}
 
 	@Override
-	public Result ckPersonCar(PersonCarReqVo params, MerReqLogVo merLog) {
+	public Result ckPersonCar(PersonCarReqDTO params, MerReqLogDTO merLog) {
 
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckPersonCar(params, supQueryBean));
 	}
 
 	@Override
-	public Result ckWorkUnit(WorkUnitReqVo params, MerReqLogVo merLog) {
+	public Result ckWorkUnit(WorkUnitReqDTO params, MerReqLogDTO merLog) {
 
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckWorkUnit(params, supQueryBean));
 	}
 
 
-	private Result ckCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
+	private Result ckCommon(MerReqLogDTO merLog, BaseDTO vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
 
 		SupResult supResult = ckCommonSup(merLog, vo, function);
 
@@ -101,7 +109,7 @@ public class CkServiceImpl implements ICkService {
 
 	//将查询供应商方法迁移出来
 	@Override
-	public SupResult ckCommonSup(MerReqLogVo merLog, BaseVo vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
+	public SupResult ckCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function) {
 
 		String merCode = merLog.getMerCode();
 		String productCode = merLog.getProductCode();
@@ -175,29 +183,35 @@ public class CkServiceImpl implements ICkService {
 	}
 
 	@Override
-	public Result ckVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog) {
+	public Result ckVehicleLicenseInfo(VehicleLicenseReqDTO params, MerReqLogDTO merLog) {
 
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckVehicleLicenseInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result ckBankFour(BankReqVo params, MerReqLogVo merLog) {
+	public Result ckBankFour(BankReqDTO params, MerReqLogDTO merLog) {
 
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckBankFour(params, supQueryBean));
 	}
 
 	@Override
-	public Result ckBankThree(BankReqVo params, MerReqLogVo merLog) {
+	public Result ckBankThree(BankReqDTO params, MerReqLogDTO merLog) {
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckBankThree(params, supQueryBean));
 	}
 
 	@Override
-	public Result ckBankTwo(BankReqVo params, MerReqLogVo merLog) {
+	public Result ckBankTwo(BankReqDTO params, MerReqLogDTO merLog) {
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckBankTwo(params, supQueryBean));
+	}
+
+	@Override
+	public Result<ProQualifyCertResDTO> ckProQualifyCert(ProQualifyCertReqDTO params, MerReqLogDTO merLog) {
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckProQualifyCert(params, supQueryBean));
 	}
 
 
@@ -208,7 +222,7 @@ public class CkServiceImpl implements ICkService {
 	 * @param supResult 调用成功，或最后调用的供应商 调用结果
 	 * @return
 	 */
-	private Result getRespResult(MerReqLogVo merLog, SupResult supResult) {
+	private Result getRespResult(MerReqLogDTO merLog, SupResult supResult) {
 
 		if (supResult == null) {
 			return getFailResult(merLog);
@@ -260,7 +274,7 @@ public class CkServiceImpl implements ICkService {
 	 * @param merLog
 	 * @return
 	 */
-	private Result getFailResult(MerReqLogVo merLog) {
+	private Result getFailResult(MerReqLogDTO merLog) {
 
 		//设置流水号
 		String orderNo = merLog.getOrderNo();

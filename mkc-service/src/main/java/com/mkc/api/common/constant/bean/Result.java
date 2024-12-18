@@ -18,9 +18,9 @@ import java.util.Objects;
 public class Result<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 成功
-	 */
+//	 /**
+//	  * 成功
+//	  */
 //    public static final String SUCCESS = ApiReturnCode.SUCCESS.getCode();
 //
 //    /** 查无 */
@@ -31,11 +31,18 @@ public class Result<T> implements Serializable {
 
 	private String code;
 
+	private String msg;
+
+	// 供应商返回的code
+	private String supCode;
+
+	// 供应商返回的msg
+	private String supMsg;
+
 	private String seqNo;
 
 	private String free = FreeStatus.NO.getCode();
 
-	private String msg;
 
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private Integer billedTimes;

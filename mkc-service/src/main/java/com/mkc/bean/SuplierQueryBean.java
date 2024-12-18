@@ -13,56 +13,86 @@ import java.math.BigDecimal;
 @Data
 public class SuplierQueryBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /** code */
-    private String supCode;
+	/**
+	 * code
+	 */
+	private String supCode;
 
-    /** 供应商处理器 */
-    private String supProcessor;
+	/**
+	 * 供应商处理器
+	 */
+	private String supProcessor;
 
-    /** 名称 */
-    private String supName;
+	/**
+	 * 名称
+	 */
+	private String supName;
 
-    /** 账号 */
-    private String acc;
+	/**
+	 * 账号
+	 */
+	private String acc;
 
-    /** 状态 */
-    private String status;
+	/**
+	 * 状态
+	 */
+	private String status;
 
-    /** 接口地址 */
-    private String url;
+	/**
+	 * 接口地址
+	 */
+	private String url;
 
-    /** 秘钥 加签相关pwd */
-    private String signPwd;
+	/**
+	 * 秘钥 加签相关pwd
+	 */
+	private String signPwd;
 
-    /** 加签相关key */
-    private String signKey;
+	/**
+	 * 加签相关key
+	 */
+	private String signKey;
 
-    /** 排序 */
-    private Long sort;
+	/**
+	 * 鉴权账号
+	 */
+	private String authAccount;
 
-    /** 超时时间 默认5秒 */
-    private Integer timeOut=5000;
+	/**
+	 * 鉴权密码
+	 */
+	private String authPwd;
 
-    /**
-     * 产品
-     */
-    private String productCode;
+	/**
+	 * 排序
+	 */
+	private Long sort;
 
-    /**
-     * 供应商产品编码
-     */
-    private String supProductCode;
+	/**
+	 * 超时时间 默认5秒
+	 */
+	private Integer timeOut = 5000;
 
-    /** 成本价 */
-    private BigDecimal inPrice;
+	/**
+	 * 产品
+	 */
+	private String productCode;
 
+	/**
+	 * 供应商产品编码
+	 */
+	private String supProductCode;
 
-    /**
-     * 当前这条商户请求记录流水号
-     */
-    private String orderNo;
+	/**
+	 * 成本价
+	 */
+	private BigDecimal inPrice;
+	/**
+	 * 当前这条商户请求记录流水号
+	 */
+	private String orderNo;
 
 
 }

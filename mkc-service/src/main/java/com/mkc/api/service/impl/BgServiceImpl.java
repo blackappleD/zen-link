@@ -10,9 +10,9 @@ import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.IBgService;
 import com.mkc.api.supplier.IBgSupService;
-import com.mkc.api.vo.BaseVo;
-import com.mkc.api.vo.bg.*;
-import com.mkc.api.vo.common.MerReqLogVo;
+import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.bg.*;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -64,118 +64,118 @@ public class BgServiceImpl implements IBgService {
 
 
 	@Override
-	public Result queryCarInfo(CarInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryCarInfo(CarInfoReqVo params, MerReqLogDTO merLog) {
 
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryCarInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog) {
+	public Result queryVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryVehicleLicenseInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryHouseInfo(HouseInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryHouseInfo(HouseInfoReqVo params, MerReqLogDTO merLog) {
 
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryHouseInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryHouseResultInfo(HouseResultInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryHouseResultInfo(HouseResultInfoReqVo params, MerReqLogDTO merLog) {
 
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryHouseResultInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryFinanceInfo(FinanceInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryFinanceInfo(FinanceInfoReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryFinanceInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryFinanceInfoV3(FinanceInfoV3ReqVo params, MerReqLogVo merLog) {
+	public Result queryFinanceInfoV3(FinanceInfoV3ReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryFinanceInfoV3(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryFinanceInfoV7(FinanceInfoV3ReqVo params, MerReqLogVo merLog) {
+	public Result queryFinanceInfoV7(FinanceInfoV3ReqVo params, MerReqLogDTO merLog) {
 
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryFinanceInfoV7(params, supQueryBean));
 	}
 
 	@Override
-	public Result querySureScoreInfo(SureScoreInfoReqVo params, MerReqLogVo merLog) {
+	public Result querySureScoreInfo(SureScoreInfoReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.querySureScoreInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryPersonCarInfo(PersonCarDetailReqVo params, MerReqLogVo merLog) {
+	public Result queryPersonCarInfo(PersonCarDetailReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryPersonCarInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryFourElementsInfo(EnterpriseFourElementsReqVo params, MerReqLogVo merLog) {
+	public Result queryFourElementsInfo(EnterpriseFourElementsReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryFourElementsInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryEconomicRateInfo(EconomicRateReqVo params, MerReqLogVo merLog) {
+	public Result queryEconomicRateInfo(EconomicRateReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryEconomicRateInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryDrivingLicenseInfo(DrivingLicenseReqVo params, MerReqLogVo merLog) {
+	public Result queryDrivingLicenseInfo(DrivingLicenseReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryDrivingLicenseInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryEducationInfo(EducationInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryEducationInfo(EducationInfoReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryEducationInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryHighSchoolEducationInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryHighSchoolEducationResultInfo(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryHighSchoolEducation(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryHighSchoolEducation(HighSchoolEducationInfoReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryHighSchoolEducation(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryEduAssessment(EducationInfoReqVo params, MerReqLogVo merLog) {
+	public Result queryEduAssessment(EducationInfoReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryEduAssessment(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryMaritalStatus(MarriageInfoReqInfo params, MerReqLogVo merLog) {
+	public Result queryMaritalStatus(MarriageInfoReqInfo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryMaritalStatus(params, supQueryBean));
 	}
 
 	@Override
-	public Result queryMaritalRelationship(MaritalRelationshipReqVo params, MerReqLogVo merLog) {
+	public Result queryMaritalRelationship(MaritalRelationshipReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryMaritalRelationship(params, supQueryBean));
 	}
 
 	@Override
-	public Result ckMarriageStabilityParams(MaritalStabilityReqVo params, MerReqLogVo merLog) {
+	public Result ckMarriageStabilityParams(MaritalStabilityReqVo params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) -> bgSupService.queryMaritalStability(params, supQueryBean));
 	}
 
 
-	private Result bgCommon(MerReqLogVo merLog, BaseVo vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
+	private Result bgCommon(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
 
 		SupResult supResult = ckCommonSup(merLog, vo, function);
 
@@ -185,7 +185,7 @@ public class BgServiceImpl implements IBgService {
 
 	//将查询供应商方法迁移出来
 	@Override
-	public SupResult ckCommonSup(MerReqLogVo merLog, BaseVo vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
+	public SupResult ckCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
 
 		String merCode = merLog.getMerCode();
 		String productCode = merLog.getProductCode();
@@ -266,7 +266,7 @@ public class BgServiceImpl implements IBgService {
 	 * @param supResult 调用成功，或最后调用的供应商 调用结果
 	 * @return
 	 */
-	private Result getRespResult(MerReqLogVo merLog, SupResult supResult) {
+	private Result getRespResult(MerReqLogDTO merLog, SupResult supResult) {
 
 		if (supResult == null) {
 			return getFailResult(merLog);
@@ -321,7 +321,7 @@ public class BgServiceImpl implements IBgService {
 	 * @param merLog
 	 * @return
 	 */
-	private Result getFailResult(MerReqLogVo merLog) {
+	private Result getFailResult(MerReqLogDTO merLog) {
 
 		//设置流水号
 		String orderNo = merLog.getOrderNo();

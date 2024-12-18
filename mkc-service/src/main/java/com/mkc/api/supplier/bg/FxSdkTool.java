@@ -9,8 +9,8 @@ import com.gzy.sign.api.request.FaXinHouseVerifyApiRequest;
 import com.gzy.sign.api.request.FaXinHouseVerifyResultApiRequest;
 import com.gzy.sign.api.response.FaXinHouseVerifyApiResponse;
 import com.gzy.sign.api.response.FaXinHouseVerifyResultApiResponse;
-import com.mkc.api.vo.bg.MaterialReqVo;
-import com.mkc.api.vo.bg.PersonInfoReqVo;
+import com.mkc.api.dto.bg.MaterialReqVo;
+import com.mkc.api.dto.bg.PersonInfoReqVo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;

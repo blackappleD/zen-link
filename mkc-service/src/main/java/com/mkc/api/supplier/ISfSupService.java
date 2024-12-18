@@ -1,9 +1,8 @@
 package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
-import com.mkc.api.vo.bg.CarInfoReqVo;
-import com.mkc.api.vo.sf.DishonestExecutiveReqVo;
-import com.mkc.api.vo.sf.RestrictedConsumerReqVo;
+import com.mkc.api.dto.sf.DishonestExecutiveReqDTO;
+import com.mkc.api.dto.sf.RestrictedConsumerReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 
 /**
@@ -18,9 +17,9 @@ public interface ISfSupService extends ISupService {
      * @param bean
      * @return
      */
-    default public SupResult queryRestrictedConsumerInfo(RestrictedConsumerReqVo vo, SuplierQueryBean bean)
+    default public SupResult queryRestrictedConsumerInfo(RestrictedConsumerReqDTO vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -29,8 +28,8 @@ public interface ISfSupService extends ISupService {
      * @param bean
      * @return
      */
-    default public SupResult queryDishonestExecutiveInfo(DishonestExecutiveReqVo vo, SuplierQueryBean bean)
+    default public SupResult queryDishonestExecutiveInfo(DishonestExecutiveReqDTO vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 }

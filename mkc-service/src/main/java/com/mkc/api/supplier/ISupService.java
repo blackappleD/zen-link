@@ -20,13 +20,13 @@ public interface ISupService {
 	/**
 	 * 百行定制 供应商
 	 */
-	public String SUP_QZDZ = "QZDZ";
+	String SUP_QZDZ = "QZDZ";
 	/**
 	 * 自研模型 供应商
 	 */
-	public String SUP_ZYMX = "ZYMX";
+	String SUP_ZYMX = "ZYMX";
 
-	Set ZY_SET = Sets.newHashSet(SUP_ZYMX, SUP_QZDZ);
+	Set<String> ZY_SET = Sets.newHashSet(SUP_ZYMX, SUP_QZDZ);
 
 	/**
 	 * 供应商处理发生异常  报警处理

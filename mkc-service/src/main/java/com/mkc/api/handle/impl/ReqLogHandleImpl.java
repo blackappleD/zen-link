@@ -6,8 +6,7 @@ import com.mkc.api.common.constant.enums.YysCode;
 import com.mkc.api.common.constant.enums.YysProductCode;
 import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.handle.ReqLogHandle;
-import com.mkc.api.supplier.ISupService;
-import com.mkc.api.vo.common.MerReqLogVo;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.domain.MerReqLog;
 import com.mkc.domain.ProductSell;
@@ -63,7 +62,7 @@ public class ReqLogHandleImpl implements ReqLogHandle {
     private RabbitProducer rabbitProducer;
 
     @Override
-    public void merReqLogHandle(MerReqLogVo merLog,SupResult supResult) {
+    public void merReqLogHandle(MerReqLogDTO merLog, SupResult supResult) {
 
         try {
 
@@ -87,7 +86,7 @@ public class ReqLogHandleImpl implements ReqLogHandle {
      */
 
    // @Async("taskExecutor")
-    public void merLogHandleQueue(MerReqLogVo merLogVo,SupResult supResult) {
+    public void merLogHandleQueue(MerReqLogDTO merLogVo, SupResult supResult) {
         MerReqLog merLog=new MerReqLog();
         try {
             BeanUtils.copyProperties(merLogVo,merLog);
@@ -145,7 +144,7 @@ public class ReqLogHandleImpl implements ReqLogHandle {
 
 
     @Override
-    public void supReqLogHandle(SupResult supResult, MerReqLogVo merReqLog, SuplierQueryBean supQueryBean) {
+    public void supReqLogHandle(SupResult supResult, MerReqLogDTO merReqLog, SuplierQueryBean supQueryBean) {
 
         try {
             //异步落地数据
@@ -160,7 +159,7 @@ public class ReqLogHandleImpl implements ReqLogHandle {
     }
 
     //@Async("taskExecutor")
-    public void supReqLogHandleQueue(SupResult supResult, MerReqLogVo merReqLog, SuplierQueryBean supQueryBean) {
+    public void supReqLogHandleQueue(SupResult supResult, MerReqLogDTO merReqLog, SuplierQueryBean supQueryBean) {
 
         SupReqLog supLog = null;
         try {
@@ -182,7 +181,7 @@ public class ReqLogHandleImpl implements ReqLogHandle {
 
     }
 
-    private SupReqLog packSupReqlog(SupResult supResult, MerReqLogVo merReqLog, SuplierQueryBean supQueryBean) {
+    private SupReqLog packSupReqlog(SupResult supResult, MerReqLogDTO merReqLog, SuplierQueryBean supQueryBean) {
 
         SupReqLog supLog = new SupReqLog();
         supLog.setMerCode(merReqLog.getMerCode());
@@ -250,7 +249,7 @@ public class ReqLogHandleImpl implements ReqLogHandle {
      * @param merLog
      * @param supResult
      */
-    private String getYysProductInfo(MerReqLogVo merLog, SupResult supResult) {
+    private String getYysProductInfo(MerReqLogDTO merLog, SupResult supResult) {
         String reqProductCode = merLog.getReqProductCode();
         if (supResult == null || StringUtils.isBlank(reqProductCode)) {
             return null;

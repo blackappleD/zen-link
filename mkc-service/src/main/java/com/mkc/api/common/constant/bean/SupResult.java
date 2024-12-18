@@ -20,15 +20,12 @@ import java.time.LocalDateTime;
 public class SupResult<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-
 	private ReqState state = ReqState.ERROR;
-
-//    private String code;
-
 
 	private String supSeqNo;
 
 	private String supCode;
+
 	private String supName;
 
 	/**
@@ -94,23 +91,38 @@ public class SupResult<T> implements Serializable {
 		this.reqJson = reqJson;
 		this.reqTime = reqTime;
 		this.respTime = respTime;
-		this.remark = remark;
+		this.setRemark(remark);
 	}
 
 
-	public static <T> SupResult<T> err() {
-		return new SupResult<>("", LocalDateTime.now(), LocalDateTime.now(), "该供应商不支持这种产品查询");
+	public SupResult<T> success(LocalDateTime resTime, T data) {
+		this.setFree(FreeStatus.YES);
+		this.setRespTime(resTime);
+		this.setState(ReqState.SUCCESS);
+		this.setData(data);
+		return this;
 	}
 
+	public SupResult<T> error(LocalDateTime resTime, String remark) {
+		this.setRespTime(resTime);
+		this.setRemark(remark);
+		return this;
+	}
 
-//    private static <T> SupResult<T> restResult(T data, ReqState state ,String reqJson)
-//    {
-//        SupResult<T> apiResult = new SupResult<>();
-//        apiResult.setState(state);
-//        apiResult.setData(data);
-//        apiResult.setReqJson(reqJson);
-//        return apiResult;
-//    }
+	public SupResult<T> notFound(LocalDateTime resTime) {
+		this.setRespTime(resTime);
+		this.setState(ReqState.NOT_GET);
+		this.setRemark("查无");
+		return this;
+	}
+
+	public static <T> SupResult<T> supNotSupport() {
+		return new SupResult<>("", LocalDateTime.now(), LocalDateTime.now(), "供应商不支持这种产品查询");
+	}
+
+	public static <T> SupResult<T> supAuthErr() {
+		return new SupResult<>("", LocalDateTime.now(), LocalDateTime.now(), "供应商鉴权失败");
+	}
 
 	/**
 	 * 判断是否查查询失败 true 是

@@ -6,10 +6,10 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.service.ISfService;
-import com.mkc.api.vo.BaseVo;
-import com.mkc.api.vo.common.MerReqLogVo;
-import com.mkc.api.vo.sf.DishonestExecutiveReqVo;
-import com.mkc.api.vo.sf.RestrictedConsumerReqVo;
+import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.common.MerReqLogDTO;
+import com.mkc.api.dto.sf.DishonestExecutiveReqDTO;
+import com.mkc.api.dto.sf.RestrictedConsumerReqDTO;
 import com.mkc.bean.CkMerBean;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +37,7 @@ public class SfController extends BaseController {
      * 【司法】失信被执行人
      */
     @PostMapping("/dishonestExecutive")
-    public Result dishonestExecutive(HttpServletRequest request, @RequestBody DishonestExecutiveReqVo params) {
+    public Result dishonestExecutive(HttpServletRequest request, @RequestBody DishonestExecutiveReqDTO params) {
         String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
@@ -46,7 +46,7 @@ public class SfController extends BaseController {
             ckMerBean.setProductCode(ProductCodeEum.SF_DISHONEST_EXECUTIVE_INFO.getCode());
 
             //检查商户参数有效性
-            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            MerReqLogDTO merLog = ckMer(request, ckMerBean);
             merLog.setReqJson(reqJson);
 
             Result result = sfService.queryDishonestExecutiveInfo(params, merLog);
@@ -59,7 +59,7 @@ public class SfController extends BaseController {
         }
     }
 
-    private CkMerBean sfDishonestExecutiveParams(DishonestExecutiveReqVo params) {
+    private CkMerBean sfDishonestExecutiveParams(DishonestExecutiveReqDTO params) {
         String merCode = params.getMerCode();
 
         String sign = params.getSign();
@@ -94,7 +94,7 @@ public class SfController extends BaseController {
      * 【【司法】限制高消费被执行人接口
      */
     @PostMapping("/restrictedConsumer")
-    public Result restrictedConsumer(HttpServletRequest request, @RequestBody RestrictedConsumerReqVo params) {
+    public Result restrictedConsumer(HttpServletRequest request, @RequestBody RestrictedConsumerReqDTO params) {
         String reqJson = null;
         try {
             reqJson = JSON.toJSONString(params);
@@ -103,7 +103,7 @@ public class SfController extends BaseController {
             ckMerBean.setProductCode(ProductCodeEum.SF_RESTRICTED_CONSUMER_INFO.getCode());
 
             //检查商户参数有效性
-            MerReqLogVo merLog = ckMer(request, ckMerBean);
+            MerReqLogDTO merLog = ckMer(request, ckMerBean);
             merLog.setReqJson(reqJson);
 
             Result result = sfService.queryRestrictedConsumerInfo(params, merLog);
@@ -116,7 +116,7 @@ public class SfController extends BaseController {
         }
     }
 
-    private CkMerBean sfRestrictedConsumerParams(RestrictedConsumerReqVo params) {
+    private CkMerBean sfRestrictedConsumerParams(RestrictedConsumerReqDTO params) {
 
         String merCode = params.getMerCode();
 
@@ -149,7 +149,7 @@ public class SfController extends BaseController {
 
     }
 
-    public void sfCommonParams(BaseVo params) {
+    public void sfCommonParams(BaseDTO params) {
         String merCode = params.getMerCode();
         String sign = params.getSign();
         String key = params.getKey();

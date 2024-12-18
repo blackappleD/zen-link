@@ -10,8 +10,8 @@ import com.mkc.api.common.constant.enums.YysCode;
 import com.mkc.api.common.constant.enums.YysProductCode;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
-import com.mkc.api.vo.BaseVo;
-import com.mkc.api.vo.common.MerReqLogVo;
+import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.CkMerBean;
 import com.mkc.common.constant.RedisKey;
 import com.mkc.common.core.redis.RedisCache;
@@ -68,14 +68,14 @@ public class BaseController {
 
 	// private static Long workerId = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr()) >> 16 & 31;
 
-	public MerReqLogVo ckMer(HttpServletRequest request, CkMerBean bean) {
+	public MerReqLogDTO ckMer(HttpServletRequest request, CkMerBean bean) {
 
 		String merCode = bean.getMerCode();
 		String plaintext = bean.getPlaintext();
 		String merSign = bean.getMerSign();
 		String productCode = bean.getProductCode();
 		String key = bean.getKey();
-		MerReqLogVo merLog = new MerReqLogVo();
+		MerReqLogDTO merLog = new MerReqLogDTO();
 
 		MerInfo merInfo = merchantService.selectMerInfoByCodeApi(merCode);
 		if (merInfo == null || !OnOffState.STATE_ON.equals(merInfo.getStatus())) {
@@ -176,7 +176,7 @@ public class BaseController {
 	}
 
 
-	public void ckCommonParams(BaseVo params) {
+	public void ckCommonParams(BaseDTO params) {
 
 		String merCode = params.getMerCode();
 		String sign = params.getSign();

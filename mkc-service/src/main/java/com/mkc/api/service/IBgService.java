@@ -3,9 +3,9 @@ package com.mkc.api.service;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.IBgSupService;
-import com.mkc.api.vo.BaseVo;
-import com.mkc.api.vo.bg.*;
-import com.mkc.api.vo.common.MerReqLogVo;
+import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.bg.*;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
 
 import java.util.function.BiFunction;
@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
 
 public interface IBgService {
 
-    public SupResult ckCommonSup(MerReqLogVo merLog, BaseVo vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function);
+    public SupResult ckCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function);
 
 
 
@@ -27,42 +27,42 @@ public interface IBgService {
      * @param params
      * @return
      */
-    public Result queryCarInfo(CarInfoReqVo params, MerReqLogVo merLog);
+    public Result queryCarInfo(CarInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 行驶证信息查询
      * @param params
      * @return
      */
-    public Result queryVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogVo merLog);
+    public Result queryVehicleLicenseInfo(VehicleLicenseReqVo params, MerReqLogDTO merLog);
 
     /**
      * 不动产信息查询
      * @param params
      * @return
      */
-    public Result queryHouseInfo(HouseInfoReqVo params, MerReqLogVo merLog);
+    public Result queryHouseInfo(HouseInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 不动产结果信息查询
      * @param params
      * @return
      */
-    public Result queryHouseResultInfo(HouseResultInfoReqVo params, MerReqLogVo merLog);
+    public Result queryHouseResultInfo(HouseResultInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 经济能力2w信息查询
      * @param params
      * @return
      */
-    public Result queryFinanceInfo(FinanceInfoReqVo params, MerReqLogVo merLog);
+    public Result queryFinanceInfo(FinanceInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 经济能力评级V3
      * @param params
      * @return
      */
-    public Result queryFinanceInfoV3(FinanceInfoV3ReqVo params, MerReqLogVo merLog);
+    public Result queryFinanceInfoV3(FinanceInfoV3ReqVo params, MerReqLogDTO merLog);
 
 
     /**
@@ -70,63 +70,63 @@ public interface IBgService {
      * @param params
      * @return
      */
-    Result queryFinanceInfoV7(FinanceInfoV3ReqVo params, MerReqLogVo merLog);
+    Result queryFinanceInfoV7(FinanceInfoV3ReqVo params, MerReqLogDTO merLog);
 
     /**
      * 确信分信息查询
      * @param params
      * @return
      */
-    public Result querySureScoreInfo(SureScoreInfoReqVo params, MerReqLogVo merLog);
+    public Result querySureScoreInfo(SureScoreInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 人车核验详版
      * @param params
      * @return
      */
-    public Result queryPersonCarInfo(PersonCarDetailReqVo params, MerReqLogVo merLog);
+    public Result queryPersonCarInfo(PersonCarDetailReqVo params, MerReqLogDTO merLog);
 
     /**
      * 企业四要素核验
      * @param params
      * @return
      */
-    public Result queryFourElementsInfo(EnterpriseFourElementsReqVo params, MerReqLogVo merLog);
+    public Result queryFourElementsInfo(EnterpriseFourElementsReqVo params, MerReqLogDTO merLog);
 
     /**
      * 经济能力评级
      * @param params
      * @return
      */
-    public Result queryEconomicRateInfo(EconomicRateReqVo params, MerReqLogVo merLog);
+    public Result queryEconomicRateInfo(EconomicRateReqVo params, MerReqLogDTO merLog);
 
     /**
      * 行驶身份核验
      * @param params
      * @return
      */
-    public Result queryDrivingLicenseInfo(DrivingLicenseReqVo params, MerReqLogVo merLog);
+    public Result queryDrivingLicenseInfo(DrivingLicenseReqVo params, MerReqLogDTO merLog);
 
     /**
      * 学历信息查询
      * @param params
      * @return
      */
-    public Result queryEducationInfo(EducationInfoReqVo params, MerReqLogVo merLog);
+    public Result queryEducationInfo(EducationInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 高校学历核查接口
      * @param params
      * @return
      */
-    Result queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog);
+    Result queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 高校学历证书结果核查接口
      * @param params
      * @return
      */
-    Result queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo params, MerReqLogVo merLog);
+    Result queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 婚姻状况
@@ -134,7 +134,7 @@ public interface IBgService {
      * @param merLog
      * @return
      */
-    Result queryMaritalStatus(MarriageInfoReqInfo params, MerReqLogVo merLog);
+    Result queryMaritalStatus(MarriageInfoReqInfo params, MerReqLogDTO merLog);
 
     /**
      * 婚姻关系验证
@@ -142,7 +142,7 @@ public interface IBgService {
      * @param merLog
      * @return
      */
-    Result queryMaritalRelationship(MaritalRelationshipReqVo params, MerReqLogVo merLog);
+    Result queryMaritalRelationship(MaritalRelationshipReqVo params, MerReqLogDTO merLog);
 
     /**
      * 婚姻稳定状况
@@ -150,7 +150,7 @@ public interface IBgService {
      * @param merLog
      * @return
      */
-    Result ckMarriageStabilityParams(MaritalStabilityReqVo params, MerReqLogVo merLog);
+    Result ckMarriageStabilityParams(MaritalStabilityReqVo params, MerReqLogDTO merLog);
 
     /**
      * 高校学历核查实时接口
@@ -158,7 +158,7 @@ public interface IBgService {
      * @param merLog
      * @return
      */
-    Result queryHighSchoolEducation(HighSchoolEducationInfoReqVo params, MerReqLogVo merLog);
+    Result queryHighSchoolEducation(HighSchoolEducationInfoReqVo params, MerReqLogDTO merLog);
 
     /**
      * 教育评估
@@ -166,5 +166,5 @@ public interface IBgService {
      * @param merLog
      * @return
      */
-    Result queryEduAssessment(EducationInfoReqVo params, MerReqLogVo merLog);
+    Result queryEduAssessment(EducationInfoReqVo params, MerReqLogDTO merLog);
 }

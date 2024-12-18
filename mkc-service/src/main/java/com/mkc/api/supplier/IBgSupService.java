@@ -1,7 +1,7 @@
 package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
-import com.mkc.api.vo.bg.*;
+import com.mkc.api.dto.bg.*;
 import com.mkc.bean.SuplierQueryBean;
 
 public interface IBgSupService extends ISupService {
@@ -14,7 +14,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryHighSchoolEducationResultInfo(HighSchoolEducationResultInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -25,7 +25,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryHighSchoolEducationInfo(HighSchoolEducationInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -36,7 +36,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryHighSchoolEducation(HighSchoolEducationInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -47,7 +47,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryEduAssessment(EducationInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -58,7 +58,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryEducationInfo(EducationInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
 
@@ -70,7 +70,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryCarInfo(CarInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -81,7 +81,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryPersonCarInfo(PersonCarDetailReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -92,7 +92,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryFourElementsInfo(EnterpriseFourElementsReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -103,7 +103,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryHouseInfo(HouseInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -114,7 +114,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryHouseResultInfo(HouseResultInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -125,7 +125,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryFinanceInfo(FinanceInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -136,7 +136,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryFinanceInfoV3(FinanceInfoV3ReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -147,7 +147,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryFinanceInfoV7(FinanceInfoV3ReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -158,7 +158,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult querySureScoreInfo(SureScoreInfoReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
 
@@ -170,7 +170,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryVehicleLicenseInfo(VehicleLicenseReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -181,7 +181,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryEconomicRateInfo(EconomicRateReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
     /**
@@ -192,7 +192,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryDrivingLicenseInfo(DrivingLicenseReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
 
@@ -204,7 +204,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryMaritalStatus(MarriageInfoReqInfo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 
 
@@ -216,7 +216,7 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryMaritalRelationship(MaritalRelationshipReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
     /**
      * 婚姻稳定状况
@@ -226,6 +226,6 @@ public interface IBgSupService extends ISupService {
      */
     default public SupResult queryMaritalStability(MaritalStabilityReqVo vo, SuplierQueryBean bean)
     {
-        return SupResult.err();
+        return SupResult.supNotSupport();
     }
 }
