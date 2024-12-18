@@ -79,9 +79,10 @@ public class DyDataExchangeCkSupImpl implements ICkSupService {
 				LocalDateTime resTime = LocalDateTime.now();
 				if (response.getStatus() == 200) {
 					body = response.body();
-					String code = String.valueOf(JsonPath.<Object>read(response.body(), "$.code"));
-					String message = JsonPath.read(body, "$.message");
-					List<ProQualifyCertSupResDTO> list = JsonPath.read(body, "$.data");
+					Response res = JSONUtil.toBean(body, Response.class);
+					String code = res.getCode();
+					String message = res.getMessage();
+					List<ProQualifyCertSupResDTO> list = res.getData();
 					if (successCodes().contains(code)) {
 						List<ProQualifyCertResDTO> collect = list.stream()
 								.map(supRes -> dyDataExchangeCkSupMapper.supRes2Res(supRes))
@@ -150,5 +151,13 @@ public class DyDataExchangeCkSupImpl implements ICkSupService {
 		private String input;
 
 		private String password;
+	}
+
+
+	@Data
+	private static class Response {
+		private String code;
+		private String message;
+		private List<ProQualifyCertSupResDTO> data;
 	}
 }
