@@ -38,7 +38,7 @@ public class GlobalExceptionHandlerConfig {
 	@ExceptionHandler(Exception.class)
 	public Result<?> handleGlobalException(HttpServletResponse response, HttpServletRequest req, Exception e) throws Exception {
 
-		log.error(" GlobalException  Exception error , URL  " + req.getRequestURL(), e);
+		log.error(" GlobalException  Exception error:{}, URL  {}", e.getMessage(), req.getRequestURL(), e);
 
 		return Result.fail();
 	}
@@ -54,7 +54,7 @@ public class GlobalExceptionHandlerConfig {
 	@ExceptionHandler(Throwable.class)
 	public Result<?> handleGlobalException(HttpServletResponse response, HttpServletRequest req, Throwable e) throws Exception {
 
-		log.error(" GlobalException  Throwable  error ,  URL  " + req.getRequestURL(), e);
+		log.error(" GlobalException  Throwable  error {},  URL {} ", e.getMessage(), req.getRequestURL(), e);
 
 		return Result.fail();
 	}
@@ -70,7 +70,7 @@ public class GlobalExceptionHandlerConfig {
 	@ExceptionHandler(ServiceException.class)
 	public Result<?> handleServiceException(HttpServletResponse response, HttpServletRequest req, ServiceException e) throws Exception {
 
-		log.error(" ServiceException  error , URL  " + req.getRequestURL(), e);
+		log.error(" ServiceException  error: {} , URL {} ", e.getMessage(), req.getRequestURL(), e);
 
 		return Result.fail();
 	}
