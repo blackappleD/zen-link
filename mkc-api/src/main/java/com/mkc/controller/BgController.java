@@ -54,8 +54,7 @@ public class BgController extends BaseController {
 			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = bgService.queryHighSchoolEducationResultInfo(params, merLog);
-			return result;
+			return bgService.queryHighSchoolEducationResultInfo(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
@@ -102,8 +101,7 @@ public class BgController extends BaseController {
 			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = bgService.queryHighSchoolEducationInfo(params, merLog);
-			return result;
+			return bgService.queryHighSchoolEducationInfo(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
@@ -155,8 +153,7 @@ public class BgController extends BaseController {
 			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = bgService.queryHighSchoolEducation(params, merLog);
-			return result;
+			return bgService.queryHighSchoolEducation(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
@@ -184,8 +181,7 @@ public class BgController extends BaseController {
 			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = bgService.ckMarriageStabilityParams(params, merLog);
-			return result;
+			return bgService.ckMarriageStabilityParams(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
@@ -292,8 +288,7 @@ public class BgController extends BaseController {
 			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = bgService.queryMaritalRelationship(params, merLog);
-			return result;
+			return bgService.queryMaritalRelationship(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
@@ -358,8 +353,7 @@ public class BgController extends BaseController {
 			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = bgService.queryEduAssessment(params, merLog);
-			return result;
+			return bgService.queryEduAssessment(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
