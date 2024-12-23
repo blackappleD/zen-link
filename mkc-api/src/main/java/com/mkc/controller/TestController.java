@@ -1,5 +1,6 @@
 package com.mkc.controller;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
@@ -19,6 +20,7 @@ import com.mkc.dto.bdc.BdcResponse;
 import com.mkc.service.IMerInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.dao.PersistenceExceptionTranslationAutoConfiguration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +31,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -57,6 +58,8 @@ public class TestController {
 			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
 	private final ThreadPoolExecutor houseThreadPoolExecutor = new ThreadPoolExecutor(10, 10,
 			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
+	@Autowired
+	private PersistenceExceptionTranslationAutoConfiguration persistenceExceptionTranslationAutoConfiguration;
 
 	public static class Sleep10sResubmitHandler implements RejectedExecutionHandler {
 
@@ -166,14 +169,13 @@ public class TestController {
 				BdcRequest req = JSONUtil.toBean(line.getReqJson(), BdcRequest.class);
 
 				String reqOrderNo = res.getData().getReqOrderNo();
-				String name = req.getData().getPersons().get(0).getName();
-				String cardNum = req.getData().getPersons().get(0).getCardNum();
-
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("reqOrderNo", reqOrderNo);
-				jsonObject.put("personCardNumList", Collections.singletonList(cardNum));
-				JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", jsonObject, reqOrderNo);
-				try {
+				req.getData().getPersons().forEach(person -> {
+					String name = person.getName();
+					String cardNum = person.getCardNum();
+					JSONObject jsonObject = new JSONObject();
+					jsonObject.put("reqOrderNo", reqOrderNo);
+					jsonObject.put("personCardNumList", ListUtil.of(cardNum));
+					JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/houseResultReqInfo", jsonObject, reqOrderNo);
 					JSONObject data = post.getJSONObject("data");
 					if (Objects.nonNull(data)) {
 						JSONArray authResults = data.getJSONArray("authResults");
@@ -211,11 +213,10 @@ public class TestController {
 							}
 						}
 					}
-				} catch (Exception e) {
-					log.error(e.getMessage());
-				}
-				System.err.println(post);
-			} catch (Exception ignore) {
+					System.err.println(post);
+				});
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
 			}
 			latch.countDown();
 		}));
