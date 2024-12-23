@@ -238,8 +238,7 @@ public class BgController extends BaseController {
 			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = bgService.queryMaritalStatus(params, merLog);
-			return result;
+			return bgService.queryMaritalStatus(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
