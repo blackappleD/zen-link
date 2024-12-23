@@ -270,7 +270,6 @@ public class TestController {
 					.sheet("经济能力评级V3测试结果" + sheetNo)
 					.doWrite(readList);
 		} catch (IOException e) {
-			e.printStackTrace();
 			log.error(e.getMessage());
 		}
 	}
