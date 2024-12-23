@@ -202,6 +202,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
 		}
 		JSONObject resultObject = JSON.parseObject(result);
 		String code = resultObject.getString("code");
+		String message = resultObject.getString("message");
 		//                200：成功（收费）
 		if (SUCCESS.equals(code)) {
 			supResult.setFree(FreeStatus.YES);
@@ -214,7 +215,7 @@ public class ZdzzBgSupImpl implements IBgSupService {
 			}
 		} else {
 			supResult.setFree(FreeStatus.NO);
-			supResult.setRemark("查询失败");
+			supResult.setRemark(message);
 			supResult.setState(ReqState.ERROR);
 			errMonitorMsg(log, "【{}】 {} 发生异常 orderNo {} URL {} , 报文: {} "
 					, bean.getSupName(), bean.getProductCode(), bean.getOrderNo(), bean.getUrl(), result);
