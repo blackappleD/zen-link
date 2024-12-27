@@ -237,9 +237,11 @@ public class QxkjCkSupImpl implements ICkSupService {
 				return supResult;
 			}
 			JSONObject resultObject = JSON.parseObject(result);
+			supResult.setRespTime(LocalDateTime.now());
 			String code = resultObject.getString("code");
 			String msg = resultObject.getString("msg");
 			JSONObject resultJson = resultObject.getJSONObject("data");
+			supResult.setSupCode(code);
 			if (resultJson != null) {
 				supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankFourResDTO.class));
 			}
