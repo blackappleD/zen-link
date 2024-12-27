@@ -239,24 +239,19 @@ public class QxkjCkSupImpl implements ICkSupService {
 			JSONObject resultObject = JSON.parseObject(result);
 			String code = resultObject.getString("code");
 			String msg = resultObject.getString("msg");
-
-			//                0：成功（收费）
-			//                405：查无（不收费）
+			JSONObject resultJson = resultObject.getJSONObject("data");
+			if (resultJson != null) {
+				supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankFourResDTO.class));
+			}
 			if (SUCCESS.equals(code)) {
 				supResult.setFree(FreeStatus.YES);
 				supResult.setRemark("查询成功");
 				supResult.setState(ReqState.SUCCESS);
-				JSONObject resultJson = resultObject.getJSONObject("data");
-				if (resultJson != null) {
-					supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankFourResDTO.class));
-				}
-			} else if (NOGET.equals(code)) {
-				supResult.setRemark(msg);
-				supResult.setState(ReqState.NOT_GET);
+
 			} else if (NOT.equals(code)) {
 				supResult.setFree(FreeStatus.YES);
-				supResult.setRemark(msg);
-				supResult.setState(ReqState.NOT);
+				supResult.setRemark("查询成功");
+				supResult.setState(ReqState.SUCCESS);
 			} else {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark(msg);
