@@ -238,6 +238,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 			}
 			JSONObject resultObject = JSON.parseObject(result);
 			String code = resultObject.getString("code");
+			String msg = resultObject.getString("msg");
 
 			//                0：成功（收费）
 			//                405：查无（不收费）
@@ -248,25 +249,20 @@ public class QxkjCkSupImpl implements ICkSupService {
 				JSONObject resultJson = resultObject.getJSONObject("data");
 				if (resultJson != null) {
 					supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankFourResDTO.class));
-					return supResult;
 				}
 			} else if (NOGET.equals(code)) {
-				supResult.setFree(FreeStatus.NO);
-				supResult.setRemark("查无");
+				supResult.setRemark(msg);
 				supResult.setState(ReqState.NOT_GET);
-				return supResult;
 			} else if (NOT.equals(code)) {
 				supResult.setFree(FreeStatus.YES);
-				supResult.setRemark("不一致");
+				supResult.setRemark(msg);
 				supResult.setState(ReqState.NOT);
-				return supResult;
 			} else {
 				supResult.setFree(FreeStatus.NO);
-				supResult.setRemark("查询失败");
-
+				supResult.setRemark(msg);
 			}
+			return supResult;
 
-			return null;
 		} catch (Throwable e) {
 			errMonitorMsg(log, " 【上海敬众科技股份有限公司供应商】 【银联】x四要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
