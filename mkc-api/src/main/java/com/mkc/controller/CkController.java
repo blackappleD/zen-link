@@ -40,7 +40,7 @@ public class CkController extends BaseController {
 	private ICkService ckService;
 
 	/**
-	 * 技能人员职业资格证书核验数据元件接口
+		 * 技能人员职业资格证书核验数据元件接口
 	 *
 	 * @param request
 	 * @param req
@@ -564,9 +564,7 @@ public class CkController extends BaseController {
 			merLog.setReqProductCode(yysProduct.getMobReqProductCode());
 			merLog.setYysProductCode(yysProduct);
 
-			Result result = ckService.ckMobThree(params, merLog);
-
-			return result;
+			return ckService.ckMobThree(params, merLog);
 		} catch (ApiServiceException e) {
 
 			return Result.fail(e.getCode(), e.getMessage());

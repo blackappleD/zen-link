@@ -4,12 +4,14 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 启动程序
  * 
  * @author  atd
  */
+@EnableScheduling
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @MapperScan("com.mkc.**.mapper")
 public class MkcApiApplication

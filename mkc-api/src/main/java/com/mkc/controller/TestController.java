@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -552,6 +553,64 @@ public class TestController {
 		}
 	}
 
+
+	public void testEduZjhm() {
+
+		String filePath = "C:\\Users\\achen\\Desktop\\TT-1223.xlsx";
+
+
+		List<ExcelTestEduZjhm> readList = EasyExcel.read(new File(filePath))
+				.headRowNumber(1)
+				.head(ExcelTestEduZjhm.class)
+				.sheet(0)
+				.doReadSync();
+
+		ArrayList<ExcelTestEduZjhm> resultList = new ArrayList<>();
+		for (ExcelTestEduZjhm read : readList) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("xm", read.getXm());
+			jsonObject.put("zjhm", read.getZjhm());
+			String plainText = read.getXm() + read.getZjhm();
+			JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/educationInfo", jsonObject, plainText);
+			if (post.getString("msg").contains("超限")) {
+				log.info("接口仍然超限！");
+				return;
+			}
+			try {
+				JSONArray dataList = post.getJSONArray("data");
+				for (int i = 0; i < dataList.size(); i++) {
+					JSONObject data = dataList.getJSONObject(i);
+					ExcelTestEduZjhm excelTestEduZjhm = new ExcelTestEduZjhm();
+					excelTestEduZjhm.setCode(post.getString("code"));
+					excelTestEduZjhm.setXm(read.getXm());
+					excelTestEduZjhm.setZjhm(read.getZjhm());
+					excelTestEduZjhm.setYxmc(data.getString("yxmc"));
+					excelTestEduZjhm.setZymc(data.getString("zymc"));
+					excelTestEduZjhm.setCc(data.getString("cc"));
+					excelTestEduZjhm.setRxrq(data.getString("rxrq"));
+					excelTestEduZjhm.setByrq(data.getString("byrq"));
+					excelTestEduZjhm.setXxxs(data.getString("xxxs"));
+					excelTestEduZjhm.setZsbh(data.getString("zhsb"));
+					resultList.add(excelTestEduZjhm);
+				}
+			} catch (Exception e) {
+				ExcelTestEduZjhm excelTestEduZjhm = new ExcelTestEduZjhm();
+				excelTestEduZjhm.setXm(read.getXm());
+				excelTestEduZjhm.setZjhm(read.getZjhm());
+				excelTestEduZjhm.setCode(post.getString("code"));
+				excelTestEduZjhm.setYxmc(post.getString("msg"));
+				resultList.add(excelTestEduZjhm);
+				log.error(e.getMessage());
+			}
+			System.err.println(post);
+		}
+		EasyExcel.write(new File("C:\\Users\\achen\\Desktop\\学历跑数结果.xlsx"))
+				.head(ExcelTestEduZjhm.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("sheet")
+				.doWrite(resultList);
+
+	}
 
 	/**
 	 * 高等学历跑数-中电郑州

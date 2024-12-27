@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2024/10/23
  */
 @Data
-public class ExcelTest2W {
+public class    ExcelTest2W {
     @ColumnWidth(20)
     @ExcelProperty("姓名")
     private String name = "张三";
