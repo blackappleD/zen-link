@@ -33,11 +33,11 @@ public class Result<T> implements Serializable {
 
 	private String msg;
 
-	// 供应商返回的code
-	private String supCode;
-
-	// 供应商返回的msg
-	private String supMsg;
+//	// 供应商返回的code
+//	private String supCode;
+//
+//	// 供应商返回的msg
+//	private String supMsg;
 
 	private String seqNo;
 
