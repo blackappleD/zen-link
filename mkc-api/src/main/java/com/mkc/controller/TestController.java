@@ -4,6 +4,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
@@ -18,6 +19,7 @@ import com.mkc.dto.SupLogLine;
 import com.mkc.dto.bdc.BdcRequest;
 import com.mkc.dto.bdc.BdcResponse;
 import com.mkc.service.IMerInfoService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.dao.PersistenceExceptionTranslationAutoConfiguration;
@@ -497,6 +499,55 @@ public class TestController {
 			e.printStackTrace();
 			log.error(e.getMessage());
 		}
+	}
+
+	@PostMapping("/testMaritalStatus")
+	public void testMaritalStatus(@RequestBody MultipartFile excel, HttpServletResponse response) throws IOException {
+		List<MaritalStatusCell> readList = EasyExcel.read(excel.getInputStream())
+				.headRowNumber(1)
+				.head(MaritalStatusCell.class)
+				.sheet(0)
+				.doReadSync();
+		for (MaritalStatusCell read : readList) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("xm", read.getName());
+			jsonObject.put("sfzh", read.getIdCard());
+			String plainText = read.getName() + read.getIdCard();
+			JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/maritalStatus", jsonObject, plainText);
+			read.setCode(post.getString("code"));
+			JSONObject data = post.getObject("data", JSONObject.class);
+			if (Objects.nonNull(data)) {
+				read.setResult(data.getString("result"));
+			} else {
+				read.setResult("查无");
+			}
+			System.err.println(post);
+		}
+		setExcelRespProp(response, DateUtils.dateTimeNow() + "婚姻状况测试结果");
+		EasyExcel.write(response.getOutputStream())
+				.head(MaritalStatusCell.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("婚姻状况测试结果")
+				.doWrite(readList);
+
+	}
+
+	@Data
+	public static class MaritalStatusCell {
+
+		@ExcelProperty("姓名")
+		private String name;
+
+		@ExcelProperty("身份证号")
+		private String idCard;
+
+		@ExcelProperty("返回码")
+		private String code;
+
+		@ExcelProperty("婚姻状况")
+		private String result;
+
+
 	}
 
 

@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 /**
  * 广州亿宏
  *
@@ -41,39 +42,39 @@ public class GzYhCkSupImpl implements ICkSupService {
 	@Getter
 	public enum BusinessCode {
 		VERIFICATION_SUCCESS("00000000", BankFourCode.VERIFICATION_SUCCESS, "验证通过"),
-		VERIFICATION_FAILED("B0000001", null, "验证不通过"),
-		INVALID_CARD_NUMBER("B0000002", BankFourCode.VERIFICATION_FAILED, "无效卡号或卡状态异常，请换卡重试或联系发卡行"),
-		RESTRICTED_CARD("B0000003", null, "受限制的卡，请换卡重试或联系发卡行"),
+		VERIFICATION_FAILED("B0000001", BankFourCode.VERIFICATION_FAILED, "验证不通过"),
+		INVALID_CARD_NUMBER("B0000002", BankFourCode.INVALID_CARD, "无效卡号或卡状态异常，请换卡重试或联系发卡行"),
+		RESTRICTED_CARD("B0000003", BankFourCode.CARD_STATUS_ABNORMAL, "受限制的卡，请换卡重试或联系发卡行"),
 		ABNORMAL_CARD_STATUS("B0000004", BankFourCode.CARD_STATUS_ABNORMAL, "卡状态异常，请换卡重试或联系发卡行"),
 		TRANSACTION_FAILED("B0000607", BankFourCode.TRANSACTION_FAILED, "交易失败，详情请咨询您的发卡行"),
-		SYSTEM_MAINTENANCE("S0000002", null, "系统维护期间，请稍后重试"),
-		NETWORK_EXCEPTION("S0000003", null, "网络异常，请稍后重试"),
-		TRANSACTION_TIMEOUT("S0000004", null, "交易超时，请稍后重试"),
+		SYSTEM_MAINTENANCE("S0000002", BankFourCode.RESPONSE_TIMEOUT, "系统维护期间，请稍后重试"),
+		NETWORK_EXCEPTION("S0000003", BankFourCode.RESPONSE_TIMEOUT, "网络异常，请稍后重试"),
+		TRANSACTION_TIMEOUT("S0000004", BankFourCode.RESPONSE_TIMEOUT, "交易超时，请稍后重试"),
 		LIMIT_FLOW_OR_FREQUENT("S0000005", BankFourCode.TRANSACTION_TOO_FREQUENT, "交易限流或过于频繁，请稍后重试"),
-		ILLEGAL_REQUEST("S0000011", null, "非法请求"),
-		REQUEST_FORMAT_ERROR("S0000012", null, "请求报文格式有误"),
-		MISSING_REQUIRED_PARAMS("S0000013", null, "请求报文必填参数缺失"),
-		REQUEST_PARAMS_ERROR("S0000014", null, "请求报文参数有误"),
-		PARAM_LENGTH_LIMIT("S0000015", null, "请求报文有字段长度超限"),
-		DECRYPTION_FAILED("S0000016", null, "报文解密失败"),
-		SIGNATURE_FAILED("S0000017", null, "请求报文签名失败"),
-		ENCRYPTION_FAILED("S0000018", null, "响应报文签名失败"),
-		ENCRYPTION_ERROR("S0000019", null, "响应报文加密失败"),
-		TRANSACTION_DUPLICATE("S0000020", null, "交易流水号重复"),
+		ILLEGAL_REQUEST("S0000011", BankFourCode.ILLEGAL_REQUEST, "非法请求"),
+		REQUEST_FORMAT_ERROR("S0000012", BankFourCode.ILLEGAL_REQUEST, "请求报文格式有误"),
+		MISSING_REQUIRED_PARAMS("S0000013", BankFourCode.ILLEGAL_REQUEST, "请求报文必填参数缺失"),
+		REQUEST_PARAMS_ERROR("S0000014", BankFourCode.ILLEGAL_REQUEST, "请求报文参数有误"),
+		PARAM_LENGTH_LIMIT("S0000015", BankFourCode.ILLEGAL_REQUEST, "请求报文有字段长度超限"),
+		DECRYPTION_FAILED("S0000016", BankFourCode.ILLEGAL_REQUEST, "报文解密失败"),
+		SIGNATURE_FAILED("S0000017", BankFourCode.ILLEGAL_REQUEST, "请求报文签名失败"),
+		ENCRYPTION_FAILED("S0000018", BankFourCode.ILLEGAL_REQUEST, "响应报文签名失败"),
+		ENCRYPTION_ERROR("S0000019", BankFourCode.ILLEGAL_REQUEST, "响应报文加密失败"),
+		TRANSACTION_DUPLICATE("S0000020", BankFourCode.ILLEGAL_REQUEST, "交易流水号重复"),
 		TRANSACTION_LIMIT_EXCEEDED("S0000021", BankFourCode.TRANSACTION_TOO_FREQUENT, "交易次数超限，请隔日重试"),
-		BANK_RESTRICTION("S0000101", null, "交易银行受限，请联系平台"),
-		SYSTEM_TIMEOUT_OR_EXCEPTION("0014", null, "系统超时或异常"),
-		SIGNATURE_EXPIRED("0017", null, "超时签名"),
+		BANK_RESTRICTION("S0000101", BankFourCode.SYSTEM_EXCEPTION, "交易银行受限，请联系平台"),
+		SYSTEM_TIMEOUT_OR_EXCEPTION("0014", BankFourCode.RESPONSE_TIMEOUT, "系统超时或异常"),
+		SIGNATURE_EXPIRED("0017", BankFourCode.ILLEGAL_REQUEST, "超时签名"),
 		MISSING_REQUIRED_FIELDS("0016", null, "缺少必传字段"),
-		IP_RESTRICTION("0018", null, "IP受限"),
-		IP_ADDRESS_MISMATCH("0019", null, "IP地址和商户号不匹配"),
-		ILLEGAL_SIGNATURE("0021", null, "非法签名"),
-		INVALID_APP_ID("0022", null, "AppId调用接口查无此权限"),
-		WRONG_PARAM_SIGNATURE("0023", null, "签名参数有误"),
-		BALANCE_INSUFFICIENT("2020", null, "调用失败，您的余额不足!"),
-		WRONG_SIGNATURE_PARAMS("2001", null, "签名参数有误"),
-		WRONG_SIGNATURE("2006", null, "签名错误"),
-		UNKNOWN("1", null, "未知异常");
+		IP_RESTRICTION("0018", BankFourCode.ILLEGAL_REQUEST, "IP受限"),
+		IP_ADDRESS_MISMATCH("0019", BankFourCode.ILLEGAL_REQUEST, "IP地址和商户号不匹配"),
+		ILLEGAL_SIGNATURE("0021", BankFourCode.ILLEGAL_REQUEST, "非法签名"),
+		INVALID_APP_ID("0022", BankFourCode.ILLEGAL_REQUEST, "AppId调用接口查无此权限"),
+		WRONG_PARAM_SIGNATURE("0023", BankFourCode.ILLEGAL_REQUEST, "签名参数有误"),
+		BALANCE_INSUFFICIENT("2020", BankFourCode.ILLEGAL_REQUEST, "调用失败，您的余额不足!"),
+		WRONG_SIGNATURE_PARAMS("2001", BankFourCode.ILLEGAL_REQUEST, "签名参数有误"),
+		WRONG_SIGNATURE("2006", BankFourCode.ILLEGAL_REQUEST, "签名错误"),
+		UNKNOWN("1", BankFourCode.ILLEGAL_REQUEST, "未知异常");
 		private final String code;
 		private final BankFourCode bankFourCode;
 		private final String desc;

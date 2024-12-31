@@ -10,7 +10,7 @@ import lombok.Data;
 public class ExcelTestEduZjhm {
     @ExcelProperty("姓名")
     private String xm;
-    @ExcelProperty("身份证")
+    @ExcelProperty("身份证号")
     private String zjhm;
     @ExcelProperty("code")
     private String code;

@@ -40,7 +40,10 @@ public enum BankFourCode {
 	CARD_DUPLICATED_TRANSACTION("5105", "短期内有同卡重复交易，请稍后重试"),
 	CARD_VERIFICATION_TOO_MANY("5106", "该卡今日验证次数过多，请明日重试"),
 	DAILY_VERIFICATION_LIMIT("5108", "当日验证次数已达最大值，请明日再试"),
-	SERVICE_NOT_FOR_UNDER_14("5111", "认证服务不对小于14周岁的人提供服务");
+	SERVICE_NOT_FOR_UNDER_14("5111", "认证服务不对小于14周岁的人提供服务"),
+	ILLEGAL_REQUEST("9001", "非法请求"),
+
+	;
 
 	private final String code;
 	private final String message;
