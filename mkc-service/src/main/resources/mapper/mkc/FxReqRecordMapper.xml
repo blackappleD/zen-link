@@ -45,6 +45,9 @@
             <if test="reqOrderNo != null and reqOrderNo != ''">
                 AND req_order_no = #{reqOrderNo}
             </if>
+            <if test="merCode != null and merCode != ''">
+                AND mer_code = #{merCode}
+            </if>
             <if test="userFlag != null and userFlag != ''">
                 AND mer_request_data = #{merResultData}
             </if>

@@ -108,88 +108,85 @@ public class FXGZYBgSupImpl implements IBgSupService {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查询成功");
 				supResult.setState(ReqState.SUCCESS);
-				JSONObject resultJson = resultObject;
-				if (resultJson != null) {
-					//查询该商户该流水号的记录
-					boolean isExist = false;
-					//已存在
-					if (!CollectionUtils.isEmpty(fxReqRecords)) {
-						example = fxReqRecords.get(0);
-						isExist = true;
-					} else {
-						example.setCreateTime(new Date());
-					}
-
-					example.setUpdateTime(new Date());
-					example.setMerResultData(JSONUtil.toJsonStr(resultJson.getJSONObject("data")));
-					example.setMerRequestData(JSONUtil.toJsonStr(personCardNumList));
-
-
-					JSONObject returnData = resultJson.getJSONObject("data");
-					supResult.setData(returnData);
-
-					if (returnData != null && "APPROVED".equals(returnData.getString("approvalStatus"))) {
-						JSONArray authResults = returnData.getJSONArray("authResults");
-						if (Objects.nonNull(authResults) && authResults.size() > 0) {
-							//初始化是否查得最终结果
-							String resultUserFlag = "1";
-							//初始化计费次数
-							int count = 0;
-							//初始化档次
-							StringBuilder level = new StringBuilder(StringUtils.EMPTY);
-
-							for (int i = 0; i < authResults.size(); i++) {
-								int maxLevel = 4;
-								JSONObject jsonObject = authResults.getJSONObject(i);
-								if (Objects.equals(jsonObject.getString("authStateDesc"), "核查成功")) {
-									JSONArray resultList = jsonObject.getJSONArray("resultList");
-									// resultList不为空才计费
-									if (!CollectionUtils.isEmpty(resultList)) {
-										//15天后计费每次
-										if (example.getUpdateTime().getTime() - example.getCreateTime().getTime() > 1296000000) {
-											count++;
-											supResult.setFree(FreeStatus.YES);
-										}
-										//15天内计费仅计费本月发起申请的首次查询结果
-										else if (Objects.equals(example.getUserFlag(), "0")
-												&& Objects.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM, example.getCreateTime()), DateUtils.getDateMonth())) {
-											count++;
-											supResult.setFree(FreeStatus.YES);
-										}
-										for (int j = 0; j < resultList.size(); j++) {
-											JSONObject perResult = resultList.getJSONObject(j);
-											maxLevel = Math.min(HouseLevelEnum.getAreaLevel(perResult.getString("certNo")).getlevel(), maxLevel);
-										}
-									}
-								} else {
-									resultUserFlag = "0";
-								}
-								if (StringUtils.isNotBlank(level)) {
-									level.append(",");
-								}
-								if (maxLevel == 4) {
-									level.append(0);
-								} else {
-									level.append(maxLevel);
-								}
-							}
-							supResult.setBilledTimes(count);
-							example.setFeeCount(example.getFeeCount() + count);
-							supResult.setLevel(String.valueOf(level));
-							example.setLevel(String.valueOf(level));
-							example.setUserFlag(resultUserFlag);
-						}
-
-					}
-					if (isExist) {
-						fxReqRecordMapper.updateById(example);
-					}
-					//测试账号查询结果不新增
-					else if (!Objects.equals(vo.getMerCode(), "BhCpTest")) {
-						fxReqRecordMapper.insertFxReqRecord(example);
-					}
-					return supResult;
+				//查询该商户该流水号的记录
+				boolean isExist = false;
+				//已存在
+				if (!CollectionUtils.isEmpty(fxReqRecords)) {
+					example = fxReqRecords.get(0);
+					isExist = true;
+				} else {
+					example.setCreateTime(new Date());
 				}
+
+				example.setUpdateTime(new Date());
+				example.setMerResultData(JSONUtil.toJsonStr(resultObject.getJSONObject("data")));
+				example.setMerRequestData(JSONUtil.toJsonStr(personCardNumList));
+
+
+				JSONObject returnData = resultObject.getJSONObject("data");
+				supResult.setData(returnData);
+
+				if (returnData != null && "APPROVED".equals(returnData.getString("approvalStatus"))) {
+					JSONArray authResults = returnData.getJSONArray("authResults");
+					if (Objects.nonNull(authResults) && authResults.size() > 0) {
+						//初始化是否查得最终结果
+						String resultUserFlag = "1";
+						//初始化计费次数
+						int count = 0;
+						//初始化档次
+						StringBuilder level = new StringBuilder(StringUtils.EMPTY);
+
+						for (int i = 0; i < authResults.size(); i++) {
+							int maxLevel = 4;
+							JSONObject jsonObject = authResults.getJSONObject(i);
+							if (Objects.equals(jsonObject.getString("authStateDesc"), "核查成功")) {
+								JSONArray resultList = jsonObject.getJSONArray("resultList");
+								// resultList不为空才计费
+								if (!CollectionUtils.isEmpty(resultList)) {
+									//15天后计费每次
+									if (example.getUpdateTime().getTime() - example.getCreateTime().getTime() > 1296000000) {
+										count++;
+										supResult.setFree(FreeStatus.YES);
+									}
+									//15天内计费仅计费本月发起申请的首次查询结果
+									else if (Objects.equals(example.getUserFlag(), "0")
+											&& Objects.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM, example.getCreateTime()), DateUtils.getDateMonth())) {
+										count++;
+										supResult.setFree(FreeStatus.YES);
+									}
+									for (int j = 0; j < resultList.size(); j++) {
+										JSONObject perResult = resultList.getJSONObject(j);
+										maxLevel = Math.min(HouseLevelEnum.getAreaLevel(perResult.getString("certNo")).getlevel(), maxLevel);
+									}
+								}
+							} else {
+								resultUserFlag = "0";
+							}
+							if (StringUtils.isNotBlank(level)) {
+								level.append(",");
+							}
+							if (maxLevel == 4) {
+								level.append(0);
+							} else {
+								level.append(maxLevel);
+							}
+						}
+						supResult.setBilledTimes(count);
+						example.setFeeCount(example.getFeeCount() + count);
+						supResult.setLevel(String.valueOf(level));
+						example.setLevel(String.valueOf(level));
+						example.setUserFlag(resultUserFlag);
+					}
+
+				}
+				if (isExist) {
+					fxReqRecordMapper.updateById(example);
+				}
+				//测试账号查询结果不新增
+				else if (!Objects.equals(vo.getMerCode(), "BhCpTest")) {
+					fxReqRecordMapper.insertFxReqRecord(example);
+				}
+				return supResult;
 			} else if (NO.equals(code)) {
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOT_GET);
@@ -201,7 +198,6 @@ public class FXGZYBgSupImpl implements IBgSupService {
 						, bean.getOrderNo(), url, result);
 				return supResult;
 			}
-			return supResult;
 		} catch (Throwable e) {
 
 			errMonitorMsg(log, " 【法信公证云供应商】 不动产信息 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
