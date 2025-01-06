@@ -3,7 +3,7 @@
 /.project
 /.dbeaver/
 /target/
-
+*.log
 # Java build files
 target/
 build/

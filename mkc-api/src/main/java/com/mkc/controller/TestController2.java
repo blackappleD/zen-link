@@ -156,7 +156,7 @@ public class TestController2 {
 	}
 
 	public void test() {
-		List<SupLogLine> readList = readExcel("C:/Users/achen/Downloads/1732852371939调用供应商日志数据.xlsx", SupLogLine.class);
+		List<SupLogLine> readList = readExcel("C:/Users/achen/Downloads/1735895667106调用供应商日志数据.xlsx", SupLogLine.class);
 
 		List<ExcelTestCar> list = new ArrayList<>();
 		for (SupLogLine data : readList) {
@@ -202,7 +202,7 @@ public class TestController2 {
 				.distinct()
 				.collect(Collectors.toList());
 
-		EasyExcel.write(new File("D:\\跑数\\车五项\\11.29\\11.27车五项跑数结果.xlsx"))
+		EasyExcel.write(new File("D:\\跑数\\车五项\\1.03\\1.03车五项跑数结果.xlsx"))
 				.head(ExcelTestCar.class)
 				.excelType(ExcelTypeEnum.XLSX)
 				.sheet("车五项测试结果")
