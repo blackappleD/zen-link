@@ -23,6 +23,8 @@ public enum ProductCodeEum {
 	CK_BANK_TWO("CK_BANK_TWO_INFO_001", "银行卡二要素核验", "/ck/bankTwo") {},
 	CK_PRO_QUALIFY_CERT_001("CK_PRO_QUALIFY_CERT_001", "技能人员职业资格证书核验", "/ck/pro_qualify_cert") {},
 
+	BG_CREDIT_A107("BG_CREDIT_A107", "雅天分（申请多头）", "/bg/credit_a107") {},
+	BG_CREDIT_A108("BG_CREDIT_A108", "雅天分（授信多头）", "/bg/credit_a107") {},
 	BG_CAR_INFO("BG_CAR_001", "车五项信息查询", "/bg/carInfo") {
 	},
 

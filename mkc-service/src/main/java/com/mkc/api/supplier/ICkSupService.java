@@ -1,7 +1,7 @@
 package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
-import com.mkc.api.dto.bg.BankFourResDTO;
+import com.mkc.api.dto.bg.res.BankFourResDTO;
 import com.mkc.api.dto.ck.*;
 import com.mkc.bean.SuplierQueryBean;
 

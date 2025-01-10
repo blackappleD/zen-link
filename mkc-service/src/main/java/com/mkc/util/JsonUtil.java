@@ -1,4 +1,4 @@
-package com.mkc.tool;
+package com.mkc.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,7 +9,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.Predicate;
-import com.mkc.exception.JsonException;
+import com.mkc.api.exception.JsonException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

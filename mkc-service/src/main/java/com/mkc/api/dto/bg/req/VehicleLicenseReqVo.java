@@ -1,4 +1,4 @@
-package com.mkc.api.dto.bg;
+package com.mkc.api.dto.bg.req;
 
 import com.mkc.api.dto.BaseDTO;
 import lombok.Data;
@@ -7,18 +7,17 @@ import java.io.Serializable;
 
 /**
  * @AUTHOR XIEWEI
- * @Date 2024/8/9 11:57
+ * @Date 2024/8/12 10:07
  */
 @Data
-public class SureScoreInfoReqVo extends BaseDTO implements Serializable {
+public class VehicleLicenseReqVo extends BaseDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String mobile;
+    private String plateNo;
 
     private String name;
 
-    private String cid;
+    private String plateType;
 
-    private String job;
 }

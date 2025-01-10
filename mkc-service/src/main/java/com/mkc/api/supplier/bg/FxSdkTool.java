@@ -2,15 +2,18 @@ package com.mkc.api.supplier.bg;
 
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSONObject;
-import com.gzy.sign.api.*;
+import com.gzy.sign.api.AbstractFaXinResponse;
+import com.gzy.sign.api.FaXinApiRequest;
+import com.gzy.sign.api.FaXinDefaultApiClient;
+import com.gzy.sign.api.FaXinResponseResultInfo;
 import com.gzy.sign.api.config.FaXinApiClientConfig;
 import com.gzy.sign.api.request.FaXinFileStreamUploadApiRequest;
 import com.gzy.sign.api.request.FaXinHouseVerifyApiRequest;
 import com.gzy.sign.api.request.FaXinHouseVerifyResultApiRequest;
 import com.gzy.sign.api.response.FaXinHouseVerifyApiResponse;
 import com.gzy.sign.api.response.FaXinHouseVerifyResultApiResponse;
-import com.mkc.api.dto.bg.MaterialReqVo;
-import com.mkc.api.dto.bg.PersonInfoReqVo;
+import com.mkc.api.dto.bg.req.MaterialReqVo;
+import com.mkc.api.dto.bg.req.PersonInfoReqVo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;

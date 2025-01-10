@@ -1,4 +1,4 @@
-package com.mkc.api.dto.bg;
+package com.mkc.api.dto.bg.req;
 
 import lombok.Data;
 

@@ -11,7 +11,7 @@ import com.mkc.api.dto.ck.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.ICkService;
 import com.mkc.bean.CkMerBean;
-import com.mkc.tool.JsonUtil;
+import com.mkc.util.JsonUtil;
 import com.mkc.tool.RegTool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

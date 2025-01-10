@@ -7,10 +7,11 @@ import com.mkc.api.common.constant.ApiReturnCode;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
-import com.mkc.api.dto.bg.*;
+import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.IBgService;
 import com.mkc.bean.CkMerBean;
+import com.mkc.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,26 @@ public class BgController extends BaseController {
 
 	@Autowired
 	private IBgService bgService;
+
+	@PostMapping("/credit_a108")
+	public Result creditA108(HttpServletRequest request, @RequestBody CreditA108ReqDTO params) {
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A108);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.queryCreditA108(params, merLog);
+	}
+
+	@PostMapping("/credit_a107")
+	public Result creditA107(HttpServletRequest request, @RequestBody CreditA107ReqDTO params) {
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A107);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.queryCreditA107(params, merLog);
+	}
 
 	/**
 	 * 高校学历核查结果查询接口

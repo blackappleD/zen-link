@@ -6,13 +6,13 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.exception.ErrMonitorCode;
+import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.bg.req.*;
+import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.IBgService;
 import com.mkc.api.supplier.IBgSupService;
-import com.mkc.api.dto.BaseDTO;
-import com.mkc.api.dto.bg.*;
-import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -55,12 +55,23 @@ public class BgServiceImpl implements IBgService {
 	@Autowired
 	private ISupplierProductService supplierProductService;
 
-
 	@Autowired
 	private ReqLogHandle reqLogHandle;
 
 	@Autowired
 	private IMailProcess mailProcess;
+
+	@Override
+	public Result queryCreditA108(CreditA108ReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.queryCreditA108(params, supQueryBean));
+	}
+
+	@Override
+	public Result queryCreditA107(CreditA107ReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.queryCreditA107(params, supQueryBean));
+	}
 
 
 	@Override

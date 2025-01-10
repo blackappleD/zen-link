@@ -1,4 +1,4 @@
-package com.mkc.api.dto.bg;
+package com.mkc.api.dto.bg.req;
 
 import com.mkc.api.dto.BaseDTO;
 import lombok.Data;
@@ -6,11 +6,11 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @AUTHOR XIEWEI
- * @Date 2024/8/22 16:12
+ * @author xiewei
+ * @date 2024/08/05 17:01
  */
 @Data
-public class EconomicRateReqVo extends BaseDTO implements Serializable {
+public class    FinanceInfoReqVo extends BaseDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,4 +1,4 @@
-package com.mkc.exception;
+package com.mkc.api.exception;
 
 /**
  * Json字符串处理失败

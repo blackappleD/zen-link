@@ -1,4 +1,4 @@
-package com.mkc.api.dto.bg;
+package com.mkc.api.dto.bg.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

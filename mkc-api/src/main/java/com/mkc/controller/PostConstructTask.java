@@ -18,7 +18,7 @@ import com.mkc.dto.MerLogLine;
 import com.mkc.dto.SupLogLine;
 import com.mkc.dto.fx.HouseInfoDTO;
 import com.mkc.dto.fx.statistic.FxHouseStatisticByPerson;
-import com.mkc.tool.JsonUtil;
+import com.mkc.util.JsonUtil;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +50,137 @@ public class PostConstructTask {
 				.headRowNumber(1)
 				.head(clazz)
 				.doReadAllSync();
+
+	}
+
+	public void chewuxiang() {
+		List<Test1> list1206 = readExcel("D:\\work\\2024-12.06跑数集合.xlsx", Test1.class);
+
+		List<Test1> list1209 = readExcel("D:\\work\\20241209-20241210跑数.xlsx", Test1.class);
+
+		list1209.addAll(list1206);
+
+		Map<String, CarSta> map = new HashMap<>(list1209.size());
+
+		list1209.forEach(data -> {
+
+			String carNo = JsonPath.read(data.getReqJson(), "$.data.carNo");
+			String orderNo = data.getOrderNo();
+			String reqTime = data.getReqTime();
+			int free = data.getFree();
+			if (map.containsKey(carNo)) {
+
+				CarSta carSta = map.get(carNo);
+				switch (carSta.getCount()) {
+					case 1:
+						carSta.setOrderNo2(orderNo);
+						carSta.setReqTime2(reqTime);
+						break;
+					case 2:
+						carSta.setOrderNo3(orderNo);
+						carSta.setReqTime3(reqTime);
+						break;
+					case 3:
+						carSta.setOrderNo4(orderNo);
+						carSta.setReqTime4(reqTime);
+						break;
+					case 4:
+						carSta.setOrderNo5(orderNo);
+						carSta.setReqTime5(reqTime);
+						break;
+				}
+				if (free == 1) {
+					carSta.setPayCount(carSta.getPayCount() + 1);
+				}
+				carSta.setCount(carSta.getCount() + 1);
+
+			} else {
+				CarSta carSta = new CarSta();
+				carSta.setCarNo(carNo);
+				carSta.setCount(1);
+				carSta.setOrderNo(orderNo);
+				carSta.setReqTime(reqTime);
+				if (free == 1) {
+					carSta.setPayCount(carSta.getPayCount() + 1);
+				}
+				map.put(carNo, carSta);
+			}
+
+		});
+		EasyExcel.write(new File("D:\\work\\1206-1210车五项重复跑数统计.xlsx"))
+				.head(CarSta.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("sheet")
+				.doWrite(map.values());
+
+		System.out.println("总计车牌号：" + map.size());
+		int sum = map.values().stream().mapToInt(CarSta::getCount).sum();
+		long payCount = list1209.stream().filter(o -> o.getFree() == 1).count();
+
+		long shouldPayCount = map.values().stream().filter(carSta -> carSta.getPayCount() >= 1).count();
+
+		System.out.println("重复调用次数：" + (sum - map.size()));
+		System.out.println("重复计费次数：" + (payCount - shouldPayCount));
+
+	}
+
+	@Data
+	public static class CarSta {
+
+		@ExcelProperty("车牌号")
+		private String carNo;
+
+		@ExcelProperty("总计请求次数")
+		private int count = 0;
+
+		@ExcelProperty("计费次数")
+		private int payCount = 0;
+
+		@ExcelProperty("工单号_1")
+		private String orderNo;
+
+		@ExcelProperty("第一次请求时间")
+		private String reqTime;
+
+		@ExcelProperty("工单号_2")
+		private String orderNo2;
+
+		@ExcelProperty("第二次请求时间")
+		private String reqTime2;
+
+		@ExcelProperty("工单号_3")
+		private String orderNo3;
+
+		@ExcelProperty("第三次请求时间")
+		public String reqTime3;
+
+		@ExcelProperty("工单号_4")
+		private String orderNo4;
+
+		@ExcelProperty("第四次请求时间")
+		public String reqTime4;
+
+		@ExcelProperty("工单号_5")
+		private String orderNo5;
+
+		@ExcelProperty("第五次请求时间")
+		public String reqTime5;
+	}
+
+	@Data
+	public static class Test1 {
+
+		@ExcelProperty("order_no")
+		private String orderNo;
+
+		@ExcelProperty("free")
+		private int free;
+
+		@ExcelProperty("req_json")
+		private String reqJson;
+
+		@ExcelProperty("req_time")
+		private String reqTime;
 
 	}
 
@@ -370,23 +501,19 @@ public class PostConstructTask {
 
 	// 车五项，查得数据中缺项数据统计
 	public void dataRight() {
-		String[] filePaths = {"D:\\跑数\\车五项\\11.09\\车五项跑数结果.xlsx", "D:\\跑数\\车五项\\11.21\\20241121180630车五项跑数结果.xlsx",
-				"D:\\跑数\\车五项\\11.29\\11.27车五项跑数结果.xlsx", "D:\\跑数\\车五项\\12.06\\1206车五项跑数结果62w.xlsx"};
+		String[] filePaths = {"D:\\跑数\\车五项\\11.09\\1109车五项跑数结果.xlsx", "D:\\跑数\\车五项\\11.21\\1121车五项跑数结果.xlsx",
+				"D:\\跑数\\车五项\\11.29\\11.29车五项跑数结果.xlsx", "D:\\跑数\\车五项\\12.06\\1206车五项跑数结果62w.xlsx"};
 		for (String filepath : filePaths) {
 			List<ExcelTestCar> excelTestCars = readExcel(filepath, ExcelTestCar.class);
 			long aNull = excelTestCars.stream().filter(car -> {
-				if ("200".equals(car.getCode())) {
-					if (!CharSequenceUtil.isAllNotBlank(car.getModelNo(), car.getBrandName(), car.getVin(), car.getVin(), car.getInitialRegistrationDate())) {
-						return true;
-					} else {
-						return isAnyEqual("null", car.getBrandName(), car.getVin(), car.getInitialRegistrationDate(), car.getEngineNo(), car.getModelNo());
-					}
+				if ("200".equals(car.getCode()) || "1".equals(car.getCode())) {
+					return !CharSequenceUtil.isAllNotBlank(car.getModelNo(), car.getBrandName(), car.getVin(), car.getVin(), car.getInitialRegistrationDate())
+							|| isAnyEqual("null", car.getBrandName(), car.getVin(), car.getInitialRegistrationDate(), car.getEngineNo(), car.getModelNo());
 				}
 				return false;
 			}).count();
 			System.err.println(filepath + "  缺项： " + aNull);
 		}
-
 	}
 
 	private static boolean isAnyEqual(String target, String... args) {
