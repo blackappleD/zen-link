@@ -60,6 +60,12 @@
             <version>2.9.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.13.0</version>  <!-- 使用与您项目中其他 Jackson 依赖相匹配的版本 -->
+        </dependency>
+
         <!--EasyExcel相关依赖-->
         <dependency>
             <groupId>com.alibaba</groupId>
