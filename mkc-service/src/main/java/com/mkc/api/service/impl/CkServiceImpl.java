@@ -74,14 +74,15 @@ public class CkServiceImpl implements ICkService {
 	@Override
 	public Result ckPopulationThree(PopulationThreeReqDTO params, MerReqLogDTO merLog) {
 
-		return ckCommon(merLog, params, (ckSupService, supQueryBean) -> {
-					try {
-						return ckSupService.ckPopulationThree(params, supQueryBean);
-					} catch (Exception e) {
-						throw e;
-					}
-				}
-		);
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckPopulationThree(params, supQueryBean));
+	}
+
+	@Override
+	public Result ckPopulationTwo(PopulationTwoReqDTO params, MerReqLogDTO merLog) {
+
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckPopulationTwo(params, supQueryBean));
 	}
 
 	@Override

@@ -10,6 +10,8 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.utils.ApiUtils;
+import com.mkc.api.dto.bg.res.CreditA107ResDTO;
+import com.mkc.api.dto.bg.res.CreditA108ResDTO;
 import com.mkc.common.utils.DateUtils;
 import com.mkc.common.utils.StringUtils;
 import com.mkc.common.utils.Tuple2;
@@ -18,11 +20,9 @@ import com.mkc.domain.*;
 import com.mkc.dto.SupLogLine;
 import com.mkc.dto.bdc.BdcRequest;
 import com.mkc.dto.bdc.BdcResponse;
-import com.mkc.service.IMerInfoService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.dao.PersistenceExceptionTranslationAutoConfiguration;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -51,18 +51,12 @@ import java.util.stream.Collectors;
 @Profile({"dev", "local", "test", "pre"})
 public class TestController {
 
-
-	@Autowired
-	private IMerInfoService merchantService;
-
 	private final ThreadPoolExecutor carThreadPoolExecutor = new ThreadPoolExecutor(10, 10,
 			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
 	private final ThreadPoolExecutor towWThreadPoolExecutor = new ThreadPoolExecutor(10, 10,
 			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
 	private final ThreadPoolExecutor houseThreadPoolExecutor = new ThreadPoolExecutor(10, 10,
 			1, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new Sleep10sResubmitHandler());
-	@Autowired
-	private PersistenceExceptionTranslationAutoConfiguration persistenceExceptionTranslationAutoConfiguration;
 
 	public static class Sleep10sResubmitHandler implements RejectedExecutionHandler {
 
@@ -547,6 +541,255 @@ public class TestController {
 		@ExcelProperty("婚姻状况")
 		private String result;
 
+
+	}
+
+	@PostMapping("/testMaritalRelationship")
+	public void testMaritalRelationship(@RequestBody MultipartFile excel, HttpServletResponse response) throws IOException {
+		List<MaritalRelationshipCell> readList = EasyExcel.read(excel.getInputStream())
+				.headRowNumber(1)
+				.head(MaritalRelationshipCell.class)
+				.sheet(0)
+				.doReadSync();
+		for (MaritalRelationshipCell read : readList) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("manIdcard", read.getManIdcard());
+			jsonObject.put("manName", read.getManName());
+			jsonObject.put("womanIdcard", read.getWomanIdcard());
+			jsonObject.put("womanName", read.getWomanName());
+			String plainText = read.getManIdcard() + read.getManName() + read.getWomanIdcard() + read.getWomanName();
+			JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/maritalRelationship", jsonObject, plainText);
+			read.setCode(post.getString("code"));
+			JSONObject data = post.getObject("data", JSONObject.class);
+			if (Objects.nonNull(data)) {
+				read.setResult(data.getString("result"));
+			} else {
+				read.setResult("查无");
+			}
+			System.err.println(post);
+		}
+		setExcelRespProp(response, DateUtils.dateTimeNow() + "婚姻关系测试结果");
+		EasyExcel.write(response.getOutputStream())
+				.head(MaritalStatusCell.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("婚姻关系测试结果")
+				.doWrite(readList);
+
+	}
+
+	@PostMapping("/testCreditA107")
+	public void testCreditA107(@RequestBody MultipartFile excel, HttpServletResponse response) throws IOException {
+		List<CreditA107Cell> readList = EasyExcel.read(excel.getInputStream())
+				.headRowNumber(1)
+				.head(CreditA107Cell.class)
+				.sheet(0)
+				.doReadSync();
+		for (CreditA107Cell read : readList) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("cid", read.getCid());
+			jsonObject.put("name", read.getName());
+			jsonObject.put("mobile", read.getMobile());
+			String plainText = read.getCid() + read.getName() + read.getMobile();
+			JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/credit_a107", jsonObject, plainText);
+			read.setCode(post.getString("code"));
+			CreditA107ResDTO data = post.getObject("data", CreditA107ResDTO.class);
+			if (Objects.nonNull(data)) {
+				read.setResult("成功");
+				BeanUtils.copyProperties(data, read);
+			} else {
+				read.setResult("查无");
+			}
+
+			System.err.println(post);
+		}
+		setExcelRespProp(response, DateUtils.dateTimeNow() + "雅天分（申请多头）测试结果");
+		EasyExcel.write(response.getOutputStream())
+				.head(CreditA107Cell.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("雅天分（申请多头）测试结果")
+				.doWrite(readList);
+
+	}
+
+	@PostMapping("/testCreditA108")
+	public void testCreditA108(@RequestBody MultipartFile excel, HttpServletResponse response) throws IOException {
+		List<CreditA108Cell> readList = EasyExcel.read(excel.getInputStream())
+				.headRowNumber(1)
+				.head(CreditA108Cell.class)
+				.sheet(0)
+				.doReadSync();
+		for (CreditA108Cell read : readList) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("cid", read.getCid());
+			jsonObject.put("name", read.getName());
+			jsonObject.put("mobile", read.getMobile());
+			String plainText = read.getCid() + read.getName() + read.getMobile();
+			JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/credit_a108", jsonObject, plainText);
+			read.setCode(post.getString("code"));
+			CreditA108ResDTO data = post.getObject("data", CreditA108ResDTO.class);
+			if (Objects.nonNull(data)) {
+				read.setResult("成功");
+				BeanUtils.copyProperties(data, read);
+			} else {
+				read.setResult("查无");
+			}
+
+			System.err.println(post);
+		}
+		setExcelRespProp(response, DateUtils.dateTimeNow() + "雅天分（授信多头）测试结果");
+		EasyExcel.write(response.getOutputStream())
+				.head(CreditA108Cell.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("雅天分（授信多头）测试结果")
+				.doWrite(readList);
+
+	}
+
+	@Data
+	public static class CreditA107Cell {
+
+		@ExcelProperty("身份证号")
+		private String cid;
+
+		@ExcelProperty("姓名")
+		private String name;
+
+		@ExcelProperty("手机号")
+		private String mobile;
+
+		@ExcelProperty("响应码")
+		private String code;
+
+		@ExcelProperty("请求结果")
+		private String result;
+
+		@ExcelProperty("score")
+		private Long score;
+
+		@ExcelProperty("D156")
+		private String D156;
+
+		@ExcelProperty("D157")
+		private String D157;
+
+		@ExcelProperty("D834")
+		private String D834;
+
+		@ExcelProperty("D857")
+		private String D857;
+
+		@ExcelProperty("D859")
+		private String D859;
+
+		@ExcelProperty("D863")
+		private String D863;
+
+		@ExcelProperty("D868")
+		private String D868;
+
+		@ExcelProperty("D869")
+		private String D869;
+
+		@ExcelProperty("D875")
+		private String D875;
+	}
+
+	@Data
+	public static class CreditA108Cell {
+
+		@ExcelProperty("身份证号")
+		private String cid;
+
+		@ExcelProperty("姓名")
+		private String name;
+
+		@ExcelProperty("手机号")
+		private String mobile;
+
+		@ExcelProperty("响应码")
+		private String code;
+
+		@ExcelProperty("请求结果")
+		private String result;
+
+		@ExcelProperty("score")
+		private Long score;
+
+		@ExcelProperty("D901")
+		private String D901;
+
+		@ExcelProperty("D903")
+		private String D903;
+
+		@ExcelProperty("D153")
+		private String D153;
+
+		@ExcelProperty("D151")
+		private String D151;
+
+		@ExcelProperty("D150")
+		private String D150;
+
+		@ExcelProperty("D381")
+		private String D381;
+
+		@ExcelProperty("D917")
+		private String D917;
+
+		@ExcelProperty("D106")
+		private String D106;
+
+		@ExcelProperty("D108")
+		private String D108;
+
+		@ExcelProperty("D921")
+		private String D921;
+
+		@ExcelProperty("D935")
+		private String D935;
+
+		@ExcelProperty("D949")
+		private String D949;
+
+		@ExcelProperty("D950")
+		private String D950;
+
+		@ExcelProperty("D951")
+		private String D951;
+
+		@ExcelProperty("D952")
+		private String D952;
+
+		@ExcelProperty("D957")
+		private String D957;
+
+		@ExcelProperty("D958")
+		private String D958;
+
+		@ExcelProperty("D959")
+		private String D959;
+	}
+
+	@Data
+	public static class MaritalRelationshipCell {
+
+		@ExcelProperty("男方身份证号")
+		private String manIdcard;
+
+		@ExcelProperty("男方姓名")
+		private String manName;
+
+		@ExcelProperty("女方身份证号")
+		private String womanIdcard;
+
+		@ExcelProperty("女方姓名")
+		private String womanName;
+
+		@ExcelProperty("请求状态码")
+		private String code;
+
+		@ExcelProperty("结果")
+		private String result;
 
 	}
 

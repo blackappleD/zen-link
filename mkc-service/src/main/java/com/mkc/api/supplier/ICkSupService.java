@@ -78,6 +78,13 @@ public interface ICkSupService extends ISupService {
 		return SupResult.supNotSupport();
 	}
 
+	/**
+	 * 全国⼈⼝身份信息二要素核验
+	 */
+	default SupResult ckPopulationTwo(PopulationTwoReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
 
 	/**
 	 * 全国人社部_技能人员职业资格证书核验数据元件接口

@@ -40,7 +40,7 @@ public class CkController extends BaseController {
 	private ICkService ckService;
 
 	/**
-		 * 技能人员职业资格证书核验数据元件接口
+	 * 技能人员职业资格证书核验数据元件接口
 	 *
 	 * @param request
 	 * @param req
@@ -376,12 +376,42 @@ public class CkController extends BaseController {
 			MerReqLogDTO merLog = ckMer(request, ckMerBean);
 			merLog.setReqJson(reqJson);
 
-			Result result = ckService.ckPopulationThree(params, merLog);
-			return result;
+			return ckService.ckPopulationThree(params, merLog);
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
 			errMonitorMsg("【全国⼈⼝身份信息三要素核验】API 发生异常  reqJson {} ", reqJson, e);
+			return Result.fail();
+		}
+	}
+
+	/**
+	 * 全国⼈⼝身份信息二要素核验
+	 *
+	 * @param request
+	 * @param params
+	 * @return
+	 */
+	@PostMapping("/populationTwo")
+	public Result populationTwo(HttpServletRequest request, @RequestBody PopulationTwoReqDTO params) {
+
+		String reqJson = null;
+		try {
+			reqJson = JSON.toJSONString(params);
+
+			//检查商户参数完整性
+			CkMerBean ckMerBean = ckPopulationTwoParams(params);
+			ckMerBean.setProductCode(ProductCodeEum.CK_POPULATION_TWO.getCode());
+
+			//检查商户参数有效性
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
+			merLog.setReqJson(reqJson);
+
+			return ckService.ckPopulationTwo(params, merLog);
+		} catch (ApiServiceException e) {
+			return Result.fail(e.getCode(), e.getMessage());
+		} catch (Exception e) {
+			errMonitorMsg("【全国⼈⼝身份信息二要素核验】API 发生异常  reqJson {} ", reqJson, e);
 			return Result.fail();
 		}
 	}
@@ -448,6 +478,40 @@ public class CkController extends BaseController {
 
 
 		String plaintext = merCode + name + idcard + photo + authorization;
+
+		return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
+	}
+
+	private CkMerBean ckPopulationTwoParams(PopulationTwoReqDTO params) {
+
+		String merCode = params.getMerCode();
+
+		String sign = params.getSign();
+		String key = params.getKey();
+
+		ckCommonParams(params);
+
+		String name = params.getName();
+		String idcard = params.getIdcard();
+		String authorization = params.getAuthorization();
+
+		if (StringUtils.isBlank(idcard)) {
+			log.error("缺少参数 cid {} , merCode： {}", idcard, merCode);
+			throw new ApiServiceException(ApiReturnCode.ERR_001);
+		}
+
+		if (StringUtils.isBlank(name)) {
+			log.error("缺少参数 name {} , merCode： {}", name, merCode);
+			throw new ApiServiceException(ApiReturnCode.ERR_001);
+		}
+
+		if (StringUtils.isBlank(authorization)) {
+			log.error("缺少参数 name {} , merCode： {}", authorization, merCode);
+			throw new ApiServiceException(ApiReturnCode.ERR_001);
+		}
+
+
+		String plaintext = merCode + name + idcard + authorization;
 
 		return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
 	}

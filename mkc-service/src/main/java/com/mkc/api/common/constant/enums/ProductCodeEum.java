@@ -16,7 +16,8 @@ public enum ProductCodeEum {
 	CK_MOB_THREE_10010("CK_003_10010", "个人手机三要素认证-联通", "/bg/mobileThree") {},
 	CK_PERSON_CAR("CK_PERSONCAR_001", "人车核验", "/ck/personCarVerify") {},
 	CK_WORK_UNIT("CK_WORKUNIT_001", "工作单位核验", "/ck/workUnitVerify") {},
-	CK_POPULATION_THREE("CK_POPULATION_THREE_001", "全国⼈⼝身份信息三要素核验", "/ck/populationThree") {},
+	CK_POPULATION_THREE("CK_POPULATION_THREE", "全国⼈⼝身份信息三要素核验", "/ck/populationThree") {},
+	CK_POPULATION_TWO("CK_POPULATION_TWO", "全国⼈⼝身份信息二要素核验", "/ck/populationTwo") {},
 	CK_VEHICLE_LICENSE_INFO("CK_VEHICLE_LICENSE_001", "行驶证核验", "/ck/ckVehicleLicense") {},
 	CK_BANK_FOUR("CK_BANK_FOUR_INFO_001", "银行卡四要素核验", "/ck/bankFour") {},
 	CK_BANK_THREE("CK_BANK_THREE_INFO_001", "银行卡三要素核验", "/ck/bankThree") {},
@@ -24,7 +25,7 @@ public enum ProductCodeEum {
 	CK_PRO_QUALIFY_CERT_001("CK_PRO_QUALIFY_CERT_001", "技能人员职业资格证书核验", "/ck/pro_qualify_cert") {},
 
 	BG_CREDIT_A107("BG_CREDIT_A107", "雅天分（申请多头）", "/bg/credit_a107") {},
-	BG_CREDIT_A108("BG_CREDIT_A108", "雅天分（授信多头）", "/bg/credit_a107") {},
+	BG_CREDIT_A108("BG_CREDIT_A108", "雅天分（授信多头）", "/bg/credit_a108") {},
 	BG_CAR_INFO("BG_CAR_001", "车五项信息查询", "/bg/carInfo") {
 	},
 

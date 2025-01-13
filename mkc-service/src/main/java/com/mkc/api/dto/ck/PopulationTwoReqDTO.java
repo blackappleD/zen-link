@@ -4,6 +4,7 @@ import com.mkc.api.dto.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -12,15 +13,15 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class PopulationThreeReqDTO extends BaseDTO implements Serializable {
+public class PopulationTwoReqDTO extends BaseDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @NotBlank(message = "姓名不能为空")
     private String name;
 
+    @NotBlank(message = "身份证号不能为空")
     private String idcard;
-
-    private String photo;
 
     private String authorization;
 

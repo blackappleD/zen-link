@@ -60,6 +60,15 @@ public interface ICkService {
 	public Result ckPopulationThree(PopulationThreeReqDTO params, MerReqLogDTO merLog);
 
 	/**
+	 * 全国⼈⼝身份信息二要素核验
+	 *
+	 * @param params
+	 * @return
+	 */
+	Result ckPopulationTwo(PopulationTwoReqDTO params, MerReqLogDTO merLog);
+
+
+	/**
 	 * 银行卡四要素核验
 	 *
 	 * @param params

@@ -500,6 +500,15 @@ public class PostConstructTask {
 	}
 
 	// 车五项，查得数据中缺项数据统计
+	private static boolean isAnyEqual(String target, String... args) {
+		for (String arg : args) {
+			if (target.equals(arg)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void dataRight() {
 		String[] filePaths = {"D:\\跑数\\车五项\\11.09\\1109车五项跑数结果.xlsx", "D:\\跑数\\车五项\\11.21\\1121车五项跑数结果.xlsx",
 				"D:\\跑数\\车五项\\11.29\\11.29车五项跑数结果.xlsx", "D:\\跑数\\车五项\\12.06\\1206车五项跑数结果62w.xlsx"};
@@ -514,15 +523,6 @@ public class PostConstructTask {
 			}).count();
 			System.err.println(filepath + "  缺项： " + aNull);
 		}
-	}
-
-	private static boolean isAnyEqual(String target, String... args) {
-		for (String arg : args) {
-			if (!arg.equals(target)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 
