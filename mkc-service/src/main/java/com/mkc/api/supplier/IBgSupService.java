@@ -2,6 +2,7 @@ package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.bg.req.*;
+import com.mkc.api.dto.bg.res.CreditA016ResDTO;
 import com.mkc.api.dto.bg.res.CreditA107ResDTO;
 import com.mkc.api.dto.bg.res.CreditA108ResDTO;
 import com.mkc.bean.SuplierQueryBean;
@@ -64,7 +65,7 @@ public interface IBgSupService extends ISupService {
 	}
 
 	/**
-	 * 雅天分（申请多头）
+	 * 网贷（申请多头）
 	 *
 	 * @param dto
 	 * @param bean
@@ -76,13 +77,25 @@ public interface IBgSupService extends ISupService {
 	}
 
 	/**
-	 * 雅天分（授信多头）
+	 * 网贷（授信多头）
 	 *
 	 * @param dto
 	 * @param bean
 	 * @return
 	 */
 	default SupResult<CreditA108ResDTO> queryCreditA108(CreditA108ReqDTO dto, SuplierQueryBean bean) {
+
+		return SupResult.supNotSupport();
+	}
+
+	/**
+	 * 网贷（申请多头）
+	 *
+	 * @param dto
+	 * @param bean
+	 * @return
+	 */
+	default SupResult<CreditA016ResDTO> queryCreditA016(CreditA016ReqDTO dto, SuplierQueryBean bean) {
 
 		return SupResult.supNotSupport();
 	}

@@ -57,6 +57,16 @@ public class BgController extends BaseController {
 		return bgService.queryCreditA107(params, merLog);
 	}
 
+	@PostMapping("/credit_a016")
+	public Result creditA016(HttpServletRequest request, @RequestBody CreditA016ReqDTO params) {
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A016);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.queryCreditA016(params, merLog);
+	}
+
 	/**
 	 * 高校学历核查结果查询接口
 	 */

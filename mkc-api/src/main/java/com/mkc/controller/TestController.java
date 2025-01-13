@@ -602,11 +602,11 @@ public class TestController {
 
 			System.err.println(post);
 		}
-		setExcelRespProp(response, DateUtils.dateTimeNow() + "雅天分（申请多头）测试结果");
+		setExcelRespProp(response, DateUtils.dateTimeNow() + "网贷（申请多头）测试结果");
 		EasyExcel.write(response.getOutputStream())
 				.head(CreditA107Cell.class)
 				.excelType(ExcelTypeEnum.XLSX)
-				.sheet("雅天分（申请多头）测试结果")
+				.sheet("网贷（申请多头）测试结果")
 				.doWrite(readList);
 
 	}
@@ -636,11 +636,11 @@ public class TestController {
 
 			System.err.println(post);
 		}
-		setExcelRespProp(response, DateUtils.dateTimeNow() + "雅天分（授信多头）测试结果");
+		setExcelRespProp(response, DateUtils.dateTimeNow() + "网贷（授信多头）测试结果");
 		EasyExcel.write(response.getOutputStream())
 				.head(CreditA108Cell.class)
 				.excelType(ExcelTypeEnum.XLSX)
-				.sheet("雅天分（授信多头）测试结果")
+				.sheet("网贷（授信多头）测试结果")
 				.doWrite(readList);
 
 	}

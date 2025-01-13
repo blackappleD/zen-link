@@ -22,7 +22,7 @@ public interface IBgService {
 	public SupResult ckCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function);
 
 	/**
-	 * 雅天分（授信多头）
+	 * 网贷（授信多头）
 	 *
 	 * @param params
 	 * @param merReqLog
@@ -32,7 +32,7 @@ public interface IBgService {
 
 
 	/**
-	 * 雅天分（申请多头）
+	 * 网贷（申请多头）
 	 *
 	 * @param params
 	 * @param merReqLog
@@ -40,6 +40,15 @@ public interface IBgService {
 	 */
 	Result queryCreditA107(CreditA107ReqDTO params, MerReqLogDTO merReqLog);
 
+
+	/**
+	 * 网贷（逾期多头）
+	 *
+	 * @param params
+	 * @param merReqLog
+	 * @return
+	 */
+	Result queryCreditA016(CreditA016ReqDTO params, MerReqLogDTO merReqLog);
 
 	/**
 	 * 车五项信息查询

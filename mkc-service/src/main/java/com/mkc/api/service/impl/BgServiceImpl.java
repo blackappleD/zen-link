@@ -73,6 +73,12 @@ public class BgServiceImpl implements IBgService {
 				bgSupService.queryCreditA107(params, supQueryBean));
 	}
 
+	@Override
+	public Result queryCreditA016(CreditA016ReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.queryCreditA016(params, supQueryBean));
+	}
+
 
 	@Override
 	public Result queryCarInfo(CarInfoReqVo params, MerReqLogDTO merLog) {
