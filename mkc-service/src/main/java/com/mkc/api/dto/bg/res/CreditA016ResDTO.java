@@ -38,10 +38,4 @@ public class CreditA016ResDTO {
 	@JsonProperty("D945")
 	private String D945;
 
-	@JsonProperty("D958")
-	private String D958;
-
-	@JsonProperty("D959")
-	private String D959;
-
 }
