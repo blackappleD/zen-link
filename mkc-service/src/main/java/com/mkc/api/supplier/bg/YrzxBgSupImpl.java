@@ -105,18 +105,18 @@ public class YrzxBgSupImpl implements IBgSupService {
 				supResult.setRemark(msg);
 				supResult.setDefinedFailMsg(true);
 				supResult.setState(ReqState.ERROR);
-				errMonitorMsg(log, "  经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} "
+				errMonitorMsg(log, "  授权多头 接口 发生异常 orderNo {} URL {} , 报文: {} "
 						, bean.getOrderNo(), url, result);
 			} else {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查询失败");
 				supResult.setState(ReqState.ERROR);
-				errMonitorMsg(log, "  经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} "
+				errMonitorMsg(log, "  授权多头 接口 发生异常 orderNo {} URL {} , 报文: {} "
 						, bean.getOrderNo(), url, result);
 			}
 			return supResult;
 		} catch (Throwable e) {
-			errMonitorMsg(log, " 【北京银融致信科技供应商】 经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+			errMonitorMsg(log, " 【北京银融致信科技供应商】 授权多头 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
 			if (supResult == null) {
 				supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
@@ -187,18 +187,18 @@ public class YrzxBgSupImpl implements IBgSupService {
 				supResult.setRemark(msg);
 				supResult.setDefinedFailMsg(true);
 				supResult.setState(ReqState.ERROR);
-				errMonitorMsg(log, "  经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} "
+				errMonitorMsg(log, "  申请多头 接口 发生异常 orderNo {} URL {} , 报文: {} "
 						, bean.getOrderNo(), url, result);
 			} else {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查询失败");
 				supResult.setState(ReqState.ERROR);
-				errMonitorMsg(log, "  经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} "
+				errMonitorMsg(log, "  申请多头 接口 发生异常 orderNo {} URL {} , 报文: {} "
 						, bean.getOrderNo(), url, result);
 			}
 			return supResult;
 		} catch (Throwable e) {
-			errMonitorMsg(log, " 【北京银融致信科技供应商】 经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+			errMonitorMsg(log, " 【北京银融致信科技供应商】 申请多头 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
 			if (supResult == null) {
 				supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
@@ -269,18 +269,18 @@ public class YrzxBgSupImpl implements IBgSupService {
 				supResult.setRemark(msg);
 				supResult.setDefinedFailMsg(true);
 				supResult.setState(ReqState.ERROR);
-				errMonitorMsg(log, "  经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} "
+				errMonitorMsg(log, "  逾期多头 接口 发生异常 orderNo {} URL {} , 报文: {} "
 						, bean.getOrderNo(), url, result);
 			} else {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark("查询失败");
 				supResult.setState(ReqState.ERROR);
-				errMonitorMsg(log, "  经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} "
+				errMonitorMsg(log, "  逾期多头 接口 发生异常 orderNo {} URL {} , 报文: {} "
 						, bean.getOrderNo(), url, result);
 			}
 			return supResult;
 		} catch (Throwable e) {
-			errMonitorMsg(log, " 【北京银融致信科技供应商】 经济能力评级 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+			errMonitorMsg(log, " 【北京银融致信科技供应商】 逾期多头 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
 			if (supResult == null) {
 				supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
