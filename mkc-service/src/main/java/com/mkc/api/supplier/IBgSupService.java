@@ -89,7 +89,7 @@ public interface IBgSupService extends ISupService {
 	}
 
 	/**
-	 * 网贷（申请多头）
+	 * 网贷（逾期多头）
 	 *
 	 * @param dto
 	 * @param bean

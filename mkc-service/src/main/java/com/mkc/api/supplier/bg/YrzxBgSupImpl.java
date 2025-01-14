@@ -137,7 +137,7 @@ public class YrzxBgSupImpl implements IBgSupService {
 		JSONObject params = new JSONObject();
 		String url = null;
 		try {
-			url = bean.getUrl() + "/yrzx/model/credit/A017";
+			url = bean.getUrl() + "/yrzx/model/credit/A017/v3";
 			String appsecret = bean.getSignKey();
 			String appkey = bean.getAcc();
 			Integer timeOut = bean.getTimeOut();
