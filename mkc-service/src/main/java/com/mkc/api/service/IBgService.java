@@ -4,6 +4,7 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
+import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.bean.SuplierQueryBean;
@@ -20,6 +21,9 @@ import java.util.function.BiFunction;
 public interface IBgService {
 
 	public SupResult ckCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function);
+
+
+	Result<HighRiskPeopleResDTO> queryHighRiskPeople(HighRiskPeopleReqDTO params, MerReqLogDTO merReqLog);
 
 	/**
 	 * 网贷（授信多头）

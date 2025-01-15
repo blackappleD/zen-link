@@ -48,7 +48,7 @@ public class YrzxBgSupImpl implements IBgSupService {
 	}
 
 	@Override
-	public SupResult<CreditA108ResDTO> queryCreditA108(CreditA108ReqDTO dto, SuplierQueryBean bean){
+	public SupResult<CreditA108ResDTO> queryCreditA108(CreditA108ReqDTO dto, SuplierQueryBean bean) {
 
 		String result = null;
 		SupResult<CreditA108ResDTO> supResult = null;

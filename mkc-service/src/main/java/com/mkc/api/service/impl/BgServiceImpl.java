@@ -8,6 +8,7 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
+import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
@@ -60,6 +61,13 @@ public class BgServiceImpl implements IBgService {
 
 	@Autowired
 	private IMailProcess mailProcess;
+
+	@Override
+	public Result<HighRiskPeopleResDTO> queryHighRiskPeople(HighRiskPeopleReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.queryHighRiskPeople(params, supQueryBean));
+	}
+
 
 	@Override
 	public Result queryCreditA108(CreditA108ReqDTO params, MerReqLogDTO merLog) {
@@ -274,6 +282,7 @@ public class BgServiceImpl implements IBgService {
 		return supResult;
 
 	}
+
 
 
 	/**

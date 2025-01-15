@@ -27,6 +27,7 @@ public enum ProductCodeEum {
 	BG_CREDIT_A016("BG_CREDIT_A016", "网贷（逾期多头）", "/bg/credit_a016") {},
 	BG_CREDIT_A107("BG_CREDIT_A107", "网贷（申请多头）", "/bg/credit_a107") {},
 	BG_CREDIT_A108("BG_CREDIT_A108", "网贷（授信多头）", "/bg/credit_a108") {},
+	BG_HIGH_RISK_PEOPLE("BG_HIGH_RISK_PEOPLE", "高风险人群核查", "/bg/kxdrz") {},
 	BG_CAR_INFO("BG_CAR_001", "车五项信息查询", "/bg/carInfo") {
 	},
 

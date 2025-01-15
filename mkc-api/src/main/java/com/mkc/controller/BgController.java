@@ -11,6 +11,8 @@ import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.IBgService;
 import com.mkc.bean.CkMerBean;
+import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
+import com.mkc.api.dto.bg.req.HighRiskPeopleReqDTO;
 import com.mkc.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +38,20 @@ public class BgController extends BaseController {
 
 	@Autowired
 	private IBgService bgService;
+
+	/**
+	 * 高风险人群核查
+	 */
+	@PostMapping("/kxdrz")
+	public Result<HighRiskPeopleResDTO> highRiskPeople(HttpServletRequest request, @RequestBody HighRiskPeopleReqDTO params) {
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_HIGH_RISK_PEOPLE);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getCertNo());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.queryHighRiskPeople(params, merLog);
+	}
+
 
 	@PostMapping("/credit_a108")
 	public Result creditA108(HttpServletRequest request, @RequestBody CreditA108ReqDTO params) {

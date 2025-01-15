@@ -5,6 +5,7 @@ import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.CreditA016ResDTO;
 import com.mkc.api.dto.bg.res.CreditA107ResDTO;
 import com.mkc.api.dto.bg.res.CreditA108ResDTO;
+import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
 import com.mkc.bean.SuplierQueryBean;
 
 public interface IBgSupService extends ISupService {
@@ -60,7 +61,16 @@ public interface IBgSupService extends ISupService {
 	 * @param bean
 	 * @return
 	 */
-	default public SupResult queryEducationInfo(EducationInfoReqVo vo, SuplierQueryBean bean) {
+	default SupResult queryEducationInfo(EducationInfoReqVo vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	/**
+	 * 高风险人群核查
+	 *
+	 * @return
+	 */
+	default SupResult<HighRiskPeopleResDTO> queryHighRiskPeople(HighRiskPeopleReqDTO dto, SuplierQueryBean bean) {
 		return SupResult.supNotSupport();
 	}
 
@@ -99,7 +109,6 @@ public interface IBgSupService extends ISupService {
 
 		return SupResult.supNotSupport();
 	}
-
 
 
 	/**
