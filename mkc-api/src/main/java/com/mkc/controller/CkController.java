@@ -471,6 +471,11 @@ public class CkController extends BaseController {
 			throw new ApiServiceException(ApiReturnCode.ERR_001);
 		}
 
+		if (StringUtils.isBlank(authorization)) {
+			log.error("缺少参数 name {} , merCode： {}", authorization, merCode);
+			throw new ApiServiceException(ApiReturnCode.ERR_001);
+		}
+
 		String plaintext = merCode + name + idcard + photo + authorization;
 
 		return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
@@ -496,6 +501,11 @@ public class CkController extends BaseController {
 
 		if (StringUtils.isBlank(name)) {
 			log.error("缺少参数 name {} , merCode： {}", name, merCode);
+			throw new ApiServiceException(ApiReturnCode.ERR_001);
+		}
+
+		if (StringUtils.isBlank(authorization)) {
+			log.error("缺少参数 name {} , merCode： {}", authorization, merCode);
 			throw new ApiServiceException(ApiReturnCode.ERR_001);
 		}
 
