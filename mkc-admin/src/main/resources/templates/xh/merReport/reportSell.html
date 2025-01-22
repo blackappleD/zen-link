@@ -16,10 +16,10 @@
 		.select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
 			height: auto;
 		}
-    	.select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
-			height: 30px;
-			overflow: auto;
-		}
+    	/*.select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {*/
+		/*	height: 30px;*/
+		/*	overflow: auto;*/
+		/*}*/
     </style>
 </head>
 <body class="gray-bg">
@@ -43,12 +43,12 @@
                                     <option th:each="product : ${products}" th:text="${product.productName}" th:value="${product.productCode}" th:class="|cg- cg-${product.cgCode}|"></option>
                                 </select>
                             </li>
-                            <li>
-                                <label>供应商：</label>
-                                <select name="supCode" class="form-control select2" multiple>
-                                    <option th:each="sup : ${sups}" th:text="${sup.name}" th:value="${sup.code}"></option>
-                                </select>
-                            </li>
+<!--                            <li>-->
+<!--                                <label>供应商：</label>-->
+<!--                                <select name="supCode" class="form-control select2" multiple>-->
+<!--                                    <option th:each="sup : ${sups}" th:text="${sup.name}" th:value="${sup.code}"></option>-->
+<!--                                </select>-->
+<!--                            </li>-->
                             <li>
                                 <label>商户：</label>
                                 <select id="scMerCode" name="merCode" class="form-control select2" multiple>
@@ -64,7 +64,7 @@
                             <li>
                                 <label>统计维度：</label>
                                 <select id="statClm" name="statClm" th:with="type=${@dict.getType('xh_mer_report_dim')}" style="width: 480px;" class="form-control select2" multiple>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                    <option th:each="dict : ${type}" th:if="${dict.dictLabel != '供应商'}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                                 </select>
                             </li>
                             <li>
@@ -155,14 +155,14 @@
                     title: '商户',
                     ft: true
                 },
-                {
-                    field: 'supName',
-                    title: '供应商',
-                    ft: true,
-                    formatter: function(value, row, index) {
-                        return value || '缺省';
-                    }
-                },
+                // {
+                //     field: 'supName',
+                //     title: '供应商',
+                //     ft: true,
+                //     formatter: function(value, row, index) {
+                //         return value || '缺省';
+                //     }
+                // },
                 {
                     field: 'cgCode',
                     title: '产品分类',

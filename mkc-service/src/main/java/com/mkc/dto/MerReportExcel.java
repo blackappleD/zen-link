@@ -1,9 +1,7 @@
-package com.mkc.domain;
+package com.mkc.dto;
 
 import com.mkc.common.annotation.Excel;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 /**
  * 商户调用日志统计对象 t_mer_report

@@ -1,4 +1,4 @@
-package com.mkc.domain;
+package com.mkc.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
@@ -7,13 +7,23 @@ import lombok.Data;
  * @author linst
  */
 @Data
-public class ExcelTestEduZjhm {
+public class ExcelTestEdu {
     @ExcelProperty("姓名")
     private String xm;
-    @ExcelProperty("身份证号")
-    private String zjhm;
+    @ExcelProperty("证书编号")
+    private String zsbh;
     @ExcelProperty("code")
     private String code;
+    @ExcelProperty("resultCode")
+    private String resultCode;
+    @ExcelProperty("reqOrderNo")
+    private String reqOrderNo;
+    @ExcelProperty("status")
+    private String status;
+    @ExcelProperty("isExists")
+    private Boolean isExists;
+    @ExcelProperty("zjbh")
+    private String zjbh;
     @ExcelProperty("yxmc")
     private String yxmc;
     @ExcelProperty("zymc")
@@ -26,8 +36,6 @@ public class ExcelTestEduZjhm {
     private String byrq;
     @ExcelProperty("xxxs")
     private String xxxs;
-    @ExcelProperty("zsbh")
-    private String zsbh;
 
 
 }

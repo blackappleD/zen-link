@@ -1,4 +1,4 @@
-package com.mkc.domain;
+package com.mkc.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;

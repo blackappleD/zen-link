@@ -6,7 +6,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mkc.domain.FxReqRecord;
 import com.mkc.domain.MerReport;
-import com.mkc.domain.MerReportExcel;
+import com.mkc.dto.MerReportExcel;
 
 /**
  * 商户调用日志统计Service接口

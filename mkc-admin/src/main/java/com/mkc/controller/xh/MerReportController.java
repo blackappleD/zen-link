@@ -17,10 +17,10 @@ import com.mkc.common.enums.BusinessType;
 import com.mkc.common.utils.ShiroUtils;
 import com.mkc.common.utils.poi.ExcelMultipleSheetsUtil;
 import com.mkc.common.utils.poi.ExcelUtil;
-import com.mkc.domain.FxReqRecord;
-import com.mkc.domain.MerInfo;
-import com.mkc.domain.MerReport;
-import com.mkc.domain.MerReportExcel;
+import com.mkc.domain.*;
+import com.mkc.dto.ExcelMerReportForSell;
+import com.mkc.dto.MerReportExcel;
+import com.mkc.dto.MerReportForSell;
 import com.mkc.service.IMerInfoService;
 import com.mkc.service.IMerReportService;
 import com.mkc.service.IProductService;
@@ -61,11 +61,11 @@ public class MerReportController extends BaseController {
 	private IMerReportService merReportService;
 
 	@Autowired
-    private ISupplierService supplierService;
+	private ISupplierService supplierService;
 	@Autowired
-    private IMerInfoService merInfoService;
+	private IMerInfoService merInfoService;
 	@Autowired
-    private IProductService productService;
+	private IProductService productService;
 
 	@Autowired
 	private RedisCache redisCache;
@@ -85,7 +85,6 @@ public class MerReportController extends BaseController {
 	@GetMapping("/sell")
 	public String reportSell(Model model) {
 		model.addAttribute("date", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-		model.addAttribute("sups", supplierService.selectSupplierList(null));
 		model.addAttribute("products", productService.selectProductList(null));
 
 		MerInfo merInfo = new MerInfo().setSellPerson(String.valueOf(ShiroUtils.getSysUser().getUserId()));
@@ -140,42 +139,42 @@ public class MerReportController extends BaseController {
 		return getDataTable(list);
 	}
 
-    /**
-     * 导出FX不动产对账单V1
-     */
-    @RequiresPermissions("xh:merReport:list")
-    @Log(title = "商户调用日志", businessType = BusinessType.EXPORT)
-    @ResponseBody
-    @PostMapping("/fxHouseReportV1")
-    public AjaxResult fxHouseReportV1(MerReport merReport) {
-    	List<FxReqRecord> fxReqRecords = merReportService.listFxHouseReport(merReport);
-        List<MerReportExcel> merReports = merReportService.listReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
-        List<MerReportExcel> merDateReports = merReportService.listDateReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("不动产总账", merReports);
-        map.put("不动产对账单", merDateReports);
-        map.put("不动产详情", fxReqRecords);
-        return ExcelMultipleSheetsUtil.excelMultipleSheets(map, "不动产账单" + DateUtil.format(new Date(), "yyyyMMddHHmmss"));
-    }
+	/**
+	 * 导出FX不动产对账单V1
+	 */
+	@RequiresPermissions("xh:merReport:list")
+	@Log(title = "商户调用日志", businessType = BusinessType.EXPORT)
+	@ResponseBody
+	@PostMapping("/fxHouseReportV1")
+	public AjaxResult fxHouseReportV1(MerReport merReport) {
+		List<FxReqRecord> fxReqRecords = merReportService.listFxHouseReport(merReport);
+		List<MerReportExcel> merReports = merReportService.listReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
+		List<MerReportExcel> merDateReports = merReportService.listDateReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("不动产总账", merReports);
+		map.put("不动产对账单", merDateReports);
+		map.put("不动产详情", fxReqRecords);
+		return ExcelMultipleSheetsUtil.excelMultipleSheets(map, "不动产账单" + DateUtil.format(new Date(), "yyyyMMddHHmmss"));
+	}
 
-    /**
-     * 导出FX不动产对账单V2
-     */
-    @RequiresPermissions("xh:merReport:list")
-    @Log(title = "商户调用日志", businessType = BusinessType.EXPORT)
-    @ResponseBody
-    @PostMapping("/fxHouseReportV2")
-    public AjaxResult fxHouseReportV2(MerReport merReport) {
-        merReport.setProductCode(ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode());
-        List<FxReqRecord> fxReqRecords = merReportService.listFxHouseReportV2(merReport);
-        List<MerReportExcel> merReports = merReportService.listReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
-        List<MerReportExcel> merDateReports = merReportService.listDateReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("不动产对账单", merReports);
-        map.put("不动产明细", merDateReports);
-        map.put("不动产详情", fxReqRecords);
-        return ExcelMultipleSheetsUtil.excelMultipleSheets(map, "不动产账单" + DateUtil.format(new Date(), "yyyyMMddHHmmss"));
-    }
+	/**
+	 * 导出FX不动产对账单V2
+	 */
+	@RequiresPermissions("xh:merReport:list")
+	@Log(title = "商户调用日志", businessType = BusinessType.EXPORT)
+	@ResponseBody
+	@PostMapping("/fxHouseReportV2")
+	public AjaxResult fxHouseReportV2(MerReport merReport) {
+		merReport.setProductCode(ProductCodeEum.BG_HOUSE_RESULT_INFO.getCode());
+		List<FxReqRecord> fxReqRecords = merReportService.listFxHouseReportV2(merReport);
+		List<MerReportExcel> merReports = merReportService.listReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
+		List<MerReportExcel> merDateReports = merReportService.listDateReport(fxReqRecords, ProductCodeEum.BG_HOUSE_RESULT_INFO.getName());
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("不动产对账单", merReports);
+		map.put("不动产明细", merDateReports);
+		map.put("不动产详情", fxReqRecords);
+		return ExcelMultipleSheetsUtil.excelMultipleSheets(map, "不动产账单" + DateUtil.format(new Date(), "yyyyMMddHHmmss"));
+	}
 
 	/**
 	 * 查询商户日志统计列表
@@ -212,11 +211,11 @@ public class MerReportController extends BaseController {
 
 		List<String> merCodes = merInfos.stream().map(MerInfo::getMerCode).collect(Collectors.toList());
 		String merCode = merCodes.stream().collect(Collectors.joining(","));
-		if(!StringUtils.isBlank(merReport.getMerCode())) {
+		if (!StringUtils.isBlank(merReport.getMerCode())) {
 			merCode = Arrays.stream(merReport.getMerCode().split(",")).filter(mc -> merCodes.contains(mc)).collect(Collectors.joining(","));
 		}
 
-		if(StringUtils.isBlank(merCode)) {
+		if (StringUtils.isBlank(merCode)) {
 			return getDataTable(Collections.emptyList());
 		}
 
@@ -224,24 +223,29 @@ public class MerReportController extends BaseController {
 
 		startPage();
 		List<MerReport> list = queryAll(merReport);
+		List<MerReportForSell> collect = list.stream().map(o -> {
+			MerReportForSell forSell = new MerReportForSell();
+			BeanUtils.copyProperties(o, forSell);
+			return forSell;
+		}).collect(Collectors.toList());
 
-		return getDataTable(list);
+		return getDataTable(collect);
 	}
 
 	private static String camelToUnderscore(String camel) {
-        // 使用正则表达式将小驼峰格式的字符串替换为下划线格式
+		// 使用正则表达式将小驼峰格式的字符串替换为下划线格式
 		return camel.replaceAll("([A-Z])", "_$1").toLowerCase();
-    }
+	}
 
 	private List<MerReport> queryAll(MerReport merReport) {
 		List<MerReport> list = null;
 
-		if(StringUtils.isBlank(merReport.getStatClm())) {
+		if (StringUtils.isBlank(merReport.getStatClm())) {
 			LambdaQueryWrapper<MerReport> queryWrapper = new LambdaQueryWrapper<>();
-			if(StringUtils.isNotBlank(merReport.getMerCode())) {
+			if (StringUtils.isNotBlank(merReport.getMerCode())) {
 				queryWrapper.in(MerReport::getMerCode, Arrays.asList(merReport.getMerCode().split(",")));
 			}
-			if(StringUtils.isNotBlank(merReport.getSupCode())) {
+			if (StringUtils.isNotBlank(merReport.getSupCode())) {
 				queryWrapper.in(MerReport::getSupCode, Arrays.asList(merReport.getSupCode().split(",")));
 			}
 
@@ -286,20 +290,27 @@ public class MerReportController extends BaseController {
 		List<MerInfo> merInfos = merInfoService.selectMerInfoList(new MerInfo().setSellPerson(String.valueOf(user.getUserId())));
 
 		List<String> merCodes = merInfos.stream().map(MerInfo::getMerCode).collect(Collectors.toList());
-		String merCode = merCodes.stream().collect(Collectors.joining(","));
-		if(!StringUtils.isBlank(merReport.getMerCode())) {
-			merCode = Arrays.stream(merReport.getMerCode().split(",")).filter(mc -> merCodes.contains(mc)).collect(Collectors.joining(","));
+		String merCode = String.join(",", merCodes);
+		if (!StringUtils.isBlank(merReport.getMerCode())) {
+			merCode = Arrays.stream(merReport.getMerCode().split(",")).filter(merCodes::contains).collect(Collectors.joining(","));
 		}
 
-		if(StringUtils.isNotBlank(merCode)) {
+		if (StringUtils.isNotBlank(merCode)) {
 			merReport.setMerCode(merCode);
 
 			startOrderBy();
 			list = queryAll(merReport);
 		}
 
-		ExcelUtil<MerReport> util = new ExcelUtil<MerReport>(MerReport.class);
-		return util.exportExcel(list, "商户核日志计数据-销售岗");
+		List<ExcelMerReportForSell> collect = list.stream().map(cell -> {
+			ExcelMerReportForSell p = new ExcelMerReportForSell();
+			BeanUtils.copyProperties(cell, p);
+			return p;
+		}).collect(Collectors.toList());
+
+		ExcelUtil<ExcelMerReportForSell> util = new ExcelUtil<>(ExcelMerReportForSell.class);
+
+		return util.exportExcel(collect, "商户核日志计数据-销售岗");
 	}
 
 	/**
@@ -312,15 +323,16 @@ public class MerReportController extends BaseController {
 	public AjaxResult merSettleExport(MerReport merReport) {
 		startOrderBy();
 		List<MerReport> list = queryAll(merReport);
-		List<MerSettleReportBean> settleList=new ArrayList<>();
+		List<MerSettleReportBean> settleList = new ArrayList<>();
 		list.stream().forEach((merReport1 -> {
-			MerSettleReportBean bean=new MerSettleReportBean();
-			BeanUtils.copyProperties(merReport1,bean);
+			MerSettleReportBean bean = new MerSettleReportBean();
+			BeanUtils.copyProperties(merReport1, bean);
 			settleList.add(bean);
 		}));
 		ExcelUtil<MerSettleReportBean> util = new ExcelUtil<>(MerSettleReportBean.class);
 		return util.exportExcel(settleList, "商户结算报表");
 	}
+
 	/**
 	 * 商户结算报表导出
 	 */
@@ -331,11 +343,11 @@ public class MerReportController extends BaseController {
 	public AjaxResult merProfitExport(MerReport merReport) {
 		startOrderBy();
 		List<MerReport> list = queryAll(merReport);
-		List<MerProfitReportBean> settleList=new ArrayList<>();
+		List<MerProfitReportBean> settleList = new ArrayList<>();
 		list.stream().forEach((merReport1 -> {
-			MerProfitReportBean bean=new MerProfitReportBean();
-			BeanUtils.copyProperties(merReport1,bean);
-			bean.setFeeTimes(bean.getStatusOkFit()+bean.getStatusErr()+bean.getStatusOkUnfit()+bean.getStatusNo());
+			MerProfitReportBean bean = new MerProfitReportBean();
+			BeanUtils.copyProperties(merReport1, bean);
+			bean.setFeeTimes(bean.getStatusOkFit() + bean.getStatusErr() + bean.getStatusOkUnfit() + bean.getStatusNo());
 			settleList.add(bean);
 		}));
 		ExcelUtil<MerProfitReportBean> util = new ExcelUtil<>(MerProfitReportBean.class);
@@ -351,7 +363,7 @@ public class MerReportController extends BaseController {
 	@PostMapping("/stat")
 	@ResponseBody
 	public AjaxResult statData(String startDate, String endDate, String merCode) {
-		if(StringUtils.isBlank(startDate) || startDate.length() != 10 || !startDate.contains("-")
+		if (StringUtils.isBlank(startDate) || startDate.length() != 10 || !startDate.contains("-")
 				|| StringUtils.isBlank(endDate) || endDate.length() != 10 || !endDate.contains("-")) {
 			return error("日期格式不正确");
 		}
@@ -359,22 +371,22 @@ public class MerReportController extends BaseController {
 		LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		long daysBetween = ChronoUnit.DAYS.between(start, end);
-		if(daysBetween > 30) {
+		if (daysBetween > 30) {
 			return error("日期跨度不能超过30天，当前跨度" + daysBetween + "天");
 		}
 
 		String key = RedisKey.MER_REPORT_PREFIX;
 		Boolean hasLook = redisCache.setIfAbsent(key, startDate + "|" + endDate, 10, TimeUnit.MINUTES);
-		if(!hasLook) {
+		if (!hasLook) {
 			return error("已有程序正在执行中请稍后再试");
 		}
 
 		StringBuffer buffer = new StringBuffer();
 		String msg = "手动更新商户日志统计数据失败，日期：";
-		while(start.compareTo(end) <= 0) {
+		while (start.compareTo(end) <= 0) {
 			try {
 				boolean res = merReportService.statMerReqLogReport(start, merCode);
-				if(!res) {
+				if (!res) {
 					throw new RuntimeException("Service返回未成功");
 				}
 			} catch (Exception e) {
@@ -389,7 +401,7 @@ public class MerReportController extends BaseController {
 		}
 		redisCache.deleteObject(key);
 
-		if(buffer.length() > 0) {
+		if (buffer.length() > 0) {
 			return error(buffer.toString());
 		}
 

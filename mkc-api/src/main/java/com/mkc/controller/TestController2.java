@@ -15,7 +15,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.utils.Tuple2;
 import com.mkc.common.utils.ZipStrUtils;
-import com.mkc.domain.ExcelTestCar;
+import com.mkc.dto.ExcelTestCar;
 import com.mkc.dto.MerLogLine;
 import com.mkc.dto.SupLogLine;
 import lombok.Builder;
