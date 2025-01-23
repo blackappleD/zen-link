@@ -29,6 +29,9 @@ public class CreditA108ResDTO {
 	@JsonProperty("D150")
 	private String D150;
 
+	@JsonProperty("D152")
+	private String D152;
+
 	@JsonProperty("D381")
 	private String D381;
 
@@ -67,5 +70,8 @@ public class CreditA108ResDTO {
 
 	@JsonProperty("D959")
 	private String D959;
+
+	@JsonProperty("D953")
+	private String D953;
 
 }

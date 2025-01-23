@@ -284,7 +284,6 @@ public class BgServiceImpl implements IBgService {
 	}
 
 
-
 	/**
 	 * 处理供应商返回结果 公用方法
 	 *
@@ -315,7 +314,7 @@ public class BgServiceImpl implements IBgService {
 			result = Result.not(supResult.getData(), orderNo);
 			//查无
 		} else if (supResult.isNoGet()) {
-			result = Result.no(supResult.getData(), FreeStatus.NO, orderNo);
+			result = Result.no(supResult.getData(), supResult.getFree(), orderNo);
 			//其它算查询失败活异常
 		} else {
 			//判断是否是自定义错误消息

@@ -55,7 +55,7 @@ public class YrzxBgSupImpl implements IBgSupService {
 		JSONObject params = new JSONObject();
 		String url = null;
 		try {
-			url = bean.getUrl() + "/yrzx/model/credit/A018";
+			url = bean.getUrl() + "/yrzx/model/credit/A018/v3";
 			String appsecret = bean.getSignKey();
 			String appkey = bean.getAcc();
 			Integer timeOut = bean.getTimeOut();
@@ -96,8 +96,7 @@ public class YrzxBgSupImpl implements IBgSupService {
 				supResult.setState(ReqState.SUCCESS);
 				supResult.setData(data);
 			} else if (EMPTY.equals(code)) {
-				supResult.setFree(FreeStatus.NO);
-				supResult.setRemark("查无");
+				supResult.setFree(FreeStatus.YES);
 				supResult.setState(ReqState.NOT_GET);
 				supResult.setData(data);
 			} else if (ERROR_CODE1.equals(code)) {
@@ -178,7 +177,7 @@ public class YrzxBgSupImpl implements IBgSupService {
 				supResult.setState(ReqState.SUCCESS);
 				supResult.setData(data);
 			} else if (EMPTY.equals(code)) {
-				supResult.setFree(FreeStatus.NO);
+				supResult.setFree(FreeStatus.YES);
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOT_GET);
 				supResult.setData(data);
@@ -219,7 +218,7 @@ public class YrzxBgSupImpl implements IBgSupService {
 		JSONObject params = new JSONObject();
 		String url = null;
 		try {
-			url = bean.getUrl() + "/yrzx/model/credit/A016";
+			url = bean.getUrl() + "/yrzx/model/credit/A016/v2";
 			String appsecret = bean.getSignKey();
 			String appkey = bean.getAcc();
 			Integer timeOut = bean.getTimeOut();
@@ -260,7 +259,7 @@ public class YrzxBgSupImpl implements IBgSupService {
 				supResult.setState(ReqState.SUCCESS);
 				supResult.setData(data);
 			} else if (EMPTY.equals(code)) {
-				supResult.setFree(FreeStatus.NO);
+				supResult.setFree(FreeStatus.YES);
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOT_GET);
 				supResult.setData(data);
