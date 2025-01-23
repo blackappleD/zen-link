@@ -58,4 +58,16 @@ public class CreditA107ResDTO {
 
 	@JsonProperty("D870")
 	private String D870;
+
+	@JsonProperty("D864")
+	private String D864;
+
+	@JsonProperty("D865")
+	private String D865;
+
+	@JsonProperty("D866")
+	private String D866;
+
+	@JsonProperty("D876")
+	private String D876;
 }
