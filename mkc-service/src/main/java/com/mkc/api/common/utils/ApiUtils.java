@@ -24,7 +24,7 @@ public class ApiUtils {
 	public static JSONObject queryApi(String url, JSONObject bodyObject, String plaintext) {
 		String merCode = "BhCpTest";
 		bodyObject.put("merCode", merCode);
-		bodyObject.put("key", "80bb75f192ad62fc9dd59e6b39ce9ba5");
+		bodyObject.put("key", "80bb99f192ad62fc9dd59e6b39ce9ba5");
 		bodyObject.put("merSeq", UUID.randomUUID().toString().replace("-", "").substring(0, 16));
 		String pwd = "1503a2208bc4cc8dec63d82948157fa9";
 		String signText = merCode + plaintext + pwd;
@@ -44,7 +44,7 @@ public class ApiUtils {
 	public static Tuple2<Integer, JSONObject> queryApiWithStatus(String url, JSONObject bodyObject, String plaintext) {
 		String merCode = "BhCpTest";
 		bodyObject.put("merCode", merCode);
-		bodyObject.put("key", "80bb75f192ad62fc9dd59e6b39ce9ba5");
+		bodyObject.put("key", "80bb99f192ad62fc9dd59e6b39ce9ba5");
 		bodyObject.put("merSeq", UUID.randomUUID().toString().replace("-", "").substring(0, 16));
 		String pwd = "1503a2208bc4cc8dec63d82948157fa9";
 		String signText = merCode + plaintext + pwd;

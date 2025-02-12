@@ -2,6 +2,9 @@ package com.mkc.controller;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -32,9 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -330,7 +331,7 @@ public class TestController {
 				towWThreadPoolExecutor.submit(() -> {
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("idCard", read.getIdCard());
-					jsonObject.put("name", read.getName());
+					jsonObject.put("name", StringUtils.isBlank(read.getName()) ? "张三" : read.getName());
 					jsonObject.put("mobile", read.getMobile());
 					String plainText = read.getIdCard() + read.getName() + read.getMobile();
 					Tuple2<Integer, JSONObject> result = ApiUtils.queryApiWithStatus("http://api.zjbhsk.com/bg/financeInfo", jsonObject, plainText);
@@ -522,6 +523,44 @@ public class TestController {
 				.excelType(ExcelTypeEnum.XLSX)
 				.sheet("婚姻状况测试结果")
 				.doWrite(readList);
+
+	}
+
+	@PostMapping("/testHouse")
+	public void testHouse(MultipartFile excel,
+	                      MultipartFile authFile) throws IOException {
+		List<IdCardNameCell> readList = EasyExcel.read(excel.getInputStream())
+				.headRowNumber(1)
+				.head(IdCardNameCell.class)
+				.sheet(0)
+				.doReadSync();
+		String url = "http://api.zjbhsk.com/bg/houseReqInfo";
+		String persons = JSONUtil.toJsonStr(readList);
+		Map<String, Object> params = new HashMap<>();
+		params.put("types", "3");
+		params.put("persons", persons);
+		params.put("merCode", "BhCpTest");
+		params.put("merSeq", RandomUtil.randomString(16));
+		params.put("key", "80bb99f192ad62fc9dd59e6b39ce9ba5");
+		params.put("sign", "");
+		try (HttpResponse execute = HttpRequest.post(url)
+				.form(params)
+				.form("files", authFile)
+				.execute()) {
+			String result = execute.body();
+			System.err.println(result);
+		}
+
+	}
+
+	@Data
+	public static class IdCardNameCell {
+
+		@ExcelProperty("身份证号")
+		private String cardNum;
+
+		@ExcelProperty("姓名")
+		private String name;
 
 	}
 

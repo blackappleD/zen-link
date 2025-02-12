@@ -2,10 +2,7 @@ package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.bg.req.*;
-import com.mkc.api.dto.bg.res.CreditA016ResDTO;
-import com.mkc.api.dto.bg.res.CreditA107ResDTO;
-import com.mkc.api.dto.bg.res.CreditA108ResDTO;
-import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
+import com.mkc.api.dto.bg.res.*;
 import com.mkc.bean.SuplierQueryBean;
 
 public interface IBgSupService extends ISupService {
@@ -110,6 +107,14 @@ public interface IBgSupService extends ISupService {
 		return SupResult.supNotSupport();
 	}
 
+	/**
+	 * 人企
+	 *
+	 * @return
+	 */
+	default SupResult<PeopleEnterpriseResDTO> queryPeopleEnterprise(PeopleEnterpriseReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
 
 	/**
 	 * 车辆信息5三要素-简版

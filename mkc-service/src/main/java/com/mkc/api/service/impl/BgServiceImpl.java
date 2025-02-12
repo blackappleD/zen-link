@@ -9,6 +9,7 @@ import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
+import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
@@ -85,6 +86,12 @@ public class BgServiceImpl implements IBgService {
 	public Result queryCreditA016(CreditA016ReqDTO params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryCreditA016(params, supQueryBean));
+	}
+
+	@Override
+	public Result<PeopleEnterpriseResDTO> queryPeopleEnterprise(PeopleEnterpriseReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.queryPeopleEnterprise(params, supQueryBean));
 	}
 
 

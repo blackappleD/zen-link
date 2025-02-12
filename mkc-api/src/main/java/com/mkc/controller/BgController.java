@@ -8,6 +8,7 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.dto.bg.req.*;
+import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.IBgService;
 import com.mkc.bean.CkMerBean;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -38,6 +40,23 @@ public class BgController extends BaseController {
 
 	@Autowired
 	private IBgService bgService;
+
+	/**
+	 * 人企
+	 *
+	 * @return
+	 */
+	@PostMapping("/people_enterprise")
+	public Result<PeopleEnterpriseResDTO> peopleEnterprise(HttpServletRequest request, @RequestBody @Valid PeopleEnterpriseReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_PEOPLE_ENTERPRISE);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getQueryCode() + params.getEncryptMethod());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.queryPeopleEnterprise(params, merLog);
+
+	}
 
 	/**
 	 * 高风险人群核查
