@@ -18,7 +18,7 @@
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
-        <result property="reqLimit" column="reqLimit"/>
+        <result property="reqLimit" column="req_limit"/>
     </resultMap>
     <resultMap type="com.mkc.domain.ProductSell" id="ProductSellResult2">
         <result property="id" column="id"/>
@@ -35,7 +35,7 @@
         <result property="updateTime" column="update_time"/>
         <result property="supNames" column="supNames"/>
         <result property="remark" column="remark"/>
-        <result property="reqLimit" column="reqLimit"/>
+        <result property="reqLimit" column="req_limit"/>
     </resultMap>
 
     <sql id="productSellVo">
