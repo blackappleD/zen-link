@@ -83,7 +83,7 @@ public class ProductSell extends BaseEntity {
 	@TableField(exist = false)
 	private String supNames;
 
-	private Long reqLimit = 0L;
+	private Long reqLimit;
 
 
 }

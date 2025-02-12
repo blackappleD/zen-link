@@ -23,7 +23,7 @@ public enum ApiReturnCode {
 	ERR_008("ERR_008", "令牌错误") {},
 
 	ERR_009("ERR_009", "参数错误或无效") {},
-
+	ERR_010("ERR_010", "API请求超限") {},
 	;
 
 

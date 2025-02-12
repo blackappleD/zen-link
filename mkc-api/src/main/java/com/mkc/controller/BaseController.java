@@ -378,32 +378,4 @@ public class BaseController {
 
 	}
 
-
-	public static void main(String[] args) {
-
-//        String ips="^(10.20.14.1*)|(20.20.14.1*)$";
-//        String ip1="^113.108.131.149$";
-//        String ips2="113.108.131.149";
-//        String ips3="^.*$";
-//        String ip="20.20.14.11";
-//        System.out.println("113.108.131.149 "+"113.108.131.149".matches(ip1));
-//        System.out.println(ip.matches(ips));
-//        System.out.println(ips.contains(ip));
-//        System.out.println(ip.matches(ips2));
-//        System.out.println(ip.matches(ips3));
-//        Long workerId = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr()) >> 16 & 31;
-//
-//        System.out.println(IdUtil.getSnowflake(workerId).nextIdStr());
-//        System.out.println(IdUtil.getSnowflake(workerId).nextIdStr());
-//        long snowflakeNextId = IdUtil.getSnowflakeNextId();
-
-
-		//Long workerId = NetUtil.ipv4ToLong() >> 16 & 31;
-		// System.out.println(NetUtil.ipv4ToLong(NetUtil.getLocalhostStr()));
-		System.out.println("checkCertNo  " + RegTool.checkCertNo("830000195901270030"));
-		System.out.println("1========== " + IdUtil.getSnowflake(31, 31).nextIdStr());
-
-	}
-
-
 }

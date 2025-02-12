@@ -3,8 +3,10 @@ package com.mkc.api.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.mkc.api.common.constant.ApiReturnCode;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
+import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
@@ -23,6 +25,7 @@ import com.mkc.process.IMailProcess;
 import com.mkc.service.ISupplierProductService;
 import com.mkc.service.ISupplierRouteService;
 import com.mkc.util.ErrorConstants;
+import com.mkc.util.RateLimitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,6 +118,10 @@ public class CkServiceImpl implements ICkService {
 		String merCode = merLog.getMerCode();
 		String productCode = merLog.getProductCode();
 		String orderNo = merLog.getOrderNo();
+
+		if (RateLimitUtil.rateLimit(productCode, merCode, merLog.getReqLimit())) {
+			throw new ApiServiceException(ApiReturnCode.ERR_010);
+		}
 
 		List<SupplierRoute> supplierRoutes = supplierRouteService.querySupRouteList(merCode, productCode);
 		//判断是否有可用的供应商
