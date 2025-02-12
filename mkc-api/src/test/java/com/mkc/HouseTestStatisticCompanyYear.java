@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @date 2024/12/23 15:25
  */
 @SpringBootTest
-public class TestCompanyYear {
+public class HouseTestStatisticCompanyYear {
 
 	private static final String DOWNLOAD_FILEPATH = "C:/Users/achen/Downloads/";
 

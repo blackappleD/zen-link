@@ -1,16 +1,17 @@
 package com.mkc.controller;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.jayway.jsonpath.JsonPath;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.utils.Tuple2;
@@ -21,6 +22,7 @@ import com.mkc.dto.SupLogLine;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,29 +59,66 @@ public class TestController2 {
 				.head(clazz)
 				.sheet(0)
 				.doReadSync();
+
+	}
+
+	public static <T> List<T> readExcelBatch(String dicPath, Class<T> clazz) {
+
+		File folder = new File(dicPath);
+		// 获取文件夹下的所有文件
+		File[] files = folder.listFiles();
+		List<T> list = new ArrayList<>();
+		if (files == null) {
+			return list;
+		}
+		for (File file : files) {
+			List<T> objects = EasyExcel.read(file)
+					.headRowNumber(1)
+					.head(clazz)
+					.doReadAllSync();
+			System.out.println("读取文件：" + file.getName() + " 录入数据 " + objects.size() + "条");
+			list.addAll(objects);
+		}
+		return list;
+
 	}
 
 
 	/**
 	 * 全国高等学历信息查询 /educationInfo 日志分析
 	 */
+	@Test
 	public void educationInfo() {
 
-		Map<String, Statistic> map = new HashMap<>();
+		// 月份 商户Code 统计数据
+		Map<String, Map<String, Statistic>> map = new HashMap<>();
 
-		List<SupLogLine> supLogLines = readExcel(DOWNLOAD_FILEPATH + "1734952290147调用供应商日志数据.xlsx", SupLogLine.class);
+		List<SupLogLine> supLogLines = readExcelBatch("D:\\work\\学历日志分析", SupLogLine.class);
+
 		for (SupLogLine supLogLine : supLogLines) {
+
+			String merCode = supLogLine.getMerCode();
+			LocalDateTime reqTime = supLogLine.getReqTime();
+			String yearMonth = CharSequenceUtil.format("{}年{}月", reqTime.getYear(), reqTime.getMonth().getValue());
+
+			if (!map.containsKey(yearMonth)) {
+				map.put(yearMonth, new HashMap<>());
+			}
+			Map<String, Statistic> merStatisticMap = map.get(yearMonth);
+
+			if (!merStatisticMap.containsKey(merCode)) {
+				Statistic statistic = new Statistic();
+				statistic.setMerCode(merCode);
+				statistic.setProductName("全国高等学历信息查询");
+				merStatisticMap.put(merCode, statistic);
+			}
+			Statistic statistic = merStatisticMap.get(merCode);
 
 			String resJson = supLogLine.getResJson();
 			try {
 				resJson = ZipStrUtils.gunzip(resJson);
 			} catch (Exception ignored) {
 			}
-			String date = LocalDateTimeUtil.format(supLogLine.getReqTime(), "yyyy-MM-dd");
-			if (!map.containsKey(date)) {
-				map.put(date, new Statistic());
-			}
-			Statistic statistic = map.get(date);
 			statistic.addTotal();
 			switch (supLogLine.getStatus()) {
 				case "1":
@@ -98,41 +138,51 @@ public class TestController2 {
 			}
 
 		}
-		List<Statistic> collect = map.entrySet().stream().map(entry -> {
-			Statistic value = entry.getValue();
-			value.setDate(entry.getKey());
-			return value;
-		}).collect(Collectors.toList());
-		EasyExcel.write(new File("C:\\Users\\achen\\Desktop\\1123-1223中电郑州学历接口统计.xlsx"))
-				.head(Statistic.class)
+
+		try (ExcelWriter excelWriter = EasyExcel.write(new File("C:\\Users\\achen\\Desktop\\中电郑州学历接口各商户历史调用量统计.xlsx"))
 				.excelType(ExcelTypeEnum.XLSX)
-				.sheet("sheet")
-				.doWrite(collect);
+				.build()) {
+			map.forEach((key, value) -> {
+				WriteSheet writeSheet = EasyExcel.writerSheet(key)
+						.head(Statistic.class)
+						.build();
+				excelWriter.write(value.values(), writeSheet);
+			});
+
+		}
 
 	}
 
 
 	@Data
 	private static class Statistic {
+		@ColumnWidth(10)
+		@ExcelProperty("商户编码")
+		private String merCode;
 
 		@ColumnWidth(10)
-		@ExcelProperty("日期")
-		private String date;
+		@ExcelProperty("产品名称")
+		private String productName;
+
+		@ColumnWidth(10)
+		@ExcelProperty("总次数")
+		private int total;
+
 		@ColumnWidth(10)
 		@ExcelProperty("成功")
 		private int success = 0;
+
 		@ColumnWidth(10)
-		@ExcelProperty("查得")
+		@ExcelProperty("查得有数据")
 		private int findYes = 0;
+
 		@ColumnWidth(10)
-		@ExcelProperty("查无")
+		@ExcelProperty("查得无数据")
 		private int findNo = 0;
+
 		@ColumnWidth(10)
 		@ExcelProperty("异常")
 		private int exception = 0;
-		@ColumnWidth(10)
-		@ExcelProperty("总计")
-		private int total = 0;
 
 		private void addSuccess() {
 			success = success + 1;
@@ -257,17 +307,17 @@ public class TestController2 {
 				}
 			}
 		}
-		List<Test> list = new ArrayList<>();
+		List<HouseTestStatistic> list = new ArrayList<>();
 		map.forEach((merCode, countMap) ->
 				countMap.forEach((reqOrderNo, tuple) ->
-						list.add(Test.builder().merCode(merCode)
+						list.add(HouseTestStatistic.builder().merCode(merCode)
 								.reqOrderNo(reqOrderNo)
 								.notFreeTimes(tuple.getV1())
 								.freeTimes(tuple.getV2())
 								.build())));
 
 		EasyExcel.write(new File("D:\\跑数\\不动产\\11.19-11.29各商户不动产15日内免费调用统计.xlsx"))
-				.head(Test.class)
+				.head(HouseTestStatistic.class)
 				.excelType(ExcelTypeEnum.XLSX)
 				.sheet("统计")
 				.doWrite(list);
@@ -277,7 +327,7 @@ public class TestController2 {
 
 	@Data
 	@Builder
-	public static class Test {
+	public static class HouseTestStatistic {
 		@ExcelProperty("商户编码")
 		private String merCode;
 

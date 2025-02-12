@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  * @date 2023/5/26 17:12
  */
 @SpringBootTest
-public class TestRedis {
+public class HouseTestStatisticRedis {
 
 
     @Autowired

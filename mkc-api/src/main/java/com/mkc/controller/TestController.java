@@ -22,6 +22,7 @@ import com.mkc.common.utils.ZipStrUtils;
 import com.mkc.dto.*;
 import com.mkc.dto.bdc.BdcRequest;
 import com.mkc.dto.bdc.BdcResponse;
+import com.mkc.util.JsonUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -536,16 +537,20 @@ public class TestController {
 				.doReadSync();
 		String url = "http://api.zjbhsk.com/bg/houseReqInfo";
 		String persons = JSONUtil.toJsonStr(readList);
+		System.out.println(JsonUtil.toJson(readList.stream().map(IdCardNameCell::getCardNum).collect(Collectors.toList())));
 		Map<String, Object> params = new HashMap<>();
 		params.put("types", "3");
 		params.put("persons", persons);
 		params.put("merCode", "BhCpTest");
 		params.put("merSeq", RandomUtil.randomString(16));
 		params.put("key", "80bb99f192ad62fc9dd59e6b39ce9ba5");
-		params.put("sign", "");
+		params.put("sign", "dwadawdwadwad");
+
+		File tempFile = File.createTempFile("temp", authFile.getOriginalFilename());
+		authFile.transferTo(tempFile);
 		try (HttpResponse execute = HttpRequest.post(url)
 				.form(params)
-				.form("files", authFile)
+				.form("files", tempFile)
 				.execute()) {
 			String result = execute.body();
 			System.err.println(result);

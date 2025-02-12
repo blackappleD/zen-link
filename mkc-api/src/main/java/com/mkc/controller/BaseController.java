@@ -106,6 +106,7 @@ public class BaseController {
 		}
 
 		ProductSell productSell = productSellService.selectProductSellByMer(merCode, productCode);
+
 		if (productSell == null) {
 			log.error("该商户 产品接口未开通  merCode {} , productCode  {} ", merCode, productCode);
 			throw new ApiServiceException(ApiReturnCode.ERR_004);
@@ -135,6 +136,7 @@ public class BaseController {
 		merLog.setProductCode(productCode);
 		merLog.setProductName(productSell.getProductName());
 		merLog.setRouteCon(productSell.getRouteCon());
+		merLog.setReqLimit(productSell.getReqLimit());
 		merLog.setIpaddr(ipAddr);
 		merLog.setReqTime(LocalDateTime.now());
 		merLog.setSellPrice(productSell.getSellPrice());
