@@ -40,4 +40,9 @@ public class CkMerBean {
 				.productCode(productCode.getCode())
 				.build();
 	}
+
+	public CkMerBean plaintext(String plaintext) {
+		this.plaintext = plaintext;
+		return this;
+	}
 }

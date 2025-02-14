@@ -8,6 +8,7 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
+import com.mkc.api.dto.sf.SsPlusReqDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.ISfService;
@@ -143,6 +144,11 @@ public class SfServiceImpl implements ISfService {
 	@Override
 	public Result queryDishonestExecutiveInfo(DishonestExecutiveReqDTO params, MerReqLogDTO merLog) {
 		return sfCommon(merLog, params, (sfSupService, supQueryBean) -> sfSupService.queryDishonestExecutiveInfo(params, supQueryBean));
+	}
+
+	@Override
+	public Result querySsPlus(SsPlusReqDTO params, MerReqLogDTO merLog) {
+		return sfCommon(merLog, params, (sfSupService, supQueryBean) -> sfSupService.querySsPlus(params, supQueryBean));
 	}
 
 	private Result sfCommon(MerReqLogDTO merLog, BaseDTO vo, BiFunction<ISfSupService, SuplierQueryBean, SupResult> function) {

@@ -80,6 +80,9 @@ public enum ProductCodeEum {
 	BG_DRIVING_LICENSE_INFO("BG_DRIVING_LICENSE_001", "行驶身份核验", "/bg/drivingLicense") {
 	},
 
+	SF_SS_PLUS_INFO("SF_SS_PLUS_INFO", "司法涉诉公开版", "/sf/ssPlus") {
+	},
+
 	SF_DISHONEST_EXECUTIVE_INFO("SF_DISHONEST_EXECUTIVE_001", "失信被执行人", "/sf/dishonestExecutive") {
 	},
 

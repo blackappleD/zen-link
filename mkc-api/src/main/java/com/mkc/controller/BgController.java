@@ -63,8 +63,8 @@ public class BgController extends BaseController {
 	 */
 	@PostMapping("/kxdrz")
 	public Result<HighRiskPeopleResDTO> highRiskPeople(HttpServletRequest request, @RequestBody HighRiskPeopleReqDTO params) {
-		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_HIGH_RISK_PEOPLE);
-		ckMerBean.setPlaintext(params.getMerCode() + params.getCertNo());
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_HIGH_RISK_PEOPLE)
+				.plaintext(params.getMerCode() + params.getCertNo());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));
@@ -74,8 +74,8 @@ public class BgController extends BaseController {
 
 	@PostMapping("/credit_a108")
 	public Result creditA108(HttpServletRequest request, @RequestBody CreditA108ReqDTO params) {
-		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A108);
-		ckMerBean.setPlaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A108)
+				.plaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));
@@ -84,8 +84,8 @@ public class BgController extends BaseController {
 
 	@PostMapping("/credit_a107")
 	public Result creditA107(HttpServletRequest request, @RequestBody CreditA107ReqDTO params) {
-		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A107);
-		ckMerBean.setPlaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A107)
+				.plaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));
@@ -94,8 +94,8 @@ public class BgController extends BaseController {
 
 	@PostMapping("/credit_a016")
 	public Result creditA016(HttpServletRequest request, @RequestBody CreditA016ReqDTO params) {
-		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A016);
-		ckMerBean.setPlaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CREDIT_A016)
+				.plaintext(params.getMerCode() + params.getCid() + params.getName() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));

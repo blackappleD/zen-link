@@ -5,6 +5,8 @@ import com.mkc.api.common.constant.ApiReturnCode;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
+import com.mkc.api.dto.bg.res.SsPlusResDTO;
+import com.mkc.api.dto.sf.SsPlusReqDTO;
 import com.mkc.api.service.ISfService;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * @AUTHOR XIEWEI
@@ -32,6 +35,30 @@ public class SfController extends BaseController {
 
 	@Autowired
 	private ISfService sfService;
+
+	/**
+	 * 【司法】司法涉诉公开版
+	 */
+	@PostMapping("/ssPlus")
+	public Result<SsPlusResDTO> ssPlus(HttpServletRequest request,
+	                                   @RequestBody @Valid SsPlusReqDTO params) {
+		String reqJson = null;
+		try {
+			reqJson = JSON.toJSONString(params);
+			CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.SF_SS_PLUS_INFO)
+					.plaintext(params.getMerCode() + params.getCertName() + params.getCertNo() + params.getStartDate());
+
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
+			merLog.setReqJson(reqJson);
+
+			return sfService.querySsPlus(params, merLog);
+		} catch (ApiServiceException e) {
+			return Result.fail(e.getCode(), e.getMessage());
+		} catch (Exception e) {
+			errMonitorMsg("【失信被执行人】API 发生异常  reqJson {} ", reqJson, e);
+			return Result.fail();
+		}
+	}
 
 	/**
 	 * 【司法】失信被执行人
