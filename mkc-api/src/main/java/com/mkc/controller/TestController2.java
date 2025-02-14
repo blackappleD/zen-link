@@ -1,5 +1,6 @@
 package com.mkc.controller;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
@@ -16,9 +17,12 @@ import com.jayway.jsonpath.JsonPath;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.utils.Tuple2;
 import com.mkc.common.utils.ZipStrUtils;
+import com.mkc.common.utils.bean.BeanUtils;
 import com.mkc.dto.ExcelTestCar;
+import com.mkc.dto.ExcelTestHouse;
 import com.mkc.dto.MerLogLine;
 import com.mkc.dto.SupLogLine;
+import com.mkc.util.JsonUtil;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -257,6 +262,93 @@ public class TestController2 {
 				.excelType(ExcelTypeEnum.XLSX)
 				.sheet("车五项测试结果")
 				.doWrite(uniqueItems);
+
+	}
+
+	@Test
+	public void testHouseJson() {
+
+		String json = FileUtil.readString("D:\\跑数\\不动产\\2.11\\response.json", StandardCharsets.UTF_8);
+		HouseJson houseJson = JsonUtil.fromJson(json, Response.class).getData();
+		List<ExcelTestHouse> excelTestHouses = new ArrayList<>();
+
+		Map<String, String> idNameMap = readExcel("D:\\跑数\\不动产\\2.11\\银融-房产测试.xlsx", TestController.IdCardNameCell.class)
+				.stream().collect(Collectors.toMap(TestController.IdCardNameCell::getCardNum, TestController.IdCardNameCell::getName));
+
+		houseJson.getAuthResults().forEach(authResult -> {
+			String cardNum = authResult.getCardNum();
+			String name = idNameMap.get(cardNum);
+			String reqOrderNo = houseJson.getReqOrderNo();
+
+			if (authResult.getResultList().isEmpty()) {
+				ExcelTestHouse excelTestHouse = new ExcelTestHouse();
+				excelTestHouse.setXm(name);
+				excelTestHouse.setPersonCardNum(cardNum);
+				excelTestHouse.setCode("200");
+				excelTestHouse.setReqOrderNo(reqOrderNo);
+				excelTestHouses.add(excelTestHouse);
+			} else {
+				authResult.getResultList().forEach(resultItem -> {
+					ExcelTestHouse excelTestHouse = new ExcelTestHouse();
+					excelTestHouse.setXm(name);
+					excelTestHouse.setPersonCardNum(cardNum);
+					excelTestHouse.setCode("200");
+					excelTestHouse.setReqOrderNo(reqOrderNo);
+					BeanUtils.copyProperties(resultItem, excelTestHouse);
+					excelTestHouses.add(excelTestHouse);
+				});
+			}
+
+		});
+
+		EasyExcel.write(new File("D:\\跑数\\不动产\\2.11\\不动产跑数结果.xlsx"))
+				.head(ExcelTestHouse.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("不动产跑数结果")
+				.doWrite(excelTestHouses);
+
+
+	}
+
+	@Data
+	public static class Response {
+		public String code;
+		public String msg;
+		public String seqNo;
+		public String free;
+		public HouseJson data;
+	}
+
+	@Data
+	public static class HouseJson {
+
+		public String reqOrderNo;
+		public String approvalStatus;
+		public List<AuthResult> authResults;
+
+		@Data
+		public static class AuthResult {
+			public String cardNum;
+			public String authState;
+			public String authStateDesc;
+			public Integer isReAuth;
+			public List<ResultItem> resultList;
+		}
+
+		@Data
+		public static class ResultItem {
+			public String certNo;
+			public String unitNo;
+			public String location;
+			public String ownership;
+			public String houseArea;
+			public String rightsType;
+			public String isSealUp;
+			public String isMortgaged;
+			public String rightsStartTime;
+			public String rightsEndTime;
+			public String useTo;
+		}
 
 	}
 
