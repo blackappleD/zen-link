@@ -18,7 +18,6 @@ import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.IBgService;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.bean.SuplierQueryBean;
-import com.mkc.common.core.redis.RedisCache;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.domain.SupplierRoute;
@@ -29,10 +28,8 @@ import com.mkc.util.ErrorConstants;
 import com.mkc.util.RateLimitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
