@@ -1,7 +1,7 @@
 package com.mkc.api.supplier.ck.mapper;
 
-import com.mkc.api.dto.ck.ProQualifyCertReqDTO;
-import com.mkc.api.dto.ck.ProQualifyCertResDTO;
+import com.mkc.api.dto.ck.req.ProQualifyCertReqDTO;
+import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.supplier.dto.ProQualifyCertSupReqDTO;
 import com.mkc.api.supplier.dto.ProQualifyCertSupResDTO;
 import org.mapstruct.Mapper;

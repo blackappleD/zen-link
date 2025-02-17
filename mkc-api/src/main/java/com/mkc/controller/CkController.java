@@ -7,7 +7,9 @@ import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.constant.enums.ReqParamType;
 import com.mkc.api.common.constant.enums.YysProductCode;
 import com.mkc.api.common.exception.ApiServiceException;
-import com.mkc.api.dto.ck.*;
+import com.mkc.api.dto.ck.req.*;
+import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
+import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.ICkService;
 import com.mkc.bean.CkMerBean;
@@ -38,6 +40,26 @@ public class CkController extends BaseController {
 
 	@Autowired
 	private ICkService ckService;
+
+
+	/**
+	 * 当前履历核验
+	 *
+	 * @return
+	 */
+	@PostMapping("/resume_verify")
+	public Result<ResumeVerifyResDTO> ckResumeVerify(HttpServletRequest request,
+	                                                 @RequestBody @Valid ResumeVerifyReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.CK_RESUME_VERIFY);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName() + params.getCompanyName() + params.getAuthCode());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return ckService.ckResumeVerify(params, merLog);
+
+	}
+
 
 	/**
 	 * 技能人员职业资格证书核验数据元件接口

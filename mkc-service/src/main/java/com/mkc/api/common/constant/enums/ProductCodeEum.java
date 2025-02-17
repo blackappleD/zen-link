@@ -23,15 +23,29 @@ public enum ProductCodeEum {
 	CK_BANK_THREE("CK_BANK_THREE_INFO_001", "银行卡三要素核验", "/ck/bankThree") {},
 	CK_BANK_TWO("CK_BANK_TWO_INFO_001", "银行卡二要素核验", "/ck/bankTwo") {},
 	CK_PRO_QUALIFY_CERT_001("CK_PRO_QUALIFY_CERT_001", "技能人员职业资格证书核验", "/ck/pro_qualify_cert") {},
+	CK_RESUME_VERIFY("CK_RESUME_VERIFY", "当前履历核验", "/ck/resume_verify") {},
 
-	BG_FINANCE_I8("BG_FINANCE_I8", "I8还款能⼒评分", "/bg/finance_i8") {},
-	BG_FINANCE_I9("BG_FINANCE_I9", "I9还款能⼒评分", "/bg/finance_i9") {},
-	BG_PEOPLE_ENTERPRISE("BG_PEOPLE_ENTERPRISE", "人企", "/bg/people_enterprise") {},
-	BG_CREDIT_A016("BG_CREDIT_A016", "网贷（逾期多头）", "/bg/credit_a016") {},
+	BG_FINANCE_I8("BG_FINANCE_I8", "I8还款能⼒评分", "/bg/finance_i8") {
+	},
 
-	BG_CREDIT_A107("BG_CREDIT_A107", "网贷（申请多头）", "/bg/credit_a107") {},
-	BG_CREDIT_A108("BG_CREDIT_A108", "网贷（授信多头）", "/bg/credit_a108") {},
-	BG_HIGH_RISK_PEOPLE("BG_HIGH_RISK_PEOPLE", "高风险人群核查", "/bg/kxdrz") {},
+	BG_FINANCE_I9("BG_FINANCE_I9", "I9还款能⼒评分", "/bg/finance_i9") {
+	},
+
+	BG_PEOPLE_ENTERPRISE("BG_PEOPLE_ENTERPRISE", "人企", "/bg/people_enterprise") {
+	},
+
+	BG_CREDIT_A016("BG_CREDIT_A016", "网贷（逾期多头）", "/bg/credit_a016") {
+	},
+
+	BG_CREDIT_A107("BG_CREDIT_A107", "网贷（申请多头）", "/bg/credit_a107") {
+	},
+
+	BG_CREDIT_A108("BG_CREDIT_A108", "网贷（授信多头）", "/bg/credit_a108") {
+	},
+
+	BG_HIGH_RISK_PEOPLE("BG_HIGH_RISK_PEOPLE", "高风险人群核查", "/bg/kxdrz") {
+	},
+
 	BG_CAR_INFO("BG_CAR_001", "车五项信息查询", "/bg/carInfo") {
 	},
 

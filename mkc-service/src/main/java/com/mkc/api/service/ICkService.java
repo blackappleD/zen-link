@@ -2,11 +2,11 @@ package com.mkc.api.service;
 
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
+import com.mkc.api.dto.ck.req.*;
+import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.dto.ck.ProQualifyCertReqDTO;
-import com.mkc.api.dto.ck.ProQualifyCertResDTO;
+import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.dto.BaseDTO;
-import com.mkc.api.dto.ck.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
 
@@ -104,6 +104,15 @@ public interface ICkService {
 	 * @return
 	 */
 	Result<ProQualifyCertResDTO> ckProQualifyCert(ProQualifyCertReqDTO params, MerReqLogDTO merLog);
+
+	/**
+	 * 当前履历核验
+	 *
+	 * @param params
+	 * @param merLog
+	 * @return
+	 */
+	Result<ResumeVerifyResDTO> ckResumeVerify(ResumeVerifyReqDTO params, MerReqLogDTO merLog);
 
 
 }

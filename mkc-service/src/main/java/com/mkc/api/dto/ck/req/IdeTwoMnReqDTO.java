@@ -1,4 +1,4 @@
-package com.mkc.api.dto.ck;
+package com.mkc.api.dto.ck.req;
 
 import com.mkc.api.dto.BaseDTO;
 import lombok.Data;
@@ -6,13 +6,13 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- *个人三要素认证
+ *个人手机二要素认证-姓名手机号
  * @author tqlei
  * @date 2023/5/26 10:33
  */
 
 @Data
-public class MobThreeReqDTO extends BaseDTO implements Serializable {
+public class IdeTwoMnReqDTO extends BaseDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -20,12 +20,6 @@ public class MobThreeReqDTO extends BaseDTO implements Serializable {
      * 姓名
      */
     private String certName;
-
-    /**
-     * 身份证
-     */
-    private String certNo;
-
 
     /**
      * 手机号

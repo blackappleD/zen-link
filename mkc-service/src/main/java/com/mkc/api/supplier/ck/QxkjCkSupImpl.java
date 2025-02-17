@@ -9,7 +9,7 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.dto.bg.res.BankFourResDTO;
-import com.mkc.api.dto.ck.BankReqDTO;
+import com.mkc.api.dto.ck.req.BankReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;

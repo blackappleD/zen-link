@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
 import com.mkc.api.dto.bg.res.BankFourResDTO;
-import com.mkc.api.dto.ck.BankReqDTO;
+import com.mkc.api.dto.ck.req.BankReqDTO;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.supplier.dto.jhsj.JhsjBankFourResDTO;
 import com.mkc.api.supplier.enums.BankFourCode;

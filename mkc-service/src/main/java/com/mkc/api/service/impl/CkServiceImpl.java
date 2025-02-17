@@ -8,14 +8,14 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
+import com.mkc.api.dto.ck.req.*;
+import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.ICkService;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.dto.ck.ProQualifyCertReqDTO;
-import com.mkc.api.dto.ck.ProQualifyCertResDTO;
+import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.dto.BaseDTO;
-import com.mkc.api.dto.ck.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
@@ -222,6 +222,11 @@ public class CkServiceImpl implements ICkService {
 				ckSupService.ckProQualifyCert(params, supQueryBean));
 	}
 
+	@Override
+	public Result<ResumeVerifyResDTO> ckResumeVerify(ResumeVerifyReqDTO params, MerReqLogDTO merLog) {
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.ckResumeVerify(params, supQueryBean));
+	}
 
 	/**
 	 * 处理供应商返回结果 公用方法

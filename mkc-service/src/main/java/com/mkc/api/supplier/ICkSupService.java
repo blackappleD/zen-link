@@ -2,7 +2,9 @@ package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.bg.res.BankFourResDTO;
-import com.mkc.api.dto.ck.*;
+import com.mkc.api.dto.ck.req.*;
+import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
+import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.bean.SuplierQueryBean;
 
 import java.util.List;
@@ -94,6 +96,17 @@ public interface ICkSupService extends ISupService {
 	 * @return
 	 */
 	default SupResult<List<ProQualifyCertResDTO>> ckProQualifyCert(ProQualifyCertReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	/**
+	 * 当前履历核验
+	 *
+	 * @param dto
+	 * @param bean
+	 * @return
+	 */
+	default SupResult<ResumeVerifyResDTO> ckResumeVerify(ResumeVerifyReqDTO dto, SuplierQueryBean bean) {
 		return SupResult.supNotSupport();
 	}
 

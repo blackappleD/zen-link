@@ -1,4 +1,4 @@
-package com.mkc.api.dto.ck;
+package com.mkc.api.dto.ck.res;
 
 import lombok.Data;
 
