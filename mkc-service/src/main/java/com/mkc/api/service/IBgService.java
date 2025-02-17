@@ -4,6 +4,8 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
+import com.mkc.api.dto.bg.res.FinanceI8ResDTO;
+import com.mkc.api.dto.bg.res.FinanceI9ResDTO;
 import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
 import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
@@ -56,6 +58,26 @@ public interface IBgService {
 	Result queryCreditA016(CreditA016ReqDTO params, MerReqLogDTO merReqLog);
 
 	/**
+	 * I8还款能⼒评分
+	 *
+	 * @param params
+	 * @param merReqLog
+	 * @return
+	 */
+	Result<FinanceI8ResDTO> queryFinanceI8(FinanceI8ReqDTO params, MerReqLogDTO merReqLog);
+
+
+	/**
+	 * I8还款能⼒评分
+	 *
+	 * @param params
+	 * @param merReqLog
+	 * @return
+	 */
+	Result<FinanceI9ResDTO> queryFinanceI9(FinanceI9ReqDTO params, MerReqLogDTO merReqLog);
+
+
+	/**
 	 * 人企
 	 *
 	 * @param params
@@ -63,7 +85,6 @@ public interface IBgService {
 	 * @return
 	 */
 	Result<PeopleEnterpriseResDTO> queryPeopleEnterprise(PeopleEnterpriseReqDTO params, MerReqLogDTO merReqLog);
-
 
 	/**
 	 * 车五项信息查询

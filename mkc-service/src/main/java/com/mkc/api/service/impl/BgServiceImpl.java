@@ -10,6 +10,8 @@ import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
+import com.mkc.api.dto.bg.res.FinanceI8ResDTO;
+import com.mkc.api.dto.bg.res.FinanceI9ResDTO;
 import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
 import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
@@ -89,6 +91,18 @@ public class BgServiceImpl implements IBgService {
 	public Result queryCreditA016(CreditA016ReqDTO params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryCreditA016(params, supQueryBean));
+	}
+
+	@Override
+	public Result<FinanceI8ResDTO> queryFinanceI8(FinanceI8ReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.queryFinanceI8(params, supQueryBean));
+	}
+
+	@Override
+	public Result<FinanceI9ResDTO> queryFinanceI9(FinanceI9ReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.queryFinanceI9(params, supQueryBean));
 	}
 
 	@Override

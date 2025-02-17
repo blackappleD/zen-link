@@ -8,12 +8,13 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.dto.bg.req.*;
+import com.mkc.api.dto.bg.res.FinanceI8ResDTO;
+import com.mkc.api.dto.bg.res.FinanceI9ResDTO;
+import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
 import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.IBgService;
 import com.mkc.bean.CkMerBean;
-import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
-import com.mkc.api.dto.bg.req.HighRiskPeopleReqDTO;
 import com.mkc.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +41,42 @@ public class BgController extends BaseController {
 
 	@Autowired
 	private IBgService bgService;
+
+	/**
+	 * I8还款能⼒评分
+	 *
+	 * @return
+	 */
+	@PostMapping("/finance_i8")
+	public Result<FinanceI8ResDTO> financeI8(HttpServletRequest request,
+	                                         @RequestBody @Valid FinanceI8ReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_I8);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.queryFinanceI8(params, merLog);
+
+	}
+
+	/**
+	 * I9还款能⼒评分
+	 *
+	 * @return
+	 */
+	@PostMapping("/finance_i9")
+	public Result<FinanceI9ResDTO> financeI9(HttpServletRequest request,
+	                                         @RequestBody @Valid FinanceI9ReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_I9);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.queryFinanceI9(params, merLog);
+
+	}
 
 	/**
 	 * 人企

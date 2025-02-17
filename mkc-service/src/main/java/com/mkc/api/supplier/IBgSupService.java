@@ -283,4 +283,27 @@ public interface IBgSupService extends ISupService {
 	default public SupResult queryMaritalStability(MaritalStabilityReqVo vo, SuplierQueryBean bean) {
 		return SupResult.supNotSupport();
 	}
+
+	/**
+	 * I8还款能力评分
+	 *
+	 * @param dto
+	 * @param bean
+	 * @return
+	 */
+	default SupResult<FinanceI8ResDTO> queryFinanceI8(FinanceI8ReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+
+	/**
+	 * I9还款能力评分
+	 *
+	 * @param dto
+	 * @param bean
+	 * @return
+	 */
+	default SupResult<FinanceI9ResDTO> queryFinanceI9(FinanceI9ReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
 }
