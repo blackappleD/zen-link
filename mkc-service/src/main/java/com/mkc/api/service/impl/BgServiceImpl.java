@@ -10,10 +10,7 @@ import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
-import com.mkc.api.dto.bg.res.FinanceI8ResDTO;
-import com.mkc.api.dto.bg.res.FinanceI9ResDTO;
-import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
-import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
+import com.mkc.api.dto.bg.res.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
@@ -72,6 +69,30 @@ public class BgServiceImpl implements IBgService {
 	public Result<HighRiskPeopleResDTO> queryHighRiskPeople(HighRiskPeopleReqDTO params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryHighRiskPeople(params, supQueryBean));
+	}
+
+	@Override
+	public Result<FinanceIcsResDTO> financeIcsA(FinanceIcsReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.financeIcsA(params, supQueryBean));
+	}
+
+	@Override
+	public Result<FinanceIcsResDTO> financeIcsB(FinanceIcsReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.financeIcsB(params, supQueryBean));
+	}
+
+	@Override
+	public Result<FinanceIcsResDTO> financeIcsE(FinanceIcsReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.financeIcsE(params, supQueryBean));
+	}
+
+	@Override
+	public Result<FinanceIcsResDTO> financeIcsF(FinanceIcsReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.financeIcsF(params, supQueryBean));
 	}
 
 
@@ -226,7 +247,7 @@ public class BgServiceImpl implements IBgService {
 
 	private Result bgCommon(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
 
-		SupResult supResult = ckCommonSup(merLog, vo, function);
+		SupResult supResult = bgCommonSup(merLog, vo, function);
 
 		return getRespResult(merLog, supResult);
 
@@ -234,7 +255,7 @@ public class BgServiceImpl implements IBgService {
 
 	//将查询供应商方法迁移出来
 	@Override
-	public SupResult ckCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
+	public SupResult bgCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function) {
 
 		String merCode = merLog.getMerCode();
 		String productCode = merLog.getProductCode();

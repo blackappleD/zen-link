@@ -8,10 +8,7 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.dto.bg.req.*;
-import com.mkc.api.dto.bg.res.FinanceI8ResDTO;
-import com.mkc.api.dto.bg.res.FinanceI9ResDTO;
-import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
-import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
+import com.mkc.api.dto.bg.res.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.IBgService;
 import com.mkc.bean.CkMerBean;
@@ -41,6 +38,78 @@ public class BgController extends BaseController {
 
 	@Autowired
 	private IBgService bgService;
+
+	/**
+	 * 经济能力评级-青龙分
+	 *
+	 * @return
+	 */
+	@PostMapping("/finance_ics_a")
+	public Result<FinanceIcsResDTO> financeIcsA(HttpServletRequest request,
+	                                            @RequestBody @Valid FinanceIcsReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_ICS_A);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.financeIcsA(params, merLog);
+
+	}
+
+	/**
+	 * 经济能力评级-白虎分
+	 *
+	 * @return
+	 */
+	@PostMapping("/finance_ics_b")
+	public Result<FinanceIcsResDTO> financeIcsB(HttpServletRequest request,
+	                                            @RequestBody @Valid FinanceIcsReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_ICS_B);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.financeIcsB(params, merLog);
+
+	}
+
+	/**
+	 * 经济能力评级-朱雀分
+	 *
+	 * @return
+	 */
+	@PostMapping("/finance_ics_e")
+	public Result<FinanceIcsResDTO> financeIcsE(HttpServletRequest request,
+	                                            @RequestBody @Valid FinanceIcsReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_ICS_E);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.financeIcsE(params, merLog);
+
+	}
+
+	/**
+	 * 经济能力评级-玄武分
+	 *
+	 * @return
+	 */
+	@PostMapping("/finance_ics_f")
+	public Result<FinanceIcsResDTO> financeIcsF(HttpServletRequest request,
+	                                            @RequestBody @Valid FinanceIcsReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_ICS_F);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.financeIcsF(params, merLog);
+
+	}
 
 	/**
 	 * I8还款能⼒评分

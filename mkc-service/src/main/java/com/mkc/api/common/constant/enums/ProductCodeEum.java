@@ -25,6 +25,11 @@ public enum ProductCodeEum {
 	CK_PRO_QUALIFY_CERT_001("CK_PRO_QUALIFY_CERT_001", "技能人员职业资格证书核验", "/ck/pro_qualify_cert") {},
 	CK_RESUME_VERIFY("CK_RESUME_VERIFY", "当前履历核验", "/ck/resume_verify") {},
 
+	BG_FINANCE_ICS_A("BG_FINANCE_ICS_A", "经济能力评级-青龙分","/bg/finance_ics_a") {},
+	BG_FINANCE_ICS_B("BG_FINANCE_ICS_B", "经济能力评级-白虎分","/bg/finance_ics_b") {},
+	BG_FINANCE_ICS_E("BG_FINANCE_ICS_E", "经济能力评级-朱雀分","/bg/finance_ics_e") {},
+	BG_FINANCE_ICS_F("BG_FINANCE_ICS_F", "经济能力评级-玄武分","/bg/finance_ics_f") {},
+
 	BG_FINANCE_I8("BG_FINANCE_I8", "I8还款能⼒评分", "/bg/finance_i8") {
 	},
 

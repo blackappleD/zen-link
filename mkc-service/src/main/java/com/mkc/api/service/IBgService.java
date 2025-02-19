@@ -4,10 +4,7 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
-import com.mkc.api.dto.bg.res.FinanceI8ResDTO;
-import com.mkc.api.dto.bg.res.FinanceI9ResDTO;
-import com.mkc.api.dto.bg.res.HighRiskPeopleResDTO;
-import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
+import com.mkc.api.dto.bg.res.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.bean.SuplierQueryBean;
@@ -23,10 +20,15 @@ import java.util.function.BiFunction;
 
 public interface IBgService {
 
-	public SupResult ckCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function);
+	public SupResult bgCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function);
 
 
 	Result<HighRiskPeopleResDTO> queryHighRiskPeople(HighRiskPeopleReqDTO params, MerReqLogDTO merReqLog);
+
+	Result<FinanceIcsResDTO> financeIcsA(FinanceIcsReqDTO params, MerReqLogDTO merReqLog);
+	Result<FinanceIcsResDTO> financeIcsB(FinanceIcsReqDTO params, MerReqLogDTO merReqLog);
+	Result<FinanceIcsResDTO> financeIcsE(FinanceIcsReqDTO params, MerReqLogDTO merReqLog);
+	Result<FinanceIcsResDTO> financeIcsF(FinanceIcsReqDTO params, MerReqLogDTO merReqLog);
 
 	/**
 	 * 网贷（授信多头）

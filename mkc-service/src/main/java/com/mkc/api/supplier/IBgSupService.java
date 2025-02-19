@@ -306,4 +306,20 @@ public interface IBgSupService extends ISupService {
 	default SupResult<FinanceI9ResDTO> queryFinanceI9(FinanceI9ReqDTO dto, SuplierQueryBean bean) {
 		return SupResult.supNotSupport();
 	}
+
+	default SupResult<FinanceIcsResDTO> financeIcsA(FinanceIcsReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	default SupResult<FinanceIcsResDTO> financeIcsB(FinanceIcsReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	default SupResult<FinanceIcsResDTO> financeIcsE(FinanceIcsReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	default SupResult<FinanceIcsResDTO> financeIcsF(FinanceIcsReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
 }
