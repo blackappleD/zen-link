@@ -13,6 +13,7 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.jayway.jsonpath.JsonPath;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.utils.Tuple2;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -211,6 +213,80 @@ public class TestController2 {
 	}
 
 	@Test
+	public void financeIcsConvergence() {
+		List<FinIcsBaseCell> baseList = readExcel("D:\\跑数\\ABEF分\\20250220\\samples_20241210_modify.xlsx", FinIcsBaseCell.class);
+		Map<String, FinIcsResult> aMap = readExcel("D:\\跑数\\ABEF分\\20250220\\测试结果\\a.xlsx", FinIcsResult.class)
+				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
+		Map<String, FinIcsResult> bMap = readExcel("D:\\跑数\\ABEF分\\20250220\\测试结果\\b.xlsx", FinIcsResult.class)
+				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
+		Map<String, FinIcsResult> eMap = readExcel("D:\\跑数\\ABEF分\\20250220\\测试结果\\e.xlsx", FinIcsResult.class)
+				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
+		Map<String, FinIcsResult> fMap = readExcel("D:\\跑数\\ABEF分\\20250220\\测试结果\\f.xlsx", FinIcsResult.class)
+				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
+
+		baseList.forEach(cell -> {
+			if (aMap.containsKey(cell.getIdCard())) {
+				cell.setA(aMap.get(cell.getIdCard()).getScore());
+			}
+			if (bMap.containsKey(cell.getIdCard())) {
+				cell.setB(bMap.get(cell.getIdCard()).getScore());
+			}
+			if (eMap.containsKey(cell.getIdCard())) {
+				cell.setE(eMap.get(cell.getIdCard()).getScore());
+			}
+			if (fMap.containsKey(cell.getIdCard())) {
+				cell.setF(fMap.get(cell.getIdCard()).getScore());
+			}
+		});
+
+		EasyExcel.write(new File("D:\\跑数\\ABEF分\\20250220\\samples_20241210_modify.xlsx"))
+				.head(FinIcsBaseCell.class)
+				.excelType(ExcelTypeEnum.XLSX)
+				.sheet("车五项测试结果")
+				.doWrite(baseList);
+
+
+
+	}
+
+	@Data
+	public static class FinIcsResult {
+
+		@ExcelProperty("身份证号")
+		private String idCard;
+
+		@ExcelProperty("分值")
+		private String score;
+
+	}
+
+	@Data
+	public static class FinIcsBaseCell {
+
+		@ExcelProperty("身份证号")
+		private String idCard;
+
+		@ExcelProperty("手机号")
+		private String mobile;
+
+		@ExcelProperty("姓名")
+		private String name;
+
+		@ExcelProperty("A")
+		private String a;
+
+		@ExcelProperty("B")
+		private String b;
+
+		@ExcelProperty("E")
+		private String e;
+
+		@ExcelProperty("F")
+		private String f;
+
+	}
+
+	@Test
 	public void carInfoFromSupLog() {
 		List<SupLogLine> readList = readExcel("C:/Users/achen/Downloads/1739927025216调用供应商日志数据.xlsx", SupLogLine.class);
 
@@ -226,7 +302,10 @@ public class TestController2 {
 				read.setMsg("异常");
 			} else if ("1".equals(data.getStatus())) {
 				String gunzip = ZipStrUtils.gunzip(data.getResJson());
-				ExcelDTO.Result result = JSONUtil.toBean(gunzip, ExcelDTO.class).getResult();
+
+				ExcelDTO<CarResult> response = JsonUtil.fromJson(gunzip, new TypeReference<ExcelDTO<CarResult>>() {
+				});
+				CarResult result = response.getResult();
 				read.setMsg("成功");
 				String engineNo = result.getEngine();
 				String vin = result.getVin();
@@ -453,7 +532,9 @@ public class TestController2 {
 		}
 		for (ExcelCell data : dataList) {
 			String gunzip = ZipStrUtils.gunzip(data.getJson());
-			ExcelDTO.Result result = JSONUtil.toBean(gunzip, ExcelDTO.class).getResult();
+			ExcelDTO<CarResult> response = JsonUtil.fromJson(gunzip, new TypeReference<ExcelDTO<CarResult>>() {
+			});
+			CarResult result = response.getResult();
 			if (CharSequenceUtil.isAllNotBlank(result.getVin(), result.getEngine(), result.getCarName(), result.getRecordDate(), result.getVehicleModel())) {
 				yes++;
 			} else {
@@ -506,24 +587,25 @@ public class TestController2 {
 	}
 
 	@Data
-	public static class ExcelDTO {
+	public static class ExcelDTO<T> {
 
 		private String code;
 		private String message;
 		private String requestId;
 		private String fee;
-		private Result result;
+		private T result;
 
-		@Data
-		public static class Result {
 
-			private String vin;
-			private String engine;
-			private String recordDate;
-			private String vehicleModel;
-			private String carName;
-		}
+	}
 
+	@Data
+	public static class CarResult {
+
+		private String vin;
+		private String engine;
+		private String recordDate;
+		private String vehicleModel;
+		private String carName;
 	}
 
 	public static class DemoDataListener implements ReadListener<ExcelCell> {

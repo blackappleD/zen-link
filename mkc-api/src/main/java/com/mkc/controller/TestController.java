@@ -140,6 +140,197 @@ public class TestController {
 		}
 	}
 
+	@PostMapping("/testFinanceIcsA")
+	public void testFinanceIcsA(MultipartFile excel, HttpServletResponse response) {
+		try {
+			List<FinanceIcsReqCell> readList = EasyExcel.read(excel.getInputStream())
+					.headRowNumber(1)
+					.head(FinanceIcsReqCell.class)
+					.doReadAllSync();
+
+			CountDownLatch latch = new CountDownLatch(readList.size());
+			for (FinanceIcsReqCell read : readList) {
+				carThreadPoolExecutor.submit(() -> {
+					JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
+					String plaintext = read.getIdCard() + read.getMobile();
+					JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/finance_ics_a", jsonObject, plaintext);
+					read.setCode(post.getString("code"));
+					read.setMsg(post.getString("msg"));
+					try {
+						JSONObject data = post.getJSONObject("data");
+						if (Objects.nonNull(data)) {
+							String valueRating = data.getString("valueRating");
+							read.setValueRating(valueRating);
+						}
+					} catch (Exception e) {
+						read.setValueRating(post.getString("data"));
+						log.error(e.getMessage());
+					}
+					latch.countDown();
+				});
+			}
+			latch.await();
+			log.info(readList.size() + "条样例测试完毕！");
+			setExcelRespProp(response, DateUtils.dateTimeNow() + "青龙分A测试结果");
+			EasyExcel.write(response.getOutputStream())
+					.head(FinanceIcsReqCell.class)
+					.excelType(ExcelTypeEnum.XLSX)
+					.sheet("测试结果")
+					.doWrite(readList);
+		} catch (IOException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@PostMapping("/testFinanceIcsB")
+	public void testFinanceIcsB(MultipartFile excel, HttpServletResponse response) {
+		try {
+			List<FinanceIcsReqCell> readList = EasyExcel.read(excel.getInputStream())
+					.headRowNumber(1)
+					.head(FinanceIcsReqCell.class)
+					.doReadAllSync();
+
+			CountDownLatch latch = new CountDownLatch(readList.size());
+			for (FinanceIcsReqCell read : readList) {
+				carThreadPoolExecutor.submit(() -> {
+					JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
+					String plaintext = read.getIdCard() + read.getMobile();
+					JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/finance_ics_b", jsonObject, plaintext);
+					read.setCode(post.getString("code"));
+					read.setMsg(post.getString("msg"));
+					try {
+						JSONObject data = post.getJSONObject("data");
+						if (Objects.nonNull(data)) {
+							String valueRating = data.getString("valueRating");
+							read.setValueRating(valueRating);
+						}
+					} catch (Exception e) {
+						read.setValueRating(post.getString("data"));
+						log.error(e.getMessage());
+					}
+					latch.countDown();
+				});
+			}
+
+			latch.await();
+			log.info(readList.size() + "条样例测试完毕！");
+			setExcelRespProp(response, DateUtils.dateTimeNow() + "白虎分B测试结果");
+			EasyExcel.write(response.getOutputStream())
+					.head(FinanceIcsReqCell.class)
+					.excelType(ExcelTypeEnum.XLSX)
+					.sheet("测试结果")
+					.doWrite(readList);
+		} catch (IOException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@PostMapping("/testFinanceIcsE")
+	public void testFinanceIcsE(MultipartFile excel, HttpServletResponse response) {
+		try {
+			List<FinanceIcsReqCell> readList = EasyExcel.read(excel.getInputStream())
+					.headRowNumber(1)
+					.head(FinanceIcsReqCell.class)
+					.doReadAllSync();
+
+			CountDownLatch latch = new CountDownLatch(readList.size());
+			for (FinanceIcsReqCell read : readList) {
+				carThreadPoolExecutor.submit(() -> {
+					JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
+					String plaintext = read.getIdCard() + read.getMobile();
+					JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/finance_ics_e", jsonObject, plaintext);
+					read.setCode(post.getString("code"));
+					read.setMsg(post.getString("msg"));
+					try {
+						JSONObject data = post.getJSONObject("data");
+						if (Objects.nonNull(data)) {
+							String valueRating = data.getString("valueRating");
+							read.setValueRating(valueRating);
+						}
+					} catch (Exception e) {
+						read.setValueRating(post.getString("data"));
+						log.error(e.getMessage());
+					}
+					latch.countDown();
+				});
+			}
+			latch.await();
+			log.info(readList.size() + "条样例测试完毕！");
+			setExcelRespProp(response, DateUtils.dateTimeNow() + "朱雀分E测试结果");
+			EasyExcel.write(response.getOutputStream())
+					.head(FinanceIcsReqCell.class)
+					.excelType(ExcelTypeEnum.XLSX)
+					.sheet("测试结果")
+					.doWrite(readList);
+		} catch (IOException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@PostMapping("/testFinanceIcsF")
+	public void testFinanceIcsF(MultipartFile excel, HttpServletResponse response) {
+		try {
+			List<FinanceIcsReqCell> readList = EasyExcel.read(excel.getInputStream())
+					.headRowNumber(1)
+					.head(FinanceIcsReqCell.class)
+					.doReadAllSync();
+
+			CountDownLatch latch = new CountDownLatch(readList.size());
+			for (FinanceIcsReqCell read : readList) {
+				carThreadPoolExecutor.submit(() -> {
+					JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(read));
+					String plaintext = read.getIdCard() + read.getMobile();
+					JSONObject post = ApiUtils.queryApi("http://api.zjbhsk.com/bg/finance_ics_f", jsonObject, plaintext);
+					read.setCode(post.getString("code"));
+					read.setMsg(post.getString("msg"));
+					try {
+						JSONObject data = post.getJSONObject("data");
+						if (Objects.nonNull(data)) {
+							String valueRating = data.getString("valueRating");
+							read.setValueRating(valueRating);
+						}
+					} catch (Exception e) {
+						read.setValueRating(post.getString("data"));
+						log.error(e.getMessage());
+					}
+					latch.countDown();
+				});
+			}
+			latch.await();
+			log.info(readList.size() + "条样例测试完毕！");
+			setExcelRespProp(response, DateUtils.dateTimeNow() + "玄武分F测试结果");
+			EasyExcel.write(response.getOutputStream())
+					.head(FinanceIcsReqCell.class)
+					.excelType(ExcelTypeEnum.XLSX)
+					.sheet("测试结果")
+					.doWrite(readList);
+		} catch (IOException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Data
+	public static class FinanceIcsReqCell {
+		@ExcelProperty("身份证号")
+		private String idCard;
+
+		@ExcelProperty("手机号")
+		private String mobile;
+
+		@ExcelProperty("姓名")
+		private String name;
+
+		@ExcelProperty("code")
+		private String code;
+
+		@ExcelProperty("msg")
+		private String msg;
+
+		@ExcelProperty("分值")
+		private String valueRating;
+	}
+
+
 	/**
 	 * 通过供应商调用日志，获取不动产核查结果
 	 *
