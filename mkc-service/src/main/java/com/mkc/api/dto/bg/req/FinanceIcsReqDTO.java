@@ -22,6 +22,6 @@ public class FinanceIcsReqDTO extends BaseDTO {
 	@NotBlank(message = "mobile不能为空")
 	private String mobile;
 
-	private String name;
+	private String name = "张三";
 
 }
