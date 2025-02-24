@@ -49,7 +49,7 @@ public class BgController extends BaseController {
 	                                            @RequestBody @Valid FinanceIcsReqDTO params) {
 
 		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_ICS_A);
-		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getMobile());
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));
@@ -67,7 +67,7 @@ public class BgController extends BaseController {
 	                                            @RequestBody @Valid FinanceIcsReqDTO params) {
 
 		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_ICS_B);
-		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getMobile());
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));
@@ -85,7 +85,7 @@ public class BgController extends BaseController {
 	                                            @RequestBody @Valid FinanceIcsReqDTO params) {
 
 		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_ICS_E);
-		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getMobile());
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));
@@ -103,7 +103,7 @@ public class BgController extends BaseController {
 	                                            @RequestBody @Valid FinanceIcsReqDTO params) {
 
 		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_FINANCE_ICS_F);
-		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getMobile());
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));
