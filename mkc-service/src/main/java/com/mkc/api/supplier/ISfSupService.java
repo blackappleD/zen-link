@@ -1,10 +1,10 @@
 package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
+import com.mkc.api.dto.bg.res.EnterpriseLitigationResDTO;
+import com.mkc.api.dto.bg.res.PersonLitigationResDTO;
 import com.mkc.api.dto.bg.res.SsPlusResDTO;
-import com.mkc.api.dto.sf.DishonestExecutiveReqDTO;
-import com.mkc.api.dto.sf.RestrictedConsumerReqDTO;
-import com.mkc.api.dto.sf.SsPlusReqDTO;
+import com.mkc.api.dto.sf.*;
 import com.mkc.bean.SuplierQueryBean;
 
 /**
@@ -43,6 +43,28 @@ public interface ISfSupService extends ISupService {
 	 * @return
 	 */
 	default SupResult<SsPlusResDTO> querySsPlus(SsPlusReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	/**
+	 * 【司法】全国自然人司法模型服务查询
+	 *
+	 * @param dto
+	 * @param bean
+	 * @return
+	 */
+	default SupResult<PersonLitigationResDTO> personLitigation(PersonLitigationReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	/**
+	 * 【司法】全国企业司法模型服务查询
+	 *
+	 * @param dto
+	 * @param bean
+	 * @return
+	 */
+	default SupResult<EnterpriseLitigationResDTO> enterpriseLitigation(EnterpriseLitigationReqDTO dto, SuplierQueryBean bean) {
 		return SupResult.supNotSupport();
 	}
 

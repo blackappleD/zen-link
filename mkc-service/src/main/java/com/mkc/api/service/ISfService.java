@@ -3,11 +3,11 @@ package com.mkc.api.service;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.bg.res.EnterpriseLitigationResDTO;
+import com.mkc.api.dto.bg.res.PersonLitigationResDTO;
 import com.mkc.api.dto.bg.res.SsPlusResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
-import com.mkc.api.dto.sf.DishonestExecutiveReqDTO;
-import com.mkc.api.dto.sf.RestrictedConsumerReqDTO;
-import com.mkc.api.dto.sf.SsPlusReqDTO;
+import com.mkc.api.dto.sf.*;
 import com.mkc.api.supplier.ISfSupService;
 import com.mkc.bean.SuplierQueryBean;
 
@@ -40,4 +40,8 @@ public interface ISfService {
 	 * @return
 	 */
 	Result<SsPlusResDTO> querySsPlus(SsPlusReqDTO params, MerReqLogDTO merLog);
+
+	Result<PersonLitigationResDTO> personLitigation(PersonLitigationReqDTO params, MerReqLogDTO merLog);
+
+	Result<EnterpriseLitigationResDTO> enterpriseLitigation(EnterpriseLitigationReqDTO params, MerReqLogDTO merLog);
 }

@@ -5,13 +5,13 @@ import com.mkc.api.common.constant.ApiReturnCode;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
-import com.mkc.api.dto.bg.res.SsPlusResDTO;
-import com.mkc.api.dto.sf.SsPlusReqDTO;
-import com.mkc.api.service.ISfService;
 import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.bg.res.EnterpriseLitigationResDTO;
+import com.mkc.api.dto.bg.res.PersonLitigationResDTO;
+import com.mkc.api.dto.bg.res.SsPlusResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
-import com.mkc.api.dto.sf.DishonestExecutiveReqDTO;
-import com.mkc.api.dto.sf.RestrictedConsumerReqDTO;
+import com.mkc.api.dto.sf.*;
+import com.mkc.api.service.ISfService;
 import com.mkc.bean.CkMerBean;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +36,55 @@ public class SfController extends BaseController {
 	@Autowired
 	private ISfService sfService;
 
+
+	/**
+	 * 全国自然人司法模型服务查询
+	 */
+	@PostMapping("/person_litigation")
+	public Result<PersonLitigationResDTO> personLitigation(HttpServletRequest request,
+	                                                       @RequestBody @Valid PersonLitigationReqDTO params) {
+		String reqJson = null;
+		try {
+			reqJson = JSON.toJSONString(params);
+			CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.PERSON_LITIGATION)
+					.plaintext(params.getMerCode() + params.getName() + params.getIdCard() + params.getInquiredAuth() + params.getAuthorization());
+
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
+			merLog.setReqJson(reqJson);
+
+			return sfService.personLitigation(params, merLog);
+		} catch (ApiServiceException e) {
+			return Result.fail(e.getCode(), e.getMessage());
+		} catch (Exception e) {
+			errMonitorMsg("【全国自然人司法模型服务查询】API 发生异常  reqJson {} ", reqJson, e);
+			return Result.fail();
+		}
+	}
+
+	/**
+	 * 全国自然人司法模型服务查询
+	 */
+	@PostMapping("/enterprise_litigation")
+	public Result<EnterpriseLitigationResDTO> enterpriseLitigation(HttpServletRequest request,
+	                                                               @RequestBody @Valid EnterpriseLitigationReqDTO params) {
+		String reqJson = null;
+		try {
+			reqJson = JSON.toJSONString(params);
+			CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.ENTERPRISE_LITIGATION)
+					.plaintext(params.getMerCode() + params.getOrgName() + params.getInquiredAuth() + params.getAuthorization());
+
+			MerReqLogDTO merLog = ckMer(request, ckMerBean);
+			merLog.setReqJson(reqJson);
+
+			return sfService.enterpriseLitigation(params, merLog);
+		} catch (ApiServiceException e) {
+			return Result.fail(e.getCode(), e.getMessage());
+		} catch (Exception e) {
+			errMonitorMsg("【全国自然人司法模型服务查询】API 发生异常  reqJson {} ", reqJson, e);
+			return Result.fail();
+		}
+	}
+
 	/**
 	 * 【司法】司法涉诉公开版
 	 */
@@ -55,7 +104,7 @@ public class SfController extends BaseController {
 		} catch (ApiServiceException e) {
 			return Result.fail(e.getCode(), e.getMessage());
 		} catch (Exception e) {
-			errMonitorMsg("【失信被执行人】API 发生异常  reqJson {} ", reqJson, e);
+			errMonitorMsg("【司法涉诉公开版】API 发生异常  reqJson {} ", reqJson, e);
 			return Result.fail();
 		}
 	}

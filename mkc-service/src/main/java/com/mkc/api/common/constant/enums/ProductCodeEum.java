@@ -105,6 +105,12 @@ public enum ProductCodeEum {
 	SF_SS_PLUS_INFO("SF_SS_PLUS_INFO", "司法涉诉公开版", "/sf/ssPlus") {
 	},
 
+	PERSON_LITIGATION("PERSON_LITIGATION", "全国自然人司法模型服务查询", "/sf/person_litigation") {
+	},
+
+	ENTERPRISE_LITIGATION("ENTERPRISE_LITIGATION", "全国企业司法模型服务查询", "/sf/enterprise_litigation") {
+	},
+
 	SF_DISHONEST_EXECUTIVE_INFO("SF_DISHONEST_EXECUTIVE_001", "失信被执行人", "/sf/dishonestExecutive") {
 	},
 

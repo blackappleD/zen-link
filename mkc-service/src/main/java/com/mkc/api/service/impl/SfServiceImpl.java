@@ -8,15 +8,15 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
-import com.mkc.api.dto.sf.SsPlusReqDTO;
+import com.mkc.api.dto.bg.res.EnterpriseLitigationResDTO;
+import com.mkc.api.dto.bg.res.PersonLitigationResDTO;
+import com.mkc.api.dto.sf.*;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.ISfService;
 import com.mkc.api.supplier.ISfSupService;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
-import com.mkc.api.dto.sf.DishonestExecutiveReqDTO;
-import com.mkc.api.dto.sf.RestrictedConsumerReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
@@ -150,6 +150,15 @@ public class SfServiceImpl implements ISfService {
 	public Result querySsPlus(SsPlusReqDTO params, MerReqLogDTO merLog) {
 		return sfCommon(merLog, params, (sfSupService, supQueryBean) -> sfSupService.querySsPlus(params, supQueryBean));
 	}
+
+	@Override
+	public Result<EnterpriseLitigationResDTO> enterpriseLitigation(EnterpriseLitigationReqDTO params, MerReqLogDTO merLog) {
+		return sfCommon(merLog, params, (sfSupService, supQueryBean) -> sfSupService.enterpriseLitigation(params, supQueryBean));
+	}
+
+	@Override
+	public Result<PersonLitigationResDTO> personLitigation(PersonLitigationReqDTO params, MerReqLogDTO merLog) {
+		return sfCommon(merLog, params, (sfSupService, supQueryBean) -> sfSupService.personLitigation(params, supQueryBean));	}
 
 	private Result sfCommon(MerReqLogDTO merLog, BaseDTO vo, BiFunction<ISfSupService, SuplierQueryBean, SupResult> function) {
 		SupResult supResult = sfCommonSup(merLog, vo, function);
