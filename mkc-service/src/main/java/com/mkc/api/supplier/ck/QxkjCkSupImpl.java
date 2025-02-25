@@ -7,6 +7,9 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
+import com.mkc.api.dto.ck.req.MobThreeReqDTO;
+import com.mkc.api.dto.ck.res.MobileThreePlusResDTO;
+import com.mkc.api.dto.ck.res.MobileThreeResDTO;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.dto.bg.res.BankFourResDTO;
 import com.mkc.api.dto.ck.req.BankReqDTO;
@@ -274,4 +277,153 @@ public class QxkjCkSupImpl implements ICkSupService {
 		}
 	}
 
+	@Override
+	public SupResult<MobileThreeResDTO> ckMobThree(MobThreeReqDTO vo, SuplierQueryBean bean) {
+		String result = null;
+		SupResult<MobileThreeResDTO> supResult = null;
+		JSONObject params = new JSONObject();
+		String url = null;
+
+		try {
+			url = bean.getUrl() + "/ck/mobileThree";
+			String signKey = bean.getSignKey();
+			String acc = bean.getAcc();
+			String signPwd = bean.getSignPwd();
+			Integer timeOut = bean.getTimeOut();
+			String certName = vo.getCertName();
+			String certNo = vo.getCertNo();
+			String mobile = vo.getMobile();
+
+			params.put("certName", certName);
+			params.put("certNo", certNo);
+			params.put("mobile", mobile);
+			params.put("merCode", acc);
+			params.put("merSeq", vo.getMerSeq());
+			params.put("key", signKey);
+			String sign = Md5Utils.md5(acc + certName + certNo + mobile + signPwd);
+			params.put("sign", sign);
+			supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
+			result = HttpUtil.post(url, params.toJSONString(), timeOut);
+
+			log.info(CharSequenceUtil.format("【手机三要素核验】{}", result));
+			supResult.setRespJson(result);
+
+			//判断是否有响应结果 无就是请求异常或超时
+			if (StringUtils.isBlank(result)) {
+				supResult.setRemark("供应商没有响应结果");
+				supResult.setState(ReqState.ERROR);
+				return supResult;
+			}
+			JSONObject resultObject = JSON.parseObject(result);
+			supResult.setRespTime(LocalDateTime.now());
+			String code = resultObject.getString("code");
+			String msg = resultObject.getString("msg");
+			JSONObject resultJson = resultObject.getJSONObject("data");
+			supResult.setSupCode(code);
+			if (resultJson != null) {
+				supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), MobileThreeResDTO.class));
+			}
+			if (SUCCESS.equals(code)) {
+				supResult.setFree(FreeStatus.YES);
+				supResult.setRemark("查询成功");
+				supResult.setState(ReqState.SUCCESS);
+
+			} else if (NOT.equals(code)) {
+				supResult.setFree(FreeStatus.YES);
+				supResult.setRemark("查询成功");
+				supResult.setState(ReqState.SUCCESS);
+			} else {
+				supResult.setFree(FreeStatus.NO);
+				supResult.setRemark(msg);
+			}
+			return supResult;
+
+		} catch (Throwable e) {
+			errMonitorMsg(log, " 【上海敬众科技股份有限公司供应商】 手机三要素核验接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+					, bean.getOrderNo(), url, result, e);
+			if (supResult == null) {
+				supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
+			}
+			supResult.setState(ReqState.ERROR);
+			supResult.setRespTime(LocalDateTime.now());
+			supResult.setRespJson(result);
+			supResult.setRemark("异常：" + e.getMessage());
+			return supResult;
+		}
+	}
+
+	@Override
+	public SupResult<MobileThreePlusResDTO> ckMobThreePlus(MobThreeReqDTO vo, SuplierQueryBean bean) {
+		String result = null;
+		SupResult<MobileThreePlusResDTO> supResult = null;
+		JSONObject params = new JSONObject();
+		String url = null;
+
+		try {
+			url = bean.getUrl() + "/ck/mobileThreePlus";
+			String signKey = bean.getSignKey();
+			String acc = bean.getAcc();
+			String signPwd = bean.getSignPwd();
+			Integer timeOut = bean.getTimeOut();
+			String certName = vo.getCertName();
+			String certNo = vo.getCertNo();
+			String mobile = vo.getMobile();
+
+			params.put("certName", certName);
+			params.put("certNo", certNo);
+			params.put("mobile", mobile);
+			params.put("merCode", acc);
+			params.put("merSeq", vo.getMerSeq());
+			params.put("key", signKey);
+			String sign = Md5Utils.md5(acc + certName + certNo + mobile + signPwd);
+			params.put("sign", sign);
+			supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
+			result = HttpUtil.post(url, params.toJSONString(), timeOut);
+
+			log.info(CharSequenceUtil.format("【手机三要素核验】{}", result));
+			supResult.setRespJson(result);
+
+			//判断是否有响应结果 无就是请求异常或超时
+			if (StringUtils.isBlank(result)) {
+				supResult.setRemark("供应商没有响应结果");
+				supResult.setState(ReqState.ERROR);
+				return supResult;
+			}
+			JSONObject resultObject = JSON.parseObject(result);
+			supResult.setRespTime(LocalDateTime.now());
+			String code = resultObject.getString("code");
+			String msg = resultObject.getString("msg");
+			JSONObject resultJson = resultObject.getJSONObject("data");
+			supResult.setSupCode(code);
+			if (resultJson != null) {
+				supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), MobileThreePlusResDTO.class));
+			}
+			if (SUCCESS.equals(code)) {
+				supResult.setFree(FreeStatus.YES);
+				supResult.setRemark("查询成功");
+				supResult.setState(ReqState.SUCCESS);
+
+			} else if (NOT.equals(code)) {
+				supResult.setFree(FreeStatus.YES);
+				supResult.setRemark("查询成功");
+				supResult.setState(ReqState.SUCCESS);
+			} else {
+				supResult.setFree(FreeStatus.NO);
+				supResult.setRemark(msg);
+			}
+			return supResult;
+
+		} catch (Throwable e) {
+			errMonitorMsg(log, " 【上海敬众科技股份有限公司供应商】 手机三要素核验接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+					, bean.getOrderNo(), url, result, e);
+			if (supResult == null) {
+				supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
+			}
+			supResult.setState(ReqState.ERROR);
+			supResult.setRespTime(LocalDateTime.now());
+			supResult.setRespJson(result);
+			supResult.setRemark("异常：" + e.getMessage());
+			return supResult;
+		}
+	}
 }

@@ -5,9 +5,10 @@ import com.mkc.api.common.constant.ApiReturnCode;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.constant.enums.ReqParamType;
-import com.mkc.api.common.constant.enums.YysProductCode;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.dto.ck.req.*;
+import com.mkc.api.dto.ck.res.MobileThreePlusResDTO;
+import com.mkc.api.dto.ck.res.MobileThreeResDTO;
 import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
@@ -626,37 +627,33 @@ public class CkController extends BaseController {
 
 
 	/**
-	 * 个人手机三要素认证
+	 * 个人手机三要素认证-简版
 	 *
 	 * @return
 	 */
 	@PostMapping("/mobileThree")
-	public Result mobileThree(HttpServletRequest request, @RequestBody MobThreeReqDTO params) {
-		String reqJson = null;
-		try {
-			reqJson = JSON.toJSONString(params);
+	public Result<MobileThreeResDTO> mobileThree(HttpServletRequest request, @RequestBody MobThreeReqDTO params) {
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.CK_MOB_THREE);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getCertName() + params.getCertNo() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return ckService.ckMobThree(params, merLog);
+	}
 
-			//检查商户参数完整性
-			CkMerBean ckMerBean = ckThreeParams(params);
-			YysProductCode yysProduct = getYysProductCode(params.getMobile(), ProductCodeEum.CK_MOB_THREE);
-			ckMerBean.setProductCode(yysProduct.getMobThreeYysProductCode());
-			// ckMerBean.setProductCode(ProductCodeEum.CK_MOB_THREE.getCode());
-
-			//检查商户参数有效性
-			MerReqLogDTO merLog = ckMer(request, ckMerBean);
-			merLog.setReqJson(reqJson);
-			merLog.setReqProductCode(yysProduct.getMobReqProductCode());
-			merLog.setYysProductCode(yysProduct);
-
-			return ckService.ckMobThree(params, merLog);
-		} catch (ApiServiceException e) {
-
-			return Result.fail(e.getCode(), e.getMessage());
-
-		} catch (Exception e) {
-			errMonitorMsg("【个人手机三要素认证】API 发生异常  reqJson {} ", reqJson, e);
-			return Result.fail();
-		}
+	/**
+	 * 个人手机三要素认证-详版
+	 *
+	 * @return
+	 */
+	@PostMapping("/mobileThreePlus")
+	public Result<MobileThreePlusResDTO> mobileThreePlus(HttpServletRequest request, @RequestBody MobThreeReqDTO params) {
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.CK_MOB_THREE_PLUS);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getCertName() + params.getCertNo() + params.getMobile());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return ckService.ckMobThreePlus(params, merLog);
 	}
 
 

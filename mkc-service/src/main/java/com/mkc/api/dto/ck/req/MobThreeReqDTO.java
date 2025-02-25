@@ -2,6 +2,7 @@ package com.mkc.api.dto.ck.req;
 
 import com.mkc.api.dto.BaseDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @date 2023/5/26 10:33
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class MobThreeReqDTO extends BaseDTO implements Serializable {
 

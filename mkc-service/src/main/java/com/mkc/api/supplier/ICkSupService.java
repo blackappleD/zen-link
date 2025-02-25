@@ -52,6 +52,17 @@ public interface ICkSupService extends ISupService {
 	}
 
 	/**
+	 * 个人手机三要素-详版
+	 *
+	 * @param vo
+	 * @param bean
+	 * @return
+	 */
+	default SupResult ckMobThreePlus(MobThreeReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	/**
 	 * 人车核验
 	 *
 	 * @param vo

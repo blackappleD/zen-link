@@ -3,6 +3,8 @@ package com.mkc.api.service;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.ck.req.*;
+import com.mkc.api.dto.ck.res.MobileThreePlusResDTO;
+import com.mkc.api.dto.ck.res.MobileThreeResDTO;
 import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
@@ -33,7 +35,15 @@ public interface ICkService {
 	 * @param params
 	 * @return
 	 */
-	public Result ckMobThree(MobThreeReqDTO params, MerReqLogDTO merLog);
+	Result<MobileThreeResDTO> ckMobThree(MobThreeReqDTO params, MerReqLogDTO merLog);
+
+	/**
+	 * 个人手机三要素认证-详版
+	 *
+	 * @param params
+	 * @return
+	 */
+	Result<MobileThreePlusResDTO> ckMobThreePlus(MobThreeReqDTO params, MerReqLogDTO merLog);
 
 	/**
 	 * 人车核验
