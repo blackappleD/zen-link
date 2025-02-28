@@ -9,8 +9,8 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.dto.ck.req.*;
-import com.mkc.api.dto.ck.res.MobileThreePlusResDTO;
-import com.mkc.api.dto.ck.res.MobileThreeResDTO;
+import com.mkc.api.dto.ck.res.JzMobileThreePlusResDTO;
+import com.mkc.api.dto.ck.res.JzMobileThreeResDTO;
 import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
@@ -70,14 +70,14 @@ public class CkServiceImpl implements ICkService {
 
 
 	@Override
-	public Result<MobileThreeResDTO> ckMobThree(MobThreeReqDTO params, MerReqLogDTO merLog) {
+	public Result<JzMobileThreeResDTO> ckMobThree(MobThreeReqDTO params, MerReqLogDTO merLog) {
 
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckMobThree(params, supQueryBean));
 	}
 
 	@Override
-	public Result<MobileThreePlusResDTO> ckMobThreePlus(MobThreeReqDTO params, MerReqLogDTO merLog) {
+	public Result<JzMobileThreePlusResDTO> ckMobThreePlus(MobThreeReqDTO params, MerReqLogDTO merLog) {
 
 		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckMobThreePlus(params, supQueryBean));

@@ -10,11 +10,16 @@ public enum ProductCodeEum {
 
 	CK_CRE_TWO("CK_002", "个人身份二要素认证", "/ck/certIDverify") {},
 
-	CK_MOB_THREE("CK_MOBILE_THREE", "个人手机三要素认证-简版", "/ck/mobileThree") {},
-	CK_MOB_THREE_PLUS("CK_MOBILE_THREE_PLUS", "个人手机三要素认证-详版", "/ck/mobileThreePlus") {},
-	CK_MOB_THREE_10000("CK_003_10000", "个人手机三要素认证-电信", "/ck/mobileThree") {},
-	CK_MOB_THREE_10086("CK_003_10086", "个人手机三要素认证-移动", "/ck/mobileThree") {},
-	CK_MOB_THREE_10010("CK_003_10010", "个人手机三要素认证-联通", "/bg/mobileThree") {},
+	CK_MOB_THREE_CT("CK_MOB_THREE_CT", "个人手机三要素认证-简版-电信", "/ck/mobileThree") {},
+	CK_MOB_THREE_CM("CK_MOB_THREE_CM", "个人手机三要素认证-简版-移动", "/ck/mobileThree") {},
+	CK_MOB_THREE_CU("CK_MOB_THREE_CU", "个人手机三要素认证-简版-联通", "/bg/mobileThree") {},
+	CK_MOB_THREE_CB("CK_MOB_THREE_CB", "个人手机三要素认证-简版-广电", "/bg/mobileThree") {},
+
+	CK_MOB_THREE_PLUS_CT("CK_MOB_THREE_PLUS_CT", "个人手机三要素认证-详版-电信", "/ck/mobileThreePlus") {},
+	CK_MOB_THREE_PLUS_CM("CK_MOB_THREE_PLUS_CM", "个人手机三要素认证-详版-移动", "/ck/mobileThreePlus") {},
+	CK_MOB_THREE_PLUS_CU("CK_MOB_THREE_PLUS_CU", "个人手机三要素认证-详版-联通", "/bg/mobileThreePlus") {},
+	CK_MOB_THREE_PLUS_CB("CK_MOB_THREE_PLUS_CB", "个人手机三要素认证-详版-广电", "/bg/mobileThreePlus") {},
+
 	CK_PERSON_CAR("CK_PERSONCAR_001", "人车核验", "/ck/personCarVerify") {},
 	CK_WORK_UNIT("CK_WORKUNIT_001", "工作单位核验", "/ck/workUnitVerify") {},
 	CK_POPULATION_THREE("CK_POPULATION_THREE", "全国⼈⼝身份信息三要素核验", "/ck/populationThree") {},
@@ -126,7 +131,8 @@ public enum ProductCodeEum {
 
 	BG_MARITAL_STABILITY("BG_MARRIAGE_003", "婚姻稳定状况查询", "/bg/maritalStability") {
 	},
-	;
+
+	UN_KNOW("UN_KNOWN", "未知", "");
 
 
 	ProductCodeEum(String code, String name, String url) {
@@ -177,11 +183,13 @@ public enum ProductCodeEum {
 	 */
 	public static boolean isGetYysInfo(String productCode) {
 
-		//判断是否 个人手机三要素认证 及详版 不是直接返回
-
-		return CK_MOB_THREE.getCode().equals(productCode)
-
-				;
+//		switch (ProductCodeEum.findByProductCode(productCode)) {
+//			case CK_MOB_THREE:
+//			case CK_MOB_THREE_PLUS:
+//				return true;
+//			default:
+		return false;
+//		}
 
 	}
 
@@ -198,7 +206,7 @@ public enum ProductCodeEum {
 			}
 		}
 		//根据自身的业务 查不到可以返回null，或者抛出异常。
-		return null;
+		return UN_KNOW;
 	}
 
 

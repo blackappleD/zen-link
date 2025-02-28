@@ -2,19 +2,19 @@ package com.mkc.controller;
 
 import com.alibaba.fastjson2.JSON;
 import com.mkc.api.common.constant.ApiReturnCode;
+import com.mkc.api.common.constant.OperatorInfo;
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.enums.ProductCodeEum;
-import com.mkc.api.common.constant.enums.ReqParamType;
+import com.mkc.api.common.constant.enums.YysCode;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.dto.ck.req.*;
-import com.mkc.api.dto.ck.res.MobileThreePlusResDTO;
-import com.mkc.api.dto.ck.res.MobileThreeResDTO;
+import com.mkc.api.dto.ck.res.JzMobileThreePlusResDTO;
+import com.mkc.api.dto.ck.res.JzMobileThreeResDTO;
 import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.ICkService;
 import com.mkc.bean.CkMerBean;
-import com.mkc.tool.RegTool;
 import com.mkc.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -631,9 +631,28 @@ public class CkController extends BaseController {
 	 *
 	 * @return
 	 */
-	@PostMapping("/mobileThree")
-	public Result<MobileThreeResDTO> mobileThree(HttpServletRequest request, @RequestBody MobThreeReqDTO params) {
-		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.CK_MOB_THREE);
+	@PostMapping("/jz_mobileThree")
+	public Result<JzMobileThreeResDTO> mobileThree(HttpServletRequest request, @RequestBody MobThreeReqDTO params) {
+		ProductCodeEum productCode;
+		YysCode phoneOperator = OperatorInfo.getPhoneOperator(params.getMobile());
+		switch (phoneOperator) {
+			case CB:
+				productCode = ProductCodeEum.CK_MOB_THREE_PLUS_CB;
+				break;
+			case CM:
+				productCode = ProductCodeEum.CK_MOB_THREE_PLUS_CM;
+				break;
+			case CT:
+				productCode = ProductCodeEum.CK_MOB_THREE_PLUS_CT;
+				break;
+			case CU:
+				productCode = ProductCodeEum.CK_MOB_THREE_PLUS_CU;
+				break;
+			default:
+				log.error("【个人手机三要素认证-详版】未匹配到手机号运营商：{}", params.getMobile());
+				productCode = ProductCodeEum.CK_MOB_THREE_PLUS_CM;
+		}
+		CkMerBean ckMerBean = CkMerBean.build(params, productCode);
 		ckMerBean.setPlaintext(params.getMerCode() + params.getCertName() + params.getCertNo() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
@@ -646,65 +665,35 @@ public class CkController extends BaseController {
 	 *
 	 * @return
 	 */
-	@PostMapping("/mobileThreePlus")
-	public Result<MobileThreePlusResDTO> mobileThreePlus(HttpServletRequest request, @RequestBody MobThreeReqDTO params) {
-		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.CK_MOB_THREE_PLUS);
+	@PostMapping("/jz_mobileThreePlus")
+	public Result<JzMobileThreePlusResDTO> mobileThreePlus(HttpServletRequest request, @RequestBody MobThreeReqDTO params) {
+
+		ProductCodeEum productCode;
+		YysCode phoneOperator = OperatorInfo.getPhoneOperator(params.getMobile());
+		switch (phoneOperator) {
+			case CB:
+				productCode = ProductCodeEum.CK_MOB_THREE_CB;
+				break;
+			case CM:
+				productCode = ProductCodeEum.CK_MOB_THREE_CM;
+				break;
+			case CT:
+				productCode = ProductCodeEum.CK_MOB_THREE_CT;
+				break;
+			case CU:
+				productCode = ProductCodeEum.CK_MOB_THREE_CU;
+				break;
+			default:
+				log.error("【个人手机三要素认证-详版】未匹配到手机号运营商：{}", params.getMobile());
+				productCode = ProductCodeEum.CK_MOB_THREE_CM;
+		}
+
+		CkMerBean ckMerBean = CkMerBean.build(params, productCode);
 		ckMerBean.setPlaintext(params.getMerCode() + params.getCertName() + params.getCertNo() + params.getMobile());
 		//检查商户参数有效性
 		MerReqLogDTO merLog = ckMer(request, ckMerBean);
 		merLog.setReqJson(JsonUtil.toJson(params));
 		return ckService.ckMobThreePlus(params, merLog);
 	}
-
-
-	private CkMerBean ckThreeParams(MobThreeReqDTO params) {
-
-		String merCode = params.getMerCode();
-
-		String sign = params.getSign();
-		String key = params.getKey();
-
-		ckCommonParams(params);
-
-		String certName = params.getCertName();
-		String certNo = params.getCertNo();
-		String mobile = params.getMobile();
-
-		ckCommonThree(merCode, certName, certNo, mobile, params.getParamType());
-
-		String plaintext = merCode + certName + certNo + mobile;
-
-		return new CkMerBean(merCode, key, plaintext, sign, params.getMerSeq());
-
-	}
-
-	private void ckCommonThree(String merCode, String certName, String certNo, String mobile, String paramType) {
-
-		if (StringUtils.isBlank(mobile)) {
-			log.error("缺少参数 mobile {}, merCode:  {}", mobile, merCode);
-			throw new ApiServiceException(ApiReturnCode.ERR_001);
-		}
-		//判断类型为MD5
-		if (ReqParamType.isMd5Type(paramType)) {
-			if (!RegTool.checkMd5(certName) && !ckCertName(merCode, certName)) {
-				log.error("无效的参数 MD5 certName {} , merCode:  {}", certName, merCode);
-				throw new ApiServiceException(ApiReturnCode.ERR_009);
-			}
-			if (!RegTool.checkMd5(certNo) && !ckCertNo(merCode, certNo)) {
-				log.error("无效的参数 MD5 certNo {} , merCode:  {}", certNo, merCode);
-				throw new ApiServiceException(ApiReturnCode.ERR_009);
-			}
-			if (!RegTool.checkMd5(mobile) && !ckMobile(merCode, mobile)) {
-				log.error("无效的参数 MD5 mobile {}, merCode:  {}", mobile, merCode);
-				throw new ApiServiceException(ApiReturnCode.ERR_009);
-			}
-			return;
-		}
-		ckCertNo(merCode, certNo);
-		ckCertName(merCode, certName);
-		ckMobile(merCode, mobile);
-
-	}
-
 
 }

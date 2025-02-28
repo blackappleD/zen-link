@@ -9,7 +9,13 @@ import lombok.Data;
  * @date 2025/2/25 15:10
  */
 @Data
-public class MobileThreeResDTO {
+public class JzMobileThreePlusResDTO {
+
+	private String errorCode;
+
+	private String errorContent;
+
+	private String identifyResult;
 
 	private String isp;
 
