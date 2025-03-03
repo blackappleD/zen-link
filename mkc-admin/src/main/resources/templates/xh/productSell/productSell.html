@@ -34,8 +34,11 @@
 
                         <li>
                             <label>产品：</label>
-                            <select id="productCode" name="productCode" class="form-control select2-multiple">
+                            <select id="productCode" name="productCode" class="form-control select2">
                                 <option value="">所有</option>
+                                <option th:each="product : ${products}" th:text="${product.productName}"
+                                        th:value="${product.productCode}"
+                                        th:class="|cg- cg-${product.cgCode}|"></option>
                             </select>
                         </li>
 
@@ -57,7 +60,8 @@
 
                         <li>
                             <label>协议状态：</label>
-                            <select name="protocolStatus" class="form-control noselect2" th:with="type=${@dict.getType('xh_mer_protocol_state')}">
+                            <select name="protocolStatus" class="form-control noselect2"
+                                    th:with="type=${@dict.getType('xh_mer_protocol_state')}">
                                 <option value="">所有</option>
                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
                                         th:value="${dict.dictValue}"></option>
@@ -297,29 +301,53 @@
     //     });
     // });
 
+    // 存储所有产品数据
+    var allProducts = [];
+
+    // 页面加载时初始化
+    $(function() {
+        // 获取所有产品选项数据
+        $('#productCode option').each(function() {
+            var $option = $(this);
+            if ($option.val() !== '') {  // 排除"所有"选项
+                allProducts.push({
+                    id: $option.val(),
+                    text: $option.text(),
+                    cgCode: $option.attr('class') ? $option.attr('class').replace('cg- cg-', '') : ''
+                });
+            }
+        });
+        
+        // 初始化 select2
+        $('#productCode').select2({
+            data: [{ id: '', text: '所有' }].concat(allProducts),
+            placeholder: "请选择产品"
+        });
+        
+        $('#merCode').select2();
+    });
+
     /*选择产品分类*/
     $("#cgCode").bind("change", function () {
-        $('#productCode option').not(":first").remove();
         var cgCode = $("#cgCode").val();
-        if (!cgCode) {
-            return;
+        
+        // 根据分类过滤产品
+        var filteredProducts = allProducts;
+        if (cgCode) {
+            filteredProducts = allProducts.filter(function(product) {
+                return product.cgCode === cgCode;
+            });
         }
-        $.ajax({
-            url: ctx + "xh/product/productsByCgCode/" + cgCode,
-            type: "get",
-            success: function (d) {
-                if (d) {
-                    var data = d;
-                    for (var i in data) {
-                        /*循环添加option*/
-                        $("#productCode:last").append("<option value=" + data[i].productCode + ">" + data[i].productName + "</option>");
-                    }
-                } else {
-                    layer.msg("产品加载失败", {icon: 2, time: 2000})
-                }
-            }
-        })
-    }).change();
+        
+        // 更新 select2 数据
+        $('#productCode').empty().select2({
+            data: [{ id: '', text: '所有' }].concat(filteredProducts),
+            placeholder: "请选择产品"
+        });
+        
+        // 重置选择的值
+        $('#productCode').val('').trigger('change');
+    });
 </script>
 </body>
 </html>

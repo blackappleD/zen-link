@@ -59,8 +59,14 @@ public class ProductSellController extends BaseController
     @GetMapping()
     public String productSell(ModelMap mmap)
     {
+        // 获取商户列表
         List<MerInfo> merInfos = merInfoService.selectMerInfoList(null);
-        mmap.addAttribute("merInfos",merInfos);
+        mmap.addAttribute("merInfos", merInfos);
+        
+        // 添加产品列表数据
+        List<Product> products = productService.selectProductList(null);
+        mmap.addAttribute("products", products);
+        
         return prefix + "/productSell";
     }
 
