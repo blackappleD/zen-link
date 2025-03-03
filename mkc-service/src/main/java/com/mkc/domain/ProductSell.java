@@ -85,5 +85,9 @@ public class ProductSell extends BaseEntity {
 
 	private Long reqLimit;
 
+	// 00-已签约 01-未签约
+	@Excel(name = "签约状态")
+	private String protocolStatus = "01";
+
 
 }

@@ -623,7 +623,7 @@ var table = {
                 }
                 var actions = [];
                 $.each(datas, function(index, dict) {
-                    if (dict.dictValue == ('' + value)) {
+                    if (dict.dictValue === ('' + value)) {
                         var listClass = $.common.equals("default", dict.listClass) || $.common.isEmpty(dict.listClass) ? "" : "badge badge-" + dict.listClass;
                         actions.push($.common.sprintf("<span class='%s'>%s</span>", listClass, dict.dictLabel));
                         return false;
@@ -644,7 +644,7 @@ var table = {
                 $.each(value.split(currentSeparator), function(i, val) {
                     var match = false
                     $.each(datas, function(index, dict) {
-                        if (dict.dictValue == ('' + val)) {
+                        if (dict.dictValue === ('' + val)) {
                             var listClass = $.common.equals("default", dict.listClass) || $.common.isEmpty(dict.listClass) ? "" : "badge badge-" + dict.listClass;
                             actions.push($.common.sprintf("<span class='%s'>%s</span>", listClass, dict.dictLabel));
                             match = true

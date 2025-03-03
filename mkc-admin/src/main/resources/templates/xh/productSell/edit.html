@@ -52,6 +52,15 @@
             </div>
 
             <div class="form-group">
+                <label class="col-sm-3 control-label is-required">协议状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('xh_mer_protocol_state')}">
+                        <input type="radio" th:id="${'protocolStatus_' + dict.dictCode}" name="protocolStatus" th:value="${dict.dictValue}" th:field="*{protocolStatus}" required>
+                        <label th:for="${'protocolStatus_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-3 control-label is-required">路由切换条件：</label>
                 <div class="check-box" th:each="dict : ${@dict.getType('xh_route_condition')}">
                     <input type="checkbox" th:id="${'status_' + dict.dictCode}" name="routeCon" th:value="${dict.dictValue}"  required>

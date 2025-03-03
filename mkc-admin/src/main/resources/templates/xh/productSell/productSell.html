@@ -56,6 +56,15 @@
                         </li>
 
                         <li>
+                            <label>协议状态：</label>
+                            <select name="protocolStatus" class="form-control noselect2" th:with="type=${@dict.getType('xh_mer_protocol_state')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+
+                        <li>
                             <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
                                     class="fa fa-search"></i>&nbsp;搜索</a>
                             <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
@@ -99,6 +108,7 @@
     var removeFlag = [[${@permission.hasPermi('xh:productSell:remove')}]];
     var cgCodeDatas = [[${@dict.getType('xh_product_category')}]];
     var statusDatas = [[${@dict.getType('xh_off_on_state')}]];
+    var protocolStatusDatas = [[${@dict.getType('xh_mer_protocol_state')}]];
     var prefix = ctx + "xh/productSell";
 
     $(function () {
@@ -159,7 +169,16 @@
                 },
                 {
                     field: 'reqLimit',
+                    align: 'center',
                     title: '日调用限制'
+                },
+                {
+                    field: 'protocolStatus',
+                    align: 'center',
+                    title: '协议状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(protocolStatusDatas, value);
+                    }
                 },
                 {
                     field: 'createTime',
@@ -244,12 +263,12 @@
 
     /* 状态显示 */
     function statusTools(row) {
-        if (row.status == '00') {
+        if (row.status === '00') {
             return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
         } else {
             return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
         }
-    };
+    }
 
 
     /* 商户管理-停用 */

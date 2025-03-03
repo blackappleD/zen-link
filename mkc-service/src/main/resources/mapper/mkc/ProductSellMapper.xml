@@ -19,6 +19,7 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="reqLimit" column="req_limit"/>
+        <result property="protocolStatus" column="protocol_status"/>
     </resultMap>
     <resultMap type="com.mkc.domain.ProductSell" id="ProductSellResult2">
         <result property="id" column="id"/>
@@ -36,11 +37,12 @@
         <result property="supNames" column="supNames"/>
         <result property="remark" column="remark"/>
         <result property="reqLimit" column="req_limit"/>
+        <result property="protocolStatus" column="protocol_status"/>
     </resultMap>
 
     <sql id="productSellVo">
         id
-        , cg_code, product_code,product_name, mer_code, status, sell_price, create_by, update_by, create_time, update_time, remark,route_con, req_limit
+        , cg_code, product_code,product_name, mer_code, status, sell_price, create_by, update_by, create_time, update_time, remark,route_con, req_limit,protocol_status
     </sql>
     <sql id="selectProductSellVo">
         select
@@ -85,7 +87,7 @@
             </if>
             <if test="merCode != null  and merCode != ''">and t.mer_code = #{merCode}</if>
             <if test="status != null  and status != ''">and t.status = #{status}</if>
-
+            <if test="protocolStatus != null  and status != ''">and t.protocol_status = #{protocolStatus}</if>
         </where>
 
         order by id desc
@@ -128,6 +130,7 @@
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
             <if test="reqLimit != null">req_limit = #{reqLimit},</if>
+            <if test="protocolStatus != null">protocol_status = #{protocolStatus},</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="cgCode != null and cgCode != ''">#{cgCode},</if>
@@ -141,6 +144,7 @@
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
             <if test="reqLimit != null">req_limit = #{reqLimit},</if>
+            <if test="protocolStatus != null">protocol_status = #{protocolStatus},</if>
         </trim>
     </insert>
 
@@ -159,6 +163,7 @@
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="reqLimit != null">req_limit = #{reqLimit},</if>
+            <if test="protocolStatus != null">protocol_status = #{protocolStatus},</if>
         </trim>
         where id = #{id}
     </update>
