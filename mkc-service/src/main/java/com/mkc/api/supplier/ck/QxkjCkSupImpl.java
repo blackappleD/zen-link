@@ -163,6 +163,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 			JSONObject resultObject = JSON.parseObject(result);
 			String code = resultObject.getString("code");
 			String msg = resultObject.getString("msg");
+			String free = resultObject.getString("free");
 			JSONObject resultJson = resultObject.getJSONObject("data");
 			supResult.setData(resultJson);
 			if (SUCCESS.equals(code)) {
@@ -173,9 +174,13 @@ public class QxkjCkSupImpl implements ICkSupService {
 				supResult.setRemark("查无");
 				supResult.setState(ReqState.NOT_GET);
 			} else if (NOT.equals(code)) {
-				supResult.setFree(FreeStatus.YES);
+				if ("1".equals(free)) {
+					supResult.setFree(FreeStatus.YES);
+				} else {
+					supResult.setFree(FreeStatus.NO);
+				}
+				supResult.setState(ReqState.SUCCESS);
 				supResult.setRemark("不一致");
-				supResult.setState(ReqState.NOT);
 				return supResult;
 			} else if (ERROR.equals(code)) {
 				supResult.setRemark(CharSequenceUtil.format("查询失败:{}", msg));
@@ -240,6 +245,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 			supResult.setRespTime(LocalDateTime.now());
 			String code = resultObject.getString("code");
 			String msg = resultObject.getString("msg");
+			String free = resultObject.getString("free");
 			JSONObject resultJson = resultObject.getJSONObject("data");
 			supResult.setSupCode(code);
 			if (resultJson != null) {
@@ -251,9 +257,13 @@ public class QxkjCkSupImpl implements ICkSupService {
 				supResult.setState(ReqState.SUCCESS);
 
 			} else if (NOT.equals(code)) {
-				supResult.setFree(FreeStatus.YES);
-				supResult.setRemark("查询成功");
+				if ("1".equals(free)) {
+					supResult.setFree(FreeStatus.YES);
+				} else {
+					supResult.setFree(FreeStatus.NO);
+				}
 				supResult.setState(ReqState.SUCCESS);
+				supResult.setRemark("不一致");
 			} else {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark(msg);
