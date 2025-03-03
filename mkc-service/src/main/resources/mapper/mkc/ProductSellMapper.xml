@@ -87,7 +87,7 @@
             </if>
             <if test="merCode != null  and merCode != ''">and t.mer_code = #{merCode}</if>
             <if test="status != null  and status != ''">and t.status = #{status}</if>
-            <if test="protocolStatus != null  and status != ''">and t.protocol_status = #{protocolStatus}</if>
+            <if test="protocolStatus != null  and protocolStatus != ''">and t.protocol_status = #{protocolStatus}</if>
         </where>
 
         order by id desc
@@ -129,8 +129,8 @@
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
-            <if test="reqLimit != null">req_limit = #{reqLimit},</if>
-            <if test="protocolStatus != null">protocol_status = #{protocolStatus},</if>
+            <if test="reqLimit != null">req_limit,</if>
+            <if test="protocolStatus != null">protocol_status,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="cgCode != null and cgCode != ''">#{cgCode},</if>
@@ -143,8 +143,8 @@
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
-            <if test="reqLimit != null">req_limit = #{reqLimit},</if>
-            <if test="protocolStatus != null">protocol_status = #{protocolStatus},</if>
+            <if test="reqLimit != null">#{reqLimit},</if>
+            <if test="protocolStatus != null">#{protocolStatus},</if>
         </trim>
     </insert>
 
