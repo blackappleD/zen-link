@@ -253,7 +253,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 			} else if (NOT.equals(code)) {
 				supResult.setFree(FreeStatus.YES);
 				supResult.setRemark("查询成功");
-				supResult.setState(ReqState.SUCCESS);
+				supResult.setState(ReqState.NOT);
 			} else {
 				supResult.setFree(FreeStatus.NO);
 				supResult.setRemark(msg);
