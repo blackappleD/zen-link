@@ -140,17 +140,13 @@ public class GzYhCkSupImpl implements ICkSupService {
 			BusinessCode businessCode = BusinessCode.getByCode(code);
 			switch (businessCode) {
 				case VERIFICATION_SUCCESS:
+				case VERIFICATION_FAILED:
 					supResult.setRemark(businessCode.getDesc());
 					supResult.setState(ReqState.SUCCESS);
 					supResult.setFree(FreeStatus.YES);
 					break;
-				case VERIFICATION_FAILED:
-					supResult.setRemark(businessCode.getDesc());
-					supResult.setState(ReqState.NOT);
-					supResult.setFree(FreeStatus.YES);
-					break;
 				default:
-					supResult.setState(ReqState.ERROR);
+					supResult.setState(ReqState.SUCCESS);
 					supResult.setFree(FreeStatus.NO);
 			}
 			supResult.setRemark(businessCode.getBankFourDesc());

@@ -178,15 +178,11 @@ public class JhsjCkSupImpl implements ICkSupService {
 				case TRANSACTION_LIMIT_EXCEEDED:
 				case UNKNOWN:
 					supResult.setFree(FreeStatus.NO);
-					supResult.setState(ReqState.ERROR);
-					break;
-				case VERIFICATION_SUCCESS:
-					supResult.setFree(FreeStatus.YES);
 					supResult.setState(ReqState.SUCCESS);
 					break;
 				default:
 					supResult.setFree(FreeStatus.YES);
-					supResult.setState(ReqState.NOT);
+					supResult.setState(ReqState.SUCCESS);
 			}
 			supResult.setData(new BankFourResDTO("2", businessCode.getBankFourCode(), businessCode.getBankFourDesc()));
 			return supResult;
