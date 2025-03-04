@@ -62,10 +62,10 @@ public class TestController2 {
 
 	public static <T> List<T> readExcel(String filePath, Class<T> clazz) {
 		return EasyExcel.read(new File(filePath))
+
 				.headRowNumber(1)
 				.head(clazz)
-				.sheet(0)
-				.doReadSync();
+				.doReadAllSync();
 
 	}
 
@@ -242,9 +242,8 @@ public class TestController2 {
 		EasyExcel.write(new File("D:\\跑数\\ABEF分\\20250220\\samples_20241210_modify.xlsx"))
 				.head(FinIcsBaseCell.class)
 				.excelType(ExcelTypeEnum.XLSX)
-				.sheet("车五项测试结果")
+				.sheet("sheet1")
 				.doWrite(baseList);
-
 
 
 	}
@@ -288,7 +287,7 @@ public class TestController2 {
 
 	@Test
 	public void carInfoFromSupLog() {
-		List<SupLogLine> readList = readExcel("C:/Users/achen/Downloads/1739927025216调用供应商日志数据.xlsx", SupLogLine.class);
+		List<SupLogLine> readList = readExcel("D:/downloads/1741070778623调用供应商日志数据.xlsx", SupLogLine.class);
 
 		List<ExcelTestCar> list = new ArrayList<>();
 		for (SupLogLine data : readList) {
@@ -337,7 +336,7 @@ public class TestController2 {
 				.distinct()
 				.collect(Collectors.toList());
 
-		EasyExcel.write(new File("D:\\跑数\\车五项\\2.18\\金润\\jr车五项样本(0218)跑数结果.xlsx"))
+		EasyExcel.write(new File("D:\\跑数\\车五项\\2.18\\金润\\jr车五项样本(0218)跑数结果-完整.xlsx"))
 				.head(ExcelTestCar.class)
 				.excelType(ExcelTypeEnum.XLSX)
 				.sheet("车五项测试结果")
