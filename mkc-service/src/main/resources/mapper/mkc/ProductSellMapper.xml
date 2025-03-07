@@ -162,7 +162,7 @@
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
-            <if test="reqLimit != null">req_limit = #{reqLimit},</if>
+            req_limit = #{reqLimit},
             <if test="protocolStatus != null">protocol_status = #{protocolStatus},</if>
         </trim>
         where id = #{id}
