@@ -9,6 +9,8 @@ import com.mkc.api.dto.bg.req.PeopleEnterpriseReqDTO;
 import com.mkc.api.dto.bg.res.PeopleEnterpriseResDTO;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.bean.SuplierQueryBean;
+import com.mkc.common.enums.FreeStatus;
+import com.mkc.common.enums.ReqState;
 import com.mkc.util.JsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,7 +41,7 @@ import java.util.Map;
 @Service("BG_ZDBIGDATA")
 public class ZdBigDataSupImpl implements IBgSupService {
 
-	private static final String SUCCESS = "200";
+	private static final String SUCCESS = "30100000";
 	private static final String YQ_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVM/rx1c2LiLcGHO+XOtrd1hoo0KIK+FXZ1Tl4Zm3m2vaAtxV+4KaUC7mRcmlBKyX+C10w4N/V/hzkrQK0DW/TUPAIhbx0LIVLmu6JSyYYsX+z3nQvRD+bPt/jiAqx6TKf7OADHtQKaFJzP1y0Frn69iIuOB7w+TvETWGy4CpcUQIDAQAB";
 
 
@@ -119,6 +121,7 @@ public class ZdBigDataSupImpl implements IBgSupService {
 
 		String supProductCode = bean.getSupProductCode();
 		SupResult<PeopleEnterpriseResDTO> supResult;
+		String resJson = "";
 		String url = bean.getUrl();
 		String appId = bean.getAcc();
 		String orgPublicKey = bean.getSignKey();
@@ -126,6 +129,7 @@ public class ZdBigDataSupImpl implements IBgSupService {
 		String userName = bean.getAuthAccount();
 		String password = bean.getAuthPwd();
 		Integer timeOut = bean.getTimeOut();
+
 
 		ProductQueryRequest request = new ProductQueryRequest("12583");
 
@@ -154,18 +158,38 @@ public class ZdBigDataSupImpl implements IBgSupService {
 
 				log.info(" {} 返回体 ：{}", supProductCode, response.body());
 				BaseResponse responseBody = JsonUtil.fromJson(response.body(), BaseResponse.class);
-				String decryptBody = OpenApiEncryptUtil.decryptResponse(responseBody.getData().getContent(), responseBody.getData().getSecretKey(), orgPrivateKey);
+				String code = responseBody.getCode();
 				supResult.setRespTime(LocalDateTime.now());
-				responseBody.getData().setContent(decryptBody);
-				supResult.setRespJson(JsonUtil.toJson(responseBody));
-
-
-
+				if (!SUCCESS.equals(code)) {
+					supResult.setFree(FreeStatus.NO);
+					supResult.setRemark("供应商：" + responseBody.getMsg());
+					supResult.setRespJson(response.body());
+					return supResult;
+				} else {
+					String decryptBody = OpenApiEncryptUtil.decryptResponse(responseBody.getData().getContent(), responseBody.getData().getSecretKey(), orgPrivateKey);
+					DataBody dataBody = JsonUtil.fromJson(decryptBody, DataBody.class);
+					responseBody.getData().setContent(decryptBody);
+					resJson = JsonUtil.toJson(responseBody);
+					supResult.setRespJson(resJson);
+					PeopleEnterpriseResDTO peopleEnterpriseResDTO = JsonUtil.fromJson(dataBody.getContent(), PeopleEnterpriseResDTO.class);
+					supResult.setData(peopleEnterpriseResDTO);
+					supResult.setFree(FreeStatus.YES);
+					supResult.setRemark("查询成功");
+					supResult.setState(ReqState.SUCCESS);
+					supResult.setData(peopleEnterpriseResDTO);
+				}
+				return supResult;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			errMonitorMsg(log, " 【中鼎大数据供应商】 人企信息 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+					, bean.getOrderNo(), url, reqJson, e);
+			supResult = new SupResult<>(reqJson, LocalDateTime.now());
+			supResult.setState(ReqState.ERROR);
+			supResult.setRespTime(LocalDateTime.now());
+			supResult.setRespJson(resJson);
+			supResult.setRemark("异常：" + e.getMessage());
+			return supResult;
 		}
-		return null;
 	}
 
 	public String genAuthorization(String appId, String username, String password) {
