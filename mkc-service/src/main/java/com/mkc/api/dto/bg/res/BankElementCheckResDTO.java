@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class BankFourResDTO {
+public class BankElementCheckResDTO {
 
 	// 返回银行卡的借贷标志0：借记卡1：贷记卡,2-未知
 	private String dcType;

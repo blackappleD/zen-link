@@ -8,6 +8,7 @@ import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
+import com.mkc.api.dto.bg.res.BankElementCheckResDTO;
 import com.mkc.api.dto.ck.req.*;
 import com.mkc.api.dto.ck.res.JzMobileThreePlusResDTO;
 import com.mkc.api.dto.ck.res.JzMobileThreeResDTO;
@@ -24,6 +25,7 @@ import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.domain.SupplierRoute;
 import com.mkc.process.IMailProcess;
+import com.mkc.service.BankElementService;
 import com.mkc.service.ISupplierProductService;
 import com.mkc.service.ISupplierRouteService;
 import com.mkc.util.ErrorConstants;
@@ -32,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,6 +70,9 @@ public class CkServiceImpl implements ICkService {
 
 	@Autowired
 	private IMailProcess mailProcess;
+
+	@Resource
+	private BankElementService bankElementService;
 
 
 	@Override
@@ -208,22 +214,38 @@ public class CkServiceImpl implements ICkService {
 	}
 
 	@Override
-	public Result ckBankFour(BankReqDTO params, MerReqLogDTO merLog) {
+	public Result<BankElementCheckResDTO> ckBankFour(BankReqDTO params, MerReqLogDTO merLog) {
 
-		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+		Result<BankElementCheckResDTO> result = ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckBankFour(params, supQueryBean));
+
+
+		bankElementService.insert(params, result.getData());
+
+		return result;
+
 	}
 
 	@Override
-	public Result ckBankThree(BankReqDTO params, MerReqLogDTO merLog) {
-		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+	public Result<BankElementCheckResDTO> ckBankThree(BankReqDTO params, MerReqLogDTO merLog) {
+		Result<BankElementCheckResDTO> result = ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckBankThree(params, supQueryBean));
+
+
+		bankElementService.insert(params, result.getData());
+
+		return result;
 	}
 
 	@Override
-	public Result ckBankTwo(BankReqDTO params, MerReqLogDTO merLog) {
-		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+	public Result<BankElementCheckResDTO> ckBankTwo(BankReqDTO params, MerReqLogDTO merLog) {
+		Result<BankElementCheckResDTO> result = ckCommon(merLog, params, (ckSupService, supQueryBean) ->
 				ckSupService.ckBankTwo(params, supQueryBean));
+
+
+		bankElementService.insert(params, result.getData());
+
+		return result;
 	}
 
 	@Override

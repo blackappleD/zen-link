@@ -7,7 +7,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
-import com.mkc.api.dto.bg.res.BankFourResDTO;
+import com.mkc.api.dto.bg.res.BankElementCheckResDTO;
 import com.mkc.api.dto.ck.req.BankReqDTO;
 import com.mkc.api.supplier.ICkSupService;
 import com.mkc.bean.SuplierQueryBean;
@@ -43,9 +43,9 @@ public class QxkjCkSupImpl implements ICkSupService {
 
 
 	@Override
-	public SupResult ckBankTwo(BankReqDTO vo, SuplierQueryBean bean) {
+	public SupResult<BankElementCheckResDTO> ckBankTwo(BankReqDTO vo, SuplierQueryBean bean) {
 		String result = null;
-		SupResult supResult = null;
+		SupResult<BankElementCheckResDTO> supResult = null;
 		JSONObject params = new JSONObject();
 		String url = null;
 
@@ -67,7 +67,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 			params.put("key", appsecret);
 			String sign = Md5Utils.md5(appkey + certName + bankCard + signPwd);
 			params.put("sign", sign);
-			supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+			supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
 			supResult.setRespTime(LocalDateTime.now());
 			log.info(CharSequenceUtil.format("【银行二要素核验返回体】{}", result));
@@ -83,7 +83,9 @@ public class QxkjCkSupImpl implements ICkSupService {
 			String code = resultObject.getString("code");
 			JSONObject resultJson = resultObject.getJSONObject("data");
 			String msg = resultObject.getString("msg");
-			supResult.setData(resultJson);
+			if (resultJson != null) {
+				supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankElementCheckResDTO.class));
+			}
 			switch (code) {
 				case SUCCESS:
 				case NOT:
@@ -118,9 +120,9 @@ public class QxkjCkSupImpl implements ICkSupService {
 	}
 
 	@Override
-	public SupResult ckBankThree(BankReqDTO vo, SuplierQueryBean bean) {
+	public SupResult<BankElementCheckResDTO> ckBankThree(BankReqDTO vo, SuplierQueryBean bean) {
 		String result = null;
-		SupResult supResult = null;
+		SupResult<BankElementCheckResDTO> supResult = null;
 		JSONObject params = new JSONObject();
 		String url = null;
 
@@ -143,7 +145,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 			params.put("key", appsecret);
 			String sign = Md5Utils.md5(appkey + certName + certNo + bankCard + signPwd);
 			params.put("sign", sign);
-			supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+			supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
 			result = HttpUtil.post(url, params.toJSONString(), timeOut);
 			log.info(CharSequenceUtil.format("【银行三要素核验返回体】{}", result));
 			supResult.setRespJson(result);
@@ -159,7 +161,9 @@ public class QxkjCkSupImpl implements ICkSupService {
 			String msg = resultObject.getString("msg");
 			String free = resultObject.getString("free");
 			JSONObject resultJson = resultObject.getJSONObject("data");
-			supResult.setData(resultJson);
+			if (resultJson != null) {
+				supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankElementCheckResDTO.class));
+			}
 			if (SUCCESS.equals(code)) {
 				supResult.setFree(FreeStatus.YES);
 				supResult.setRemark("查询成功");
@@ -186,7 +190,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 			errMonitorMsg(log, " 【上海敬众科技股份有限公司供应商】 【银联】x三要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
 			if (supResult == null) {
-				supResult = new SupResult(params.toJSONString(), LocalDateTime.now());
+				supResult = new SupResult<>(params.toJSONString(), LocalDateTime.now());
 			}
 			supResult.setState(ReqState.ERROR);
 			supResult.setRespTime(LocalDateTime.now());
@@ -197,9 +201,9 @@ public class QxkjCkSupImpl implements ICkSupService {
 	}
 
 	@Override
-	public SupResult<BankFourResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
+	public SupResult<BankElementCheckResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
 		String result = null;
-		SupResult<BankFourResDTO> supResult = null;
+		SupResult<BankElementCheckResDTO> supResult = null;
 		JSONObject params = new JSONObject();
 		String url = null;
 
@@ -243,7 +247,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 			JSONObject resultJson = resultObject.getJSONObject("data");
 			supResult.setSupCode(code);
 			if (resultJson != null) {
-				supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankFourResDTO.class));
+				supResult.setData(JSONUtil.toBean(resultJson.toJSONString(), BankElementCheckResDTO.class));
 			}
 			if (SUCCESS.equals(code)) {
 				supResult.setFree(FreeStatus.YES);

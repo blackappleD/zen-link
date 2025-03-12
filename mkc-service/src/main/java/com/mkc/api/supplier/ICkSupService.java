@@ -1,7 +1,7 @@
 package com.mkc.api.supplier;
 
 import com.mkc.api.common.constant.bean.SupResult;
-import com.mkc.api.dto.bg.res.BankFourResDTO;
+import com.mkc.api.dto.bg.res.BankElementCheckResDTO;
 import com.mkc.api.dto.ck.req.*;
 import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
@@ -21,7 +21,7 @@ public interface ICkSupService extends ISupService {
 	/**
 	 * 银行卡四要素
 	 */
-	default SupResult<BankFourResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
+	default SupResult<BankElementCheckResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
 		return SupResult.supNotSupport();
 	}
 

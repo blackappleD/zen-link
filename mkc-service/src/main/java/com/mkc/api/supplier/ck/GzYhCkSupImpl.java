@@ -7,7 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.dto.bg.res.BankFourResDTO;
+import com.mkc.api.dto.bg.res.BankElementCheckResDTO;
 import com.mkc.api.supplier.enums.BankFourCode;
 import com.mkc.api.dto.ck.req.BankReqDTO;
 import com.mkc.bean.SuplierQueryBean;
@@ -100,9 +100,9 @@ public class GzYhCkSupImpl implements ICkSupService {
 
 
 	@Override
-	public SupResult<BankFourResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
+	public SupResult<BankElementCheckResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
 		String result = null;
-		SupResult<BankFourResDTO> supResult = null;
+		SupResult<BankElementCheckResDTO> supResult = null;
 		String url = null;
 		Map<String, String> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		LocalDateTime now = LocalDateTime.now();
@@ -150,7 +150,7 @@ public class GzYhCkSupImpl implements ICkSupService {
 					supResult.setFree(FreeStatus.NO);
 			}
 			supResult.setRemark(businessCode.getBankFourDesc());
-			supResult.setData(new BankFourResDTO("2", businessCode.getBankFourCode(), businessCode.getBankFourDesc()));
+			supResult.setData(new BankElementCheckResDTO("2", businessCode.getBankFourCode(), businessCode.getBankFourDesc()));
 			return supResult;
 		} catch (Throwable e) {
 			errMonitorMsg(log, " 【{}】 银行卡四要素 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"

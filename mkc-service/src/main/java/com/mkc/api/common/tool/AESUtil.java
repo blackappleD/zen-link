@@ -17,124 +17,125 @@ import java.security.SecureRandom;
  * 与mysql数据库aes加密算法通用
  * 数据库aes加密解密
  * -- 加密
- *    SELECT to_base64(AES_ENCRYPT('www.gowhere.so','jkl;POIU1234++=='));
- *    -- 解密
- *    SELECT AES_DECRYPT(from_base64('Oa1NPBSarXrPH8wqSRhh3g=='),'jkl;POIU1234++==');
- * @author 836508
+ * SELECT to_base64(AES_ENCRYPT('www.gowhere.so','jkl;POIU1234++=='));
+ * -- 解密
+ * SELECT AES_DECRYPT(from_base64('Oa1NPBSarXrPH8wqSRhh3g=='),'jkl;POIU1234++==');
  *
+ * @author 836508
  */
 @Slf4j
 public class AESUtil {
 
-    //"算法/模式/补码方式"  CBC 密文每次不一样，ECB每次都一样
-    private static final String ALGORITHM="AES/ECB/PKCS5Padding";
+	//"算法/模式/补码方式"  CBC 密文每次不一样，ECB每次都一样
+	private static final String ALGORITHM = "AES/ECB/PKCS5Padding";
 
-    private static final String KEY_ALGORITHM = "AES";
-    private static final String KEY = "BHSK_DATA_2024!!";
+	private static final String KEY_ALGORITHM = "AES";
+	private static final String KEY = "BHSK_DATA_2024!!";
 
-    /***
-     *
-     * @param plainText
-     * @return
-     * @throws Exception
-     */
-    public static String encrypt(String plainText)  {
-	    return encrypt(plainText, KEY);
-    }
-    /***
-     *
-     * @param plainText
-     * @param sKey
-     * @return
-     * @throws Exception
-     */
-    public static String encrypt(String plainText, String sKey)  {
-        try {
-           // byte[] raw = sKey.getBytes("utf-8");
-            //SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-            SecretKey skeySpec =getSecretKey(sKey);
+	/***
+	 *
+	 * @param plainText
+	 * @return
+	 * @throws Exception
+	 */
+	public static String encrypt(String plainText) {
+		return encrypt(plainText, KEY);
+	}
 
-            Cipher cipher = Cipher.getInstance(ALGORITHM);//"算法/模式/补码方式"
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-            byte[] encrypted = cipher.doFinal(plainText.getBytes("utf-8"));
-            //此处使用BASE64做转码功能，同时能起到2次加密的作用。
-            return  Base64Util.encode(encrypted);
+	/***
+	 *
+	 * @param plainText
+	 * @param sKey
+	 * @return
+	 * @throws Exception
+	 */
+	public static String encrypt(String plainText, String sKey) {
+		try {
+			// byte[] raw = sKey.getBytes("utf-8");
+			//SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+			SecretKey skeySpec = getSecretKey(sKey);
 
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return null;
-    }
+			Cipher cipher = Cipher.getInstance(ALGORITHM);//"算法/模式/补码方式"
+			cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+			byte[] encrypted = cipher.doFinal(plainText.getBytes("utf-8"));
+			//此处使用BASE64做转码功能，同时能起到2次加密的作用。
+			return Base64Util.encode(encrypted);
 
-    // 解密
-    public static String decrypt(String sSrc) throws Exception {
-        try {
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return null;
+	}
 
-            //byte[] raw = sKey.getBytes("utf-8");
-            //SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+	// 解密
+	public static String decrypt(String sSrc) throws Exception {
+		try {
 
-            SecretKey skeySpec =getSecretKey(KEY);
+			//byte[] raw = sKey.getBytes("utf-8");
+			//SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
 
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-            byte[] encrypted1 =  Base64Util.decode(sSrc);//先用base64解密
-            try {
-                byte[] original = cipher.doFinal(encrypted1);
-	            return new String(original, StandardCharsets.UTF_8);
-            } catch (Exception e) {
-                System.out.println(e.toString());
-                return null;
-            }
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-            return null;
-        }
-    }
+			SecretKey skeySpec = getSecretKey(KEY);
 
-    // 解密
-    public static String decrypt(String sSrc, String sKey) throws Exception {
-        try {
+			Cipher cipher = Cipher.getInstance(ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+			byte[] encrypted1 = Base64Util.decode(sSrc);//先用base64解密
+			try {
+				byte[] original = cipher.doFinal(encrypted1);
+				return new String(original, StandardCharsets.UTF_8);
+			} catch (Exception e) {
+				System.out.println(e.toString());
+				return null;
+			}
+		} catch (Exception ex) {
+			System.out.println(ex.toString());
+			return null;
+		}
+	}
 
-            //byte[] raw = sKey.getBytes("utf-8");
-            //SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+	// 解密
+	public static String decrypt(String sSrc, String sKey) throws Exception {
+		try {
 
-            SecretKey skeySpec =getSecretKey(sKey);
+			//byte[] raw = sKey.getBytes("utf-8");
+			//SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
 
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-            byte[] encrypted1 =  Base64Util.decode(sSrc);//先用base64解密
-            try {
-                byte[] original = cipher.doFinal(encrypted1);
-	            return new String(original, StandardCharsets.UTF_8);
-            } catch (Exception e) {
-                System.out.println(e.toString());
-                return null;
-            }
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-            return null;
-        }
-    }
+			SecretKey skeySpec = getSecretKey(sKey);
 
-    /**
-     * 生成加密秘钥
-     *
-     * @return
-     * @throws NoSuchAlgorithmException
-     */
-    //SecretKeySpec
-    private static SecretKey getSecretKey(String sKey) throws NoSuchAlgorithmException {
+			Cipher cipher = Cipher.getInstance(ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+			byte[] encrypted1 = Base64Util.decode(sSrc);//先用base64解密
+			try {
+				byte[] original = cipher.doFinal(encrypted1);
+				return new String(original, StandardCharsets.UTF_8);
+			} catch (Exception e) {
+				System.out.println(e.toString());
+				return null;
+			}
+		} catch (Exception ex) {
+			System.out.println(ex.toString());
+			return null;
+		}
+	}
 
-        // 判断Key是否正确
-        if (StringUtils.isBlank(sKey)) {
-            System.out.print("signKey为空null");
-            return null;
-        }
-        // 判断Key是否为16位
-        if (sKey.length() != 16) {
-            System.out.print("signKey长度不是16位");
-            return null;
-        }
+	/**
+	 * 生成加密秘钥
+	 *
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
+	//SecretKeySpec
+	private static SecretKey getSecretKey(String sKey) throws NoSuchAlgorithmException {
+
+		// 判断Key是否正确
+		if (StringUtils.isBlank(sKey)) {
+			System.out.print("signKey为空null");
+			return null;
+		}
+		// 判断Key是否为16位
+		if (sKey.length() != 16) {
+			System.out.print("signKey长度不是16位");
+			return null;
+		}
 
 
     /*
@@ -145,36 +146,38 @@ public class AESUtil {
         SecretKey secretKey = kg.generateKey();
         return new SecretKeySpec(secretKey.getEncoded(), KEY_ALGORITHM);// 转换为AES专用密钥*/
 
-        try{
-            KeyGenerator _generator=KeyGenerator.getInstance(KEY_ALGORITHM);
-            SecureRandom secureRandom=SecureRandom.getInstance("SHA1PRNG");
-            secureRandom.setSeed(sKey.getBytes());
-            _generator.init(128,secureRandom);
-            return _generator.generateKey();
-        }catch(Exception e){
-            throw new RuntimeException("初始化密钥出现异常");
-        }
+		try {
+			KeyGenerator _generator = KeyGenerator.getInstance(KEY_ALGORITHM);
+			SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+			secureRandom.setSeed(sKey.getBytes());
+			_generator.init(128, secureRandom);
+			return _generator.generateKey();
+		} catch (Exception e) {
+			throw new RuntimeException("初始化密钥出现异常");
+		}
 
-    }
+	}
 
 
+	public static void main(String[] args) throws Exception {
+		/*
+		 * 此处使用AES-128-ECB加密模式，key需要为16位。
+		 */
+//		String cKey = "jkl;POIU1234++==";
+//		// 需要加密的字串
+//		String cSrc = "www.gowhere.so";
+//		System.out.println(cSrc);
+//		// 加密
+//		String enString = AESUtil.encrypt(cSrc);
+//		System.out.println("加密后的字串是：" + enString);
+//
+//		// 解密
+//		String DeString = AESUtil.decrypt(enString);
+//		System.out.println("解密后的字串是：" + DeString);
+//
+//		System.out.println(encrypt("123456"));
 
-    public static void main(String[] args) throws Exception {
-        /*
-         * 此处使用AES-128-ECB加密模式，key需要为16位。
-         */
-        String cKey = "jkl;POIU1234++==";
-        // 需要加密的字串
-        String cSrc = "www.gowhere.so";
-        System.out.println(cSrc);
-        // 加密
-        String enString = AESUtil.encrypt(cSrc);
-        System.out.println("加密后的字串是：" + enString);
-
-        // 解密
-        String DeString = AESUtil.decrypt(enString);
-        System.out.println("解密后的字串是：" + DeString);
-
-        System.out.println(encrypt("123456"));
-    }
+		System.out.println(decrypt("bPxwVlL0xcPJgfyO52eYmA7AKcOwOEPzeDTeeLc29MM=", KEY));
+		System.out.println(decrypt("WOB5B/od4D1NjCzkTMfcOw==", KEY));
+	}
 }
