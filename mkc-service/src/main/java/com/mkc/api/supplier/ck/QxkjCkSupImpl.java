@@ -98,7 +98,7 @@ public class QxkjCkSupImpl implements ICkSupService {
 					break;
 				default:
 					supResult.setFree(FreeStatus.NO);
-					supResult.setRemark("查询失败");
+					supResult.setRemark(CharSequenceUtil.format("查询失败：{}", msg));
 					supResult.setState(ReqState.ERROR);
 			}
 
