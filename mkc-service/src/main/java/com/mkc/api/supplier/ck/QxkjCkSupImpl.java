@@ -81,34 +81,28 @@ public class QxkjCkSupImpl implements ICkSupService {
 			}
 			JSONObject resultObject = JSON.parseObject(result);
 			String code = resultObject.getString("code");
-
-			//                0：成功（收费）
-			//                405：查无（不收费）
-			if (SUCCESS.equals(code)) {
-				supResult.setFree(FreeStatus.YES);
-				supResult.setRemark("查询成功");
-				supResult.setState(ReqState.SUCCESS);
-				JSONObject resultJson = resultObject.getJSONObject("data");
-				if (resultJson != null) {
-					supResult.setData(resultJson);
-					return supResult;
-				}
-			} else if (NOGET.equals(code)) {
-				supResult.setFree(FreeStatus.NO);
-				supResult.setRemark("查无");
-				supResult.setState(ReqState.NOT_GET);
-
-			} else if (NOT.equals(code)) {
-				supResult.setFree(FreeStatus.YES);
-				supResult.setRemark("不一致");
-				supResult.setState(ReqState.NOT);
-
-			} else {
-				supResult.setFree(FreeStatus.NO);
-				supResult.setRemark("查询失败");
+			JSONObject resultJson = resultObject.getJSONObject("data");
+			String msg = resultObject.getString("msg");
+			supResult.setData(resultJson);
+			switch (code) {
+				case SUCCESS:
+				case NOT:
+					supResult.setFree(FreeStatus.YES);
+					supResult.setRemark("查询成功");
+					supResult.setState(ReqState.SUCCESS);
+					break;
+				case NOGET:
+					supResult.setFree(FreeStatus.NO);
+					supResult.setRemark("查无");
+					supResult.setState(ReqState.NOT_GET);
+					break;
+				default:
+					supResult.setFree(FreeStatus.NO);
+					supResult.setRemark("查询失败");
+					supResult.setState(ReqState.ERROR);
 			}
-			return supResult;
 
+			return supResult;
 		} catch (Throwable e) {
 			errMonitorMsg(log, " 【上海敬众科技股份有限公司供应商】 【银联】x二要素vip 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
