@@ -1,4 +1,4 @@
-package com.mkc.api.supplier.ck;
+package com.mkc.api.supplier.bg;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -8,16 +8,16 @@ import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
-import com.mkc.api.dto.bg.res.BankElementCheckResDTO;
-import com.mkc.api.dto.ck.req.BankReqDTO;
-import com.mkc.api.supplier.ICkSupService;
+import com.mkc.api.dto.ck.req.PersonalVehicleReqDTO;
+import com.mkc.api.supplier.IBgSupService;
+import com.mkc.api.supplier.dto.PersonalVehicleResDTO;
 import com.mkc.api.supplier.dto.jhsj.JhsjBaseResDTO;
-import com.mkc.api.supplier.dto.jhsj.JhsjBusinessResDTO;
-import com.mkc.api.supplier.enums.BankFourCode;
+import com.mkc.api.supplier.dto.jhsj.JhsjPersonalVehicleResDTO;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
+import com.mkc.common.utils.bean.BeanUtils;
 import com.mkc.util.JsonUtil;
 import com.mkc.util.sm4.SM4;
 import lombok.AllArgsConstructor;
@@ -32,9 +32,9 @@ import java.util.Map;
 /**
  * 钜盒数据
  */
-@Service("CK_JHSJ")
+@Service("BG_JHSJ")
 @Slf4j
-public class JhsjCkSupImpl implements ICkSupService {
+public class JhsjBgSupImpl implements IBgSupService {
 
 	@AllArgsConstructor
 	@Getter
@@ -68,51 +68,17 @@ public class JhsjCkSupImpl implements ICkSupService {
 		}
 	}
 
-	@AllArgsConstructor
-	@Getter
-	public enum BusinessCode {
-		VERIFICATION_SUCCESS("12", BankFourCode.VERIFICATION_SUCCESS, "验证通过"),
-		VERIFICATION_FAILED("14", BankFourCode.VERIFICATION_FAILED, "验证不通过"),
-		INVALID_CARD_NUMBER("13", BankFourCode.INVALID_CARD, "无效卡号或卡状态异常，请换卡重试或联系发卡行"),
-		RESTRICTED_CARD("18", BankFourCode.CARD_STATUS_ABNORMAL, "受限制的卡，请换卡重试或联系发卡行"),
-		ABNORMAL_CARD_STATUS("17", BankFourCode.CARD_STATUS_ABNORMAL, "卡状态异常，请换卡重试或联系发卡行"),
-		TRANSACTION_FAILED("19", BankFourCode.TRANSACTION_FAILED, "交易失败，详情请咨询您的发卡行"),
-		LIMIT_FLOW_OR_FREQUENT("16", BankFourCode.TRANSACTION_TOO_FREQUENT, "交易限流或过于频繁，请稍后重试"),
-		TRANSACTION_LIMIT_EXCEEDED("15", BankFourCode.TRANSACTION_TOO_FREQUENT, "交易次数超限，请隔日重试"),
-		UNKNOWN("99", BankFourCode.ILLEGAL_REQUEST, "未知异常");
-		private final String code;
-		private final BankFourCode bankFourCode;
-		private final String desc;
-
-		public static BusinessCode getByCode(String code) {
-			for (BusinessCode c : BusinessCode.values()) {
-				if (c.getCode().equals(code)) {
-					return c;
-				}
-			}
-			return UNKNOWN; // 或抛出异常，取决于你的需求
-		}
-
-		public String getBankFourCode() {
-			return bankFourCode == null ? code : bankFourCode.getCode();
-		}
-
-		public String getBankFourDesc() {
-			return bankFourCode == null ? code : bankFourCode.getMessage();
-		}
-	}
-
 	@Override
-	public SupResult<BankElementCheckResDTO> ckBankFour(BankReqDTO vo, SuplierQueryBean bean) {
+	public SupResult<PersonalVehicleResDTO> personalVehicle(PersonalVehicleReqDTO vo, SuplierQueryBean bean) {
 		String result = null;
-		SupResult<BankElementCheckResDTO> supResult = null;
+		SupResult<PersonalVehicleResDTO> supResult = null;
 		String url = null;
 		long timestamp = System.currentTimeMillis();
 
 		Map<String, String> headers = new HashMap<>();
 		Map<String, String> params = new HashMap<>();
 		try {
-			url = bean.getUrl() + "/bankCard/info/hverifyV2";
+			url = bean.getUrl() + "/vehicle/info/personalVehicle";
 			String appId = bean.getSignKey();
 			String appSecret = bean.getSignPwd();
 			String sm4Key = appSecret.substring(0, 16);
@@ -128,10 +94,14 @@ public class JhsjCkSupImpl implements ICkSupService {
 
 			SM4 sm4 = new SM4(sm4Key);
 			params.put("requestId", vo.getMerSeq());
-			params.put("fullName", sm4.encryptDataToString_ECB(vo.getCertName()));
-			params.put("idCardNo", sm4.encryptDataToString_ECB(vo.getCertNo()));
-			params.put("mobile", sm4.encryptDataToString_ECB(vo.getMobile()));
-			params.put("bankCardNo", sm4.encryptDataToString_ECB(vo.getBankCard()));
+			params.put("idCardNo", sm4.encryptDataToString_ECB(vo.getIdCard()));
+			if (CharSequenceUtil.isNotBlank(vo.getName())) {
+				params.put("fullName", sm4.encryptDataToString_ECB(vo.getName()));
+			}
+			params.put("userType", vo.getUserType());
+			if (CharSequenceUtil.isNotBlank(vo.getVehicleType())) {
+				params.put("vehicleType", sm4.encryptDataToString_ECB(vo.getVehicleType()));
+			}
 
 			String paramJson = JSONUtil.toJsonStr(params);
 			supResult = new SupResult<>(paramJson, LocalDateTime.now());
@@ -145,14 +115,14 @@ public class JhsjCkSupImpl implements ICkSupService {
 					throw new RuntimeException(result);
 				}
 			}
-			JhsjBaseResDTO<JhsjBusinessResDTO> res = JsonUtil.fromJson(result, new TypeReference<JhsjBaseResDTO<JhsjBusinessResDTO>>() {
+			JhsjBaseResDTO<JhsjPersonalVehicleResDTO> res = JsonUtil.fromJson(result, new TypeReference<JhsjBaseResDTO<JhsjPersonalVehicleResDTO>>() {
 			});
 			Code code = Code.getByCode(res.getCode());
 			if (code != Code.SUCCESS) {
 				throw new RuntimeException("供应商异常：" + code.getMessage());
 			}
 
-			log.info(CharSequenceUtil.format("【银行四要素核验返回体】{}", result));
+			log.info(CharSequenceUtil.format("【个人名下车辆】{}", result));
 			supResult.setRespJson(result);
 			//判断是否有响应结果 无就是请求异常或超时
 			if (StringUtils.isBlank(result)) {
@@ -163,23 +133,26 @@ public class JhsjCkSupImpl implements ICkSupService {
 			supResult.setRespTime(LocalDateTime.now());
 			String resultCode = res.getData().getResultCode();
 			supResult.setSupCode(resultCode);
-			BusinessCode businessCode = BusinessCode.getByCode(resultCode);
-			switch (businessCode) {
-				case LIMIT_FLOW_OR_FREQUENT:
-				case TRANSACTION_LIMIT_EXCEEDED:
-				case UNKNOWN:
-					supResult.setFree(FreeStatus.NO);
-					supResult.setState(ReqState.SUCCESS);
+			switch (resultCode) {
+				case "0":
+					supResult.setFree(FreeStatus.YES);
+					supResult.setState(ReqState.NOT_GET);
+					supResult.setRemark("查询成功无结果");
 					break;
-				default:
+				case "1":
 					supResult.setFree(FreeStatus.YES);
 					supResult.setState(ReqState.SUCCESS);
+					res.getData().getList().forEach(v -> v.setPlateNum(sm4.decryptDataToString_ECB(v.getPlateNum())));
+					PersonalVehicleResDTO resDTO = new PersonalVehicleResDTO();
+					BeanUtils.copyProperties(res.getData(), resDTO);
+					supResult.setData(resDTO);
+					break;
+				default:
 			}
-			supResult.setData(new BankElementCheckResDTO("2", businessCode.getBankFourCode(), businessCode.getBankFourDesc()));
 			return supResult;
 
 		} catch (Throwable e) {
-			errMonitorMsg(log, " 【钜盒数据】 银行卡四要素 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
+			errMonitorMsg(log, " 【钜盒数据】 个人名下车辆 接口 发生异常 orderNo {} URL {} , 报文: {} , err {}"
 					, bean.getOrderNo(), url, result, e);
 			if (supResult == null) {
 				supResult = new SupResult<>(JSONUtil.toJsonStr(params), LocalDateTime.now());

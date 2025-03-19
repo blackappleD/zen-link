@@ -3,9 +3,14 @@ package com.mkc.api.supplier;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.*;
+import com.mkc.api.dto.ck.req.PersonalVehicleReqDTO;
 import com.mkc.bean.SuplierQueryBean;
 
 public interface IBgSupService extends ISupService {
+
+	default public SupResult personalVehicle(PersonalVehicleReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
 
 	/**
 	 * 高校学历核查结果

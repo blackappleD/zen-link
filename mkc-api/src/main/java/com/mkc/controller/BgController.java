@@ -9,6 +9,7 @@ import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.*;
+import com.mkc.api.dto.ck.req.PersonalVehicleReqDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.IBgService;
 import com.mkc.bean.CkMerBean;
@@ -38,6 +39,23 @@ public class BgController extends BaseController {
 
 	@Autowired
 	private IBgService bgService;
+
+	/**
+	 * 企业任职关联信息查询
+	 *
+	 * @return
+	 */
+	@PostMapping("/personal_vehicle")
+	public Result personalVehicle(HttpServletRequest request,
+	                              @RequestBody @Valid PersonalVehicleReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_PERSONAL_VEHICLE);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getUserType() + params.getName() + params.getVehicleType());
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.personalVehicle(params, merLog);
+
+	}
 
 	/**
 	 * 企业任职关联信息查询

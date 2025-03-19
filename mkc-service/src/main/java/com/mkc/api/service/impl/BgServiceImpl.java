@@ -11,6 +11,7 @@ import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.*;
+import com.mkc.api.dto.ck.req.PersonalVehicleReqDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
@@ -70,6 +71,13 @@ public class BgServiceImpl implements IBgService {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.corporateAppointments(params, supQueryBean));
 	}
+
+	@Override
+	public Result personalVehicle(PersonalVehicleReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.personalVehicle(params, supQueryBean));
+	}
+
 
 	@Override
 	public Result<HighRiskPeopleResDTO> queryHighRiskPeople(HighRiskPeopleReqDTO params, MerReqLogDTO merLog) {

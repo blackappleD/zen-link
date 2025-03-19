@@ -10,7 +10,7 @@ import lombok.Data;
  * @date 2025/1/14 16:07
  */
 @Data
-public class JhsjBankFourResDTO {
+public class JhsjBusinessResDTO {
 
 	private String requestId;
 
@@ -18,4 +18,5 @@ public class JhsjBankFourResDTO {
 
 	@JsonProperty("messge")
 	private String message;
+
 }

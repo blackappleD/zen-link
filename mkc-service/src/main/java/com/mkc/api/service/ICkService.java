@@ -28,7 +28,6 @@ public interface ICkService {
 
 	public Result ckVehicleLicenseInfo(VehicleLicenseReqDTO params, MerReqLogDTO merLog);
 
-
 	/**
 	 * 个人手机三要素认证
 	 *
