@@ -40,6 +40,24 @@ public class BgController extends BaseController {
 	private IBgService bgService;
 
 	/**
+	 * 企业任职关联信息查询
+	 *
+	 * @return
+	 */
+	@PostMapping("/corporate_appointments")
+	public Result corporateAppointments(HttpServletRequest request,
+	                                    @RequestBody @Valid CorporateAppointmentsReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_CORPORATE_APPOINTMENTS);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName() + params.getEnterpriseName());
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.corporateAppointments(params, merLog);
+
+	}
+
+
+	/**
 	 * 经济能力评级-青龙分
 	 *
 	 * @return

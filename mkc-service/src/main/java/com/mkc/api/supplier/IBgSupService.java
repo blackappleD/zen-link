@@ -71,6 +71,10 @@ public interface IBgSupService extends ISupService {
 		return SupResult.supNotSupport();
 	}
 
+	default SupResult corporateAppointments(CorporateAppointmentsReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
 	/**
 	 * 网贷（申请多头）
 	 *

@@ -66,6 +66,12 @@ public class BgServiceImpl implements IBgService {
 	private IMailProcess mailProcess;
 
 	@Override
+	public Result corporateAppointments(CorporateAppointmentsReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.corporateAppointments(params, supQueryBean));
+	}
+
+	@Override
 	public Result<HighRiskPeopleResDTO> queryHighRiskPeople(HighRiskPeopleReqDTO params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.queryHighRiskPeople(params, supQueryBean));

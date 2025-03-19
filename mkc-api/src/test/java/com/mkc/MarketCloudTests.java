@@ -53,7 +53,6 @@ public class MarketCloudTests {
 
 	public static <T> List<T> readExcel(String filePath, Class<T> clazz) {
 		return EasyExcel.read(new File(filePath))
-
 				.headRowNumber(1)
 				.head(clazz)
 				.doReadAllSync();
@@ -205,14 +204,16 @@ public class MarketCloudTests {
 
 	@Test
 	public void financeIcsConvergence() {
-		List<FinIcsBaseCell> baseList = readExcel("D:\\跑数\\ABEF分\\20250220\\samples_20241210_modify.xlsx", FinIcsBaseCell.class);
-		Map<String, FinIcsResult> aMap = readExcel("D:\\跑数\\ABEF分\\20250220\\测试结果\\a.xlsx", FinIcsResult.class)
+		String resultPath = "D:\\跑数\\ABEF分\\20250317\\测试结果\\";
+		List<FinIcsBaseCell> baseList = readExcel("D:\\跑数\\ABEF分\\20250317\\20250317_ABEF.xlsx", FinIcsBaseCell.class);
+
+		Map<String, FinIcsResult> aMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "20250317154049青龙分A测试结果.xlsx"), FinIcsResult.class)
 				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
-		Map<String, FinIcsResult> bMap = readExcel("D:\\跑数\\ABEF分\\20250220\\测试结果\\b.xlsx", FinIcsResult.class)
+		Map<String, FinIcsResult> bMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "20250317154107白虎分B测试结果.xlsx"), FinIcsResult.class)
 				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
-		Map<String, FinIcsResult> eMap = readExcel("D:\\跑数\\ABEF分\\20250220\\测试结果\\e.xlsx", FinIcsResult.class)
+		Map<String, FinIcsResult> eMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "20250317154118朱雀分E测试结果.xlsx"), FinIcsResult.class)
 				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
-		Map<String, FinIcsResult> fMap = readExcel("D:\\跑数\\ABEF分\\20250220\\测试结果\\f.xlsx", FinIcsResult.class)
+		Map<String, FinIcsResult> fMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "20250317154130玄武分F测试结果.xlsx"), FinIcsResult.class)
 				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
 
 		baseList.forEach(cell -> {
@@ -230,7 +231,7 @@ public class MarketCloudTests {
 			}
 		});
 
-		EasyExcel.write(new File("D:\\跑数\\ABEF分\\20250220\\samples_20241210_modify.xlsx"))
+		EasyExcel.write(new File(CharSequenceUtil.format("{}/{}", resultPath, "ABEF测试结果汇总.xlsx")))
 				.head(FinIcsBaseCell.class)
 				.excelType(ExcelTypeEnum.XLSX)
 				.sheet("sheet1")

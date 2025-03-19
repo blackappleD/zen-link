@@ -22,12 +22,16 @@ public interface IBgService {
 
 	public SupResult bgCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function);
 
+	Result corporateAppointments(CorporateAppointmentsReqDTO params, MerReqLogDTO merReqLog);
 
 	Result<HighRiskPeopleResDTO> queryHighRiskPeople(HighRiskPeopleReqDTO params, MerReqLogDTO merReqLog);
 
 	Result<FinanceIcsResDTO> financeIcsA(FinanceIcsReqDTO params, MerReqLogDTO merReqLog);
+
 	Result<FinanceIcsResDTO> financeIcsB(FinanceIcsReqDTO params, MerReqLogDTO merReqLog);
+
 	Result<FinanceIcsResDTO> financeIcsE(FinanceIcsReqDTO params, MerReqLogDTO merReqLog);
+
 	Result<FinanceIcsResDTO> financeIcsF(FinanceIcsReqDTO params, MerReqLogDTO merReqLog);
 
 	/**
