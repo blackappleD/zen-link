@@ -19,8 +19,8 @@ public class CorporateAppointmentsReqDTO extends BaseDTO {
 	@NotBlank(message = "idCard不能为空")
 	private String idCard;
 
-	private String name;
+	private String name = "";
 
-	private String enterpriseName;
+	private String enterpriseName = "";
 
 }
