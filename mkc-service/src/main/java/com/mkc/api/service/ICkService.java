@@ -2,14 +2,11 @@ package com.mkc.api.service;
 
 import com.mkc.api.common.constant.bean.Result;
 import com.mkc.api.common.constant.bean.SupResult;
-import com.mkc.api.dto.ck.req.*;
-import com.mkc.api.dto.ck.res.JzMobileThreePlusResDTO;
-import com.mkc.api.dto.ck.res.JzMobileThreeResDTO;
-import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
-import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.dto.BaseDTO;
+import com.mkc.api.dto.ck.req.*;
+import com.mkc.api.dto.ck.res.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
+import com.mkc.api.supplier.ICkSupService;
 import com.mkc.bean.SuplierQueryBean;
 
 import java.util.function.BiFunction;
@@ -25,6 +22,23 @@ public interface ICkService {
 
 	public SupResult ckCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<ICkSupService, SuplierQueryBean, SupResult> function);
 
+	/**
+	 * 当前工作单位履历核验
+	 *
+	 * @param params
+	 * @param merLog
+	 * @return
+	 */
+	Result<CurrentWorkResDTO> currentWork(CurrentWorkReqDTO params, MerReqLogDTO merLog);
+
+	/**
+	 * 企业三要素核验
+	 *
+	 * @param params
+	 * @param merLog
+	 * @return
+	 */
+	Result<EnterpriseThreeElementsResDTO> enterpriseThreeElements(EnterpriseThreeElementsReqDTO params, MerReqLogDTO merLog);
 
 	public Result ckVehicleLicenseInfo(VehicleLicenseReqDTO params, MerReqLogDTO merLog);
 

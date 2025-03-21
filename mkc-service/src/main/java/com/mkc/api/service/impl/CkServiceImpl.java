@@ -10,14 +10,11 @@ import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.dto.bg.res.BankElementCheckResDTO;
 import com.mkc.api.dto.ck.req.*;
-import com.mkc.api.dto.ck.res.JzMobileThreePlusResDTO;
-import com.mkc.api.dto.ck.res.JzMobileThreeResDTO;
-import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
+import com.mkc.api.dto.ck.res.*;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
 import com.mkc.api.service.ICkService;
 import com.mkc.api.supplier.ICkSupService;
-import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.bean.SuplierQueryBean;
@@ -73,6 +70,13 @@ public class CkServiceImpl implements ICkService {
 
 	@Resource
 	private BankElementService bankElementService;
+
+	@Override
+	public Result<CurrentWorkResDTO> currentWork(CurrentWorkReqDTO params, MerReqLogDTO merLog) {
+
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.currentWork(params, supQueryBean));
+	}
 
 
 	@Override
@@ -204,6 +208,13 @@ public class CkServiceImpl implements ICkService {
 
 		return supResult;
 
+	}
+
+	@Override
+	public Result<EnterpriseThreeElementsResDTO> enterpriseThreeElements(EnterpriseThreeElementsReqDTO params, MerReqLogDTO merLog) {
+
+		return ckCommon(merLog, params, (ckSupService, supQueryBean) ->
+				ckSupService.enterpriseThreeElements(params, supQueryBean));
 	}
 
 	@Override

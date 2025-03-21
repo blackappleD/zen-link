@@ -3,6 +3,8 @@ package com.mkc.api.supplier;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.bg.res.BankElementCheckResDTO;
 import com.mkc.api.dto.ck.req.*;
+import com.mkc.api.dto.ck.res.CurrentWorkResDTO;
+import com.mkc.api.dto.ck.res.EnterpriseThreeElementsResDTO;
 import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
 import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
 import com.mkc.bean.SuplierQueryBean;
@@ -10,6 +12,14 @@ import com.mkc.bean.SuplierQueryBean;
 import java.util.List;
 
 public interface ICkSupService extends ISupService {
+
+	default SupResult<CurrentWorkResDTO> currentWork(CurrentWorkReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	default SupResult<EnterpriseThreeElementsResDTO> enterpriseThreeElements(EnterpriseThreeElementsReqDTO vo, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
 
 	/**
 	 * 行驶证核验

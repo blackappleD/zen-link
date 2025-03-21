@@ -30,15 +30,26 @@ public enum ProductCodeEum {
 	CK_BANK_TWO("CK_BANK_TWO_INFO_001", "银行卡二要素核验", "/ck/bankTwo") {},
 	CK_PRO_QUALIFY_CERT_001("CK_PRO_QUALIFY_CERT_001", "技能人员职业资格证书核验", "/ck/pro_qualify_cert") {},
 	CK_RESUME_VERIFY("CK_RESUME_VERIFY", "当前履历核验", "/ck/resume_verify") {},
+	CK_ENTERPRISE_THREE_ELEMENTS("CK_ENTERPRISE_THREE_ELEMENTS", "企业三要素核验", "/ck/enterprise_three_elements"),
+	CK_CURRENT_WORK("CK_CURRENT_WORK", "当前工作履历核验", "/ck/current_work"),
 
 	BG_ANTI_FRAUD_V6("BG_ANTI_FRAUD_V6", "反欺诈评分V6", "/bg/anti_fraud_v6"),
+
 	BG_PERSONAL_VEHICLE("BG_PERSONAL_VEHICLE", "个人名下车辆", "/bg/personal_vehicle"),
+
 	BG_CORPORATE_APPOINTMENTS("BG_CORPORATE_APPOINTMENTS", "企业任职关联信息查询", "/bg/corporate_appointments"),
 
-	BG_FINANCE_ICS_A("BG_FINANCE_ICS_A", "经济能力评级-青龙分", "/bg/finance_ics_a") {},
-	BG_FINANCE_ICS_B("BG_FINANCE_ICS_B", "经济能力评级-白虎分", "/bg/finance_ics_b") {},
-	BG_FINANCE_ICS_E("BG_FINANCE_ICS_E", "经济能力评级-朱雀分", "/bg/finance_ics_e") {},
-	BG_FINANCE_ICS_F("BG_FINANCE_ICS_F", "经济能力评级-玄武分", "/bg/finance_ics_f") {},
+	BG_FINANCE_ICS_A("BG_FINANCE_ICS_A", "经济能力评级-青龙分", "/bg/finance_ics_a") {
+	},
+
+	BG_FINANCE_ICS_B("BG_FINANCE_ICS_B", "经济能力评级-白虎分", "/bg/finance_ics_b") {
+	},
+
+	BG_FINANCE_ICS_E("BG_FINANCE_ICS_E", "经济能力评级-朱雀分", "/bg/finance_ics_e") {
+	},
+
+	BG_FINANCE_ICS_F("BG_FINANCE_ICS_F", "经济能力评级-玄武分", "/bg/finance_ics_f") {
+	},
 
 	BG_FINANCE_I8("BG_FINANCE_I8", "I8还款能⼒评分", "/bg/finance_i8") {
 	},

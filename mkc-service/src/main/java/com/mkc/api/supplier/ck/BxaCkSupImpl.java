@@ -1,20 +1,22 @@
-package com.mkc.api.supplier.bg;
+package com.mkc.api.supplier.ck;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.common.utils.Md5Utils;
-import com.mkc.api.dto.bg.req.EnterpriseFourElementsReqVo;
-import com.mkc.api.supplier.IBgSupService;
+import com.mkc.api.dto.ck.req.EnterpriseThreeElementsReqDTO;
+import com.mkc.api.dto.ck.res.EnterpriseThreeElementsResDTO;
+import com.mkc.api.supplier.ICkSupService;
 import com.mkc.bean.SuplierQueryBean;
 import com.mkc.common.enums.FreeStatus;
 import com.mkc.common.enums.ReqState;
 import com.mkc.common.utils.StringUtils;
 import com.mkc.util.ErrorConstants;
+import com.mkc.util.JsonUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +29,9 @@ import java.util.TreeMap;
  * @AUTHOR XIEWEI
  * @Date 2024/8/19 17:07
  */
-@Service("BG_BXA")
+@Service("CK_BXA")
 @Slf4j
-public class AntBgSupImpl implements IBgSupService {
+public class BxaCkSupImpl implements ICkSupService {
 
 	private final static boolean SUCCESS = true;
 	private final static boolean NO = false;
@@ -39,68 +41,79 @@ public class AntBgSupImpl implements IBgSupService {
 	 */
 	private static final String ERROR_CODE1 = "40001";
 
+	@Data
+	private static class BaseResponse<T> {
+		private Boolean success;
+
+		private String errorCode;
+
+		private String message;
+
+		private T data;
+	}
+
+
 	@Override
-	public SupResult queryFourElementsInfo(EnterpriseFourElementsReqVo vo, SuplierQueryBean bean) {
+	public SupResult<EnterpriseThreeElementsResDTO> enterpriseThreeElements(EnterpriseThreeElementsReqDTO vo, SuplierQueryBean bean) {
 		String result = null;
-		SupResult supResult = null;
+		SupResult<EnterpriseThreeElementsResDTO> supResult = null;
 		Map<String, String> parameters = new HashMap<>();
 		String url = null;
+		String jsonStr = "";
 		try {
-			url = bean.getUrl() + "/V2/ValidateFourElements";
+			url = bean.getUrl() + "/ValidateThreeElements";
 			String appsecret = bean.getSignKey();
 			String appkey = bean.getAcc();
 			Integer timeOut = bean.getTimeOut();
 
 			String ranStr = RandomUtil.randomString(32);
-			parameters.put("companyName", vo.getCompanyName());
-			parameters.put("creditCode", vo.getCreditCode());
+			parameters.put("orgName", vo.getOrgName());
+			parameters.put("orgCertNo", vo.getOrgCertNo());
 			parameters.put("legalPerson", vo.getLegalPerson());
-			parameters.put("certNo", vo.getCertNo());
 			parameters.put("merCode", appkey);
 			parameters.put("ranStr", ranStr);
-			// 将参数按 key=value 格式排序
 			String stringA = sortAndFormatParameters(parameters);
 			String stringSignTemp = stringA + "&key=" + appsecret;
-			// Md5Utils.md5()
 			String signature = Md5Utils.md5(stringSignTemp).toUpperCase();
-			HttpRequest post = HttpUtil.createPost(url);
-			post.header("signature", signature);
-			String postBody = JSONUtil.toJsonStr(parameters);
-			post.body(postBody);
-			post.timeout(timeOut);
-			supResult = new SupResult(postBody, LocalDateTime.now());
-			result = post.execute().body();
+			jsonStr = JSONUtil.toJsonStr(parameters);
+			try (HttpResponse response = HttpUtil.createPost(url).
+					header("signature", signature)
+					.body(jsonStr)
+					.timeout(timeOut)
+					.execute()) {
+				result = response.body();
+			}
+			supResult = new SupResult<>(jsonStr, LocalDateTime.now());
 			supResult.setRespTime(LocalDateTime.now());
 			supResult.setRespJson(result);
 
-			//判断是否有响应结果 无就是请求异常或超时
 			if (StringUtils.isBlank(result)) {
 				supResult.setRemark(ErrorConstants.SUP_NO_RESPONSE);
 				supResult.setState(ReqState.ERROR);
 				return supResult;
 			}
-			JSONObject resultObject = JSON.parseObject(result);
-			boolean success = resultObject.getBoolean("success");
+
+			BaseResponse<EnterpriseThreeElementsResDTO> res = JsonUtil.fromJson(result, new TypeReference<BaseResponse<EnterpriseThreeElementsResDTO>>() {
+			});
+
+			boolean success = res.getSuccess();
 			if (success) {
 				supResult.setFree(FreeStatus.YES);
 				supResult.setState(ReqState.SUCCESS);
-				JSONObject data = resultObject.getJSONObject("data");
-				if (data != null) {
-					supResult.setData(data);
-					return supResult;
-				}
+				supResult.setData(res.getData());
+				return supResult;
 			} else {
-				if (ERROR_CODE1.equals(resultObject.getString("errorCode"))) {
+				if (ERROR_CODE1.equals(res.getErrorCode())) {
 					supResult.setFree(FreeStatus.NO);
 					supResult.setDefinedFailMsg(true);
 					supResult.setState(ReqState.ERROR);
-					supResult.setRemark(resultObject.getString("message"));
+					supResult.setRemark(res.getMessage());
 					return supResult;
 				} else {
 					supResult.setFree(FreeStatus.NO);
 					supResult.setRemark("查询失败");
 					supResult.setState(ReqState.ERROR);
-					errMonitorMsg(log, "  企业四要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
+					errMonitorMsg(log, "  企业三要素信息查询 接口 发生异常 orderNo {} URL {} , 报文: {} "
 							, bean.getOrderNo(), url, result);
 				}
 			}
@@ -110,7 +123,7 @@ public class AntBgSupImpl implements IBgSupService {
 					, bean.getOrderNo(), url, result, e);
 
 			if (supResult == null) {
-				supResult = new SupResult(JSONUtil.toJsonStr(parameters), LocalDateTime.now());
+				supResult = new SupResult<>(jsonStr, LocalDateTime.now());
 			}
 			supResult.setState(ReqState.ERROR);
 			supResult.setRespTime(LocalDateTime.now());

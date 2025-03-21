@@ -8,10 +8,7 @@ import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.constant.enums.YysCode;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.dto.ck.req.*;
-import com.mkc.api.dto.ck.res.JzMobileThreePlusResDTO;
-import com.mkc.api.dto.ck.res.JzMobileThreeResDTO;
-import com.mkc.api.dto.ck.res.ProQualifyCertResDTO;
-import com.mkc.api.dto.ck.res.ResumeVerifyResDTO;
+import com.mkc.api.dto.ck.res.*;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.ICkService;
 import com.mkc.bean.CkMerBean;
@@ -42,6 +39,45 @@ public class CkController extends BaseController {
 	@Autowired
 	private ICkService ckService;
 
+	/**
+	 * 当前⼯作单位履历核验
+	 *
+	 * @param request
+	 * @param params
+	 * @return
+	 */
+	@PostMapping("/current_work")
+	public Result<CurrentWorkResDTO> currentWork(HttpServletRequest request,
+	                                             @RequestBody @Valid CurrentWorkReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.CK_CURRENT_WORK);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getIdCard() + params.getName() + params.getCompanyName());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return ckService.currentWork(params, merLog);
+
+	}
+
+	/**
+	 * 企业三要素核验
+	 *
+	 * @param request
+	 * @param params
+	 * @return
+	 */
+	@PostMapping("/enterprise_three_elements")
+	public Result<EnterpriseThreeElementsResDTO> enterpriseThreeElements(HttpServletRequest request,
+	                                                                     @RequestBody @Valid EnterpriseThreeElementsReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.CK_ENTERPRISE_THREE_ELEMENTS);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getOrgName() + params.getOrgCertNo() + params.getLegalPerson());
+		//检查商户参数有效性
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return ckService.enterpriseThreeElements(params, merLog);
+
+	}
 
 	/**
 	 * 当前履历核验
