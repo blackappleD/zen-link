@@ -9,7 +9,9 @@ import com.mkc.api.common.constant.enums.ProductCodeEum;
 import com.mkc.api.common.exception.ApiServiceException;
 import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.*;
+import com.mkc.api.dto.ck.req.AntiFraudV6ReqDTO;
 import com.mkc.api.dto.ck.req.PersonalVehicleReqDTO;
+import com.mkc.api.dto.ck.res.AntiFraudV6ResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.service.IBgService;
 import com.mkc.bean.CkMerBean;
@@ -41,7 +43,24 @@ public class BgController extends BaseController {
 	private IBgService bgService;
 
 	/**
-	 * 企业任职关联信息查询
+	 * 反欺诈评分V6
+	 *
+	 * @return
+	 */
+	@PostMapping("/anti_fraud_v6")
+	public Result<AntiFraudV6ResDTO> antiFraudV6(HttpServletRequest request,
+	                                             @RequestBody @Valid AntiFraudV6ReqDTO params) {
+
+		CkMerBean ckMerBean = CkMerBean.build(params, ProductCodeEum.BG_ANTI_FRAUD_V6);
+		ckMerBean.setPlaintext(params.getMerCode() + params.getUserName() + params.getCertCode() + params.getTelNO());
+		MerReqLogDTO merLog = ckMer(request, ckMerBean);
+		merLog.setReqJson(JsonUtil.toJson(params));
+		return bgService.antiFraudV6(params, merLog);
+
+	}
+
+	/**
+	 * 个人名下车辆
 	 *
 	 * @return
 	 */

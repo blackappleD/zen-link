@@ -3,7 +3,9 @@ package com.mkc.api.supplier;
 import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.*;
+import com.mkc.api.dto.ck.req.AntiFraudV6ReqDTO;
 import com.mkc.api.dto.ck.req.PersonalVehicleReqDTO;
+import com.mkc.api.dto.ck.res.AntiFraudV6ResDTO;
 import com.mkc.bean.SuplierQueryBean;
 
 public interface IBgSupService extends ISupService {
@@ -77,6 +79,10 @@ public interface IBgSupService extends ISupService {
 	}
 
 	default SupResult corporateAppointments(CorporateAppointmentsReqDTO dto, SuplierQueryBean bean) {
+		return SupResult.supNotSupport();
+	}
+
+	default SupResult<AntiFraudV6ResDTO> antiFraudV6(AntiFraudV6ReqDTO dto, SuplierQueryBean bean) {
 		return SupResult.supNotSupport();
 	}
 

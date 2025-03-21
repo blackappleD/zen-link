@@ -32,7 +32,7 @@ public class SignUtils {
 //		String plaintext = merCode + "330381199910181122" + "杨鑫" + "16604322562";
 
 
-		System.out.println(sign("CQHLQY" + "[{\"name\":\"张三\",\"cardNum\":\"990721199910289913\"}]", "9b77e7294ee7c502ff869d6ba36bd4fd"));
+		System.out.println(sign("HZZNKJ" + "500102199308073693" + "甘立川", "742a2f3219da7177e677f19764eca797"));
 	}
 
 

@@ -5,7 +5,9 @@ import com.mkc.api.common.constant.bean.SupResult;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.*;
+import com.mkc.api.dto.ck.req.AntiFraudV6ReqDTO;
 import com.mkc.api.dto.ck.req.PersonalVehicleReqDTO;
+import com.mkc.api.dto.ck.res.AntiFraudV6ResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.supplier.IBgSupService;
 import com.mkc.bean.SuplierQueryBean;
@@ -22,6 +24,8 @@ import java.util.function.BiFunction;
 public interface IBgService {
 
 	public SupResult bgCommonSup(MerReqLogDTO merLog, BaseDTO vo, BiFunction<IBgSupService, SuplierQueryBean, SupResult> function);
+
+	Result<AntiFraudV6ResDTO> antiFraudV6(AntiFraudV6ReqDTO params, MerReqLogDTO merReqLog);
 
 	Result personalVehicle(PersonalVehicleReqDTO params, MerReqLogDTO merReqLog);
 

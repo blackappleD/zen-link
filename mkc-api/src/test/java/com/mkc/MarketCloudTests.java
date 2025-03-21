@@ -207,13 +207,13 @@ public class MarketCloudTests {
 		String resultPath = "D:\\跑数\\ABEF分\\20250317\\测试结果\\";
 		List<FinIcsBaseCell> baseList = readExcel("D:\\跑数\\ABEF分\\20250317\\20250317_ABEF.xlsx", FinIcsBaseCell.class);
 
-		Map<String, FinIcsResult> aMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "20250317154049青龙分A测试结果.xlsx"), FinIcsResult.class)
+		Map<String, FinIcsResult> aMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "a.xlsx"), FinIcsResult.class)
 				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
-		Map<String, FinIcsResult> bMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "20250317154107白虎分B测试结果.xlsx"), FinIcsResult.class)
+		Map<String, FinIcsResult> bMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "b.xlsx"), FinIcsResult.class)
 				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
-		Map<String, FinIcsResult> eMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "20250317154118朱雀分E测试结果.xlsx"), FinIcsResult.class)
+		Map<String, FinIcsResult> eMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "e.xlsx"), FinIcsResult.class)
 				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
-		Map<String, FinIcsResult> fMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "20250317154130玄武分F测试结果.xlsx"), FinIcsResult.class)
+		Map<String, FinIcsResult> fMap = readExcel(CharSequenceUtil.format("{}/{}", resultPath, "f.xlsx"), FinIcsResult.class)
 				.stream().collect(Collectors.toMap(FinIcsResult::getIdCard, Function.identity()));
 
 		baseList.forEach(cell -> {

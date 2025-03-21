@@ -11,7 +11,9 @@ import com.mkc.api.common.exception.ErrMonitorCode;
 import com.mkc.api.dto.BaseDTO;
 import com.mkc.api.dto.bg.req.*;
 import com.mkc.api.dto.bg.res.*;
+import com.mkc.api.dto.ck.req.AntiFraudV6ReqDTO;
 import com.mkc.api.dto.ck.req.PersonalVehicleReqDTO;
+import com.mkc.api.dto.ck.res.AntiFraudV6ResDTO;
 import com.mkc.api.dto.common.MerReqLogDTO;
 import com.mkc.api.handle.ReqLogHandle;
 import com.mkc.api.monitor.DdMonitorMsgUtil;
@@ -70,6 +72,12 @@ public class BgServiceImpl implements IBgService {
 	public Result corporateAppointments(CorporateAppointmentsReqDTO params, MerReqLogDTO merLog) {
 		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
 				bgSupService.corporateAppointments(params, supQueryBean));
+	}
+
+	@Override
+	public Result<AntiFraudV6ResDTO> antiFraudV6(AntiFraudV6ReqDTO params, MerReqLogDTO merLog) {
+		return bgCommon(merLog, params, (bgSupService, supQueryBean) ->
+				bgSupService.antiFraudV6(params, supQueryBean));
 	}
 
 	@Override

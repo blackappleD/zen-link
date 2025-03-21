@@ -31,6 +31,7 @@ public enum ProductCodeEum {
 	CK_PRO_QUALIFY_CERT_001("CK_PRO_QUALIFY_CERT_001", "技能人员职业资格证书核验", "/ck/pro_qualify_cert") {},
 	CK_RESUME_VERIFY("CK_RESUME_VERIFY", "当前履历核验", "/ck/resume_verify") {},
 
+	BG_ANTI_FRAUD_V6("BG_ANTI_FRAUD_V6", "反欺诈评分V6", "/bg/anti_fraud_v6"),
 	BG_PERSONAL_VEHICLE("BG_PERSONAL_VEHICLE", "个人名下车辆", "/bg/personal_vehicle"),
 	BG_CORPORATE_APPOINTMENTS("BG_CORPORATE_APPOINTMENTS", "企业任职关联信息查询", "/bg/corporate_appointments"),
 
